@@ -1,0 +1,29 @@
+[book]
+authors = ["blackanger"]
+description = "The roots aren't deep but the seeds are planted!"
+language = "en"
+multilingual = false
+src = "src"
+title = "Rust Magazine 2022"
+
+
+
+[preprocessor.mermaid]
+command = "mdbook-mermaid"
+
+
+[output.html]
+theme = "mytheme"
+default-theme = "rust"
+git-repository-url = "https://github.com/RustMagazine/rust_magazine_2022"
+additional-js = ["mermaid.min.js", "mermaid-init.js", "smart-anchor.js"]
+mathjax-support = true
+
+
+[output.html.playground]
+editable = true
+copy-js = true
+
+[output.html.fold]
+enable = true
+level = 0
