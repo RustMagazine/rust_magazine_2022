@@ -18,6 +18,7 @@
         - [网络基建](./Q1/opensource/performance.md)
         - [Web开发](./Q1/opensource/performance.md)
         - [前端基建](./Q1/opensource/frontend.md)
+        - [音视频处理](./Q1/opensource/av.md)
     - [安全动态](./Q1/security.md)
         - [Unsound](./Q1/security/unsound.md)
         - [Memory](./Q1/security/memory.md)
@@ -25,6 +26,7 @@
         - [生产实践](./Q1/business/practices.md)
         - [优秀产品](./Q1/business/products.md)
     - [优秀投稿](./Q1/contribute.md)
+        - [DatenLord | Rust原子类型和内存排序](./Q1/contribute/atom.md)
 
 
 
