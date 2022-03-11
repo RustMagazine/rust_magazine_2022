@@ -22,7 +22,7 @@ Niko Matsakis 和 Tyler Mandry 代表 Async 工作组发布了一篇文章，阐
 
 假设在 Rust 2024 Edition 中，你使用异步 Rust 创建一个新项目：使用crates.io 的第三方库 `crabbycat`来遍历指定 GitHub 仓库的issues列表：
 
-```rust
+```rust,ignore
 async fn main() {
     for await? issue in crabbycat::issues("https://github.com/rust-lang/rust") {
         if meets_criteria(&issue) {
@@ -34,7 +34,7 @@ async fn main() {
 
 你的项目似乎工作正常，这个时候有人给你发起 PR: 增加 GitLab 支持。你看到 PR 的代码有下面改进：
 
-```rust
+```rust,ignore
 
 // 增加了 Async Trait `IssueProvider` 来抽象 issues 接口
 // 兼容 GitHub/Gitlab/Gitothers

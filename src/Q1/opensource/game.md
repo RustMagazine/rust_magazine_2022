@@ -26,7 +26,7 @@ Bevy ECS 的最优先准则是 人体工程学（ergonomics），即，开发体
 
 这是 0.5 版本增加 System 的示例：
 
-```rust
+```rust,ignore
 // This is a standalone Bevy 0.5 App that adds a simple `gravity` system to the App's schedule
 // and automatically runs it in parallel with other systems
 fn main() {
@@ -45,7 +45,7 @@ fn gravity(time: Res<Time>, mut query: Query<&mut Transform>) {
 
 这是0.6的改进，完全去掉了 `.system()`。
 
-```rust
+```rust,ignore
 // pure bliss!
 App::new()
     .add_plugins(DefaultPlugins)
@@ -57,7 +57,7 @@ App::new()
 
 在Bevy 0.6中，类型不再默认实现 `Component` trait。在过去的版本中，通过下面这样一揽子（blanket impl）的实现为所有类型实现了 `Compont` trait 。
 
-```rust
+```rust,ignore
 impl<T: Send + Sync + 'static> Component for T {}
 ```
 
@@ -70,7 +70,7 @@ impl<T: Send + Sync + 'static> Component for T {}
 
 现在可以通过派生宏自动实现，也可以手动实现 `Component`。
 
-```rust
+```rust,ignore
 // defaults to "Table" storage
 #[derive(Component)]
 struct SomeComponent;
