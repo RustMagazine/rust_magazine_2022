@@ -1,0 +1,579 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js rust">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Rust for Linux 源码导读 | Rust 驱动开发与通用时钟管理框架抽象 - Rust Magazine 2022</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="The roots aren&#x27;t deep but the seeds are planted!">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../../highlight.css">
+        <link rel="stylesheet" href="../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "rust";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../../Q1/toc.html"><strong aria-hidden="true">1.</strong> 2022-Q1</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/lang.html"><strong aria-hidden="true">1.1.</strong> 官方动态</a></li><li class="chapter-item "><a href="../../Q1/hots.html"><strong aria-hidden="true">1.2.</strong> 社区热点</a></li><li class="chapter-item "><a href="../../Q1/learns.html"><strong aria-hidden="true">1.3.</strong> 学习资源</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/learns/projects.html"><strong aria-hidden="true">1.3.1.</strong> 开源项目</a></li><li class="chapter-item "><a href="../../Q1/learns/blogs.html"><strong aria-hidden="true">1.3.2.</strong> 博文教程</a></li><li class="chapter-item "><a href="../../Q1/learns/open-courses.html"><strong aria-hidden="true">1.3.3.</strong> 高校公开课</a></li><li class="chapter-item "><a href="../../Q1/learns/videso.html"><strong aria-hidden="true">1.3.4.</strong> 线上视频</a></li></ol></li><li class="chapter-item "><a href="../../Q1/foreign.html"><strong aria-hidden="true">1.4.</strong> 外刊评论</a></li><li class="chapter-item "><a href="../../Q1/academic.html"><strong aria-hidden="true">1.5.</strong> 学术动态</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/academic/rust.html"><strong aria-hidden="true">1.5.1.</strong> Rust</a></li><li class="chapter-item "><a href="../../Q1/academic/wasm.html"><strong aria-hidden="true">1.5.2.</strong> WebAssembly</a></li></ol></li><li class="chapter-item "><a href="../../Q1/opensource.html"><strong aria-hidden="true">1.6.</strong> 领域开源</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/opensource/data.html"><strong aria-hidden="true">1.6.1.</strong> 数据处理</a></li><li class="chapter-item "><a href="../../Q1/opensource/cloud.html"><strong aria-hidden="true">1.6.2.</strong> 云原生</a></li><li class="chapter-item "><a href="../../Q1/opensource/game.html"><strong aria-hidden="true">1.6.3.</strong> 游戏与图像处理</a></li><li class="chapter-item "><a href="../../Q1/opensource/os.html"><strong aria-hidden="true">1.6.4.</strong> 操作系统</a></li><li class="chapter-item "><a href="../../Q1/opensource/cliapp.html"><strong aria-hidden="true">1.6.5.</strong> 命令行工具</a></li><li class="chapter-item "><a href="../../Q1/opensource/performance.html"><strong aria-hidden="true">1.6.6.</strong> 性能工具</a></li><li class="chapter-item "><a href="../../Q1/opensource/network.html"><strong aria-hidden="true">1.6.7.</strong> 网络基建</a></li><li class="chapter-item "><a href="../../Q1/opensource/web.html"><strong aria-hidden="true">1.6.8.</strong> Web开发</a></li><li class="chapter-item "><a href="../../Q1/opensource/frontend.html"><strong aria-hidden="true">1.6.9.</strong> 前端基建</a></li><li class="chapter-item "><a href="../../Q1/opensource/av.html"><strong aria-hidden="true">1.6.10.</strong> 音视频处理</a></li><li class="chapter-item "><a href="../../Q1/opensource/lang-with-rust.html"><strong aria-hidden="true">1.6.11.</strong> 基于Rust的新编程语言</a></li><li class="chapter-item "><a href="../../Q1/opensource/embedded.html"><strong aria-hidden="true">1.6.12.</strong> 嵌入式Rust</a></li><li class="chapter-item "><a href="../../Q1/opensource/security.html"><strong aria-hidden="true">1.6.13.</strong> 信息安全</a></li><li class="chapter-item "><a href="../../Q1/opensource/scientific-research.html"><strong aria-hidden="true">1.6.14.</strong> 科学艺术</a></li><li class="chapter-item "><a href="../../Q1/opensource/tools.html"><strong aria-hidden="true">1.6.15.</strong> 其他工具</a></li></ol></li><li class="chapter-item "><a href="../../Q1/security.html"><strong aria-hidden="true">1.7.</strong> 安全动态</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/security/unsound.html"><strong aria-hidden="true">1.7.1.</strong> Unsound</a></li><li class="chapter-item "><a href="../../Q1/security/memory.html"><strong aria-hidden="true">1.7.2.</strong> Memory</a></li></ol></li><li class="chapter-item "><a href="../../Q1/business.html"><strong aria-hidden="true">1.8.</strong> 商业动态</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/business/practices.html"><strong aria-hidden="true">1.8.1.</strong> 生产实践</a></li><li class="chapter-item "><a href="../../Q1/business/products.html"><strong aria-hidden="true">1.8.2.</strong> 优秀产品</a></li><li class="chapter-item "><a href="../../Q1/business/blockchain.html"><strong aria-hidden="true">1.8.3.</strong> 区块链</a></li></ol></li><li class="chapter-item "><a href="../../Q1/libs.html"><strong aria-hidden="true">1.9.</strong> Rust 基础库</a></li><li class="chapter-item expanded "><a href="../../Q1/contribute.html"><strong aria-hidden="true">1.10.</strong> 应用经验</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/contribute/atom.html"><strong aria-hidden="true">1.10.1.</strong> DatenLord | Rust原子类型和内存排序</a></li><li class="chapter-item expanded "><a href="../../Q1/contribute/rust-for-linux-clk.html" class="active"><strong aria-hidden="true">1.10.2.</strong> Rust for Linux 源码导读 | Rust 驱动开发与通用时钟管理框架抽象</a></li></ol></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust Magazine 2022</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/RustMagazine/rust_magazine_2022" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="rust-for-linux-源码导读--rust-驱动开发与通用时钟管理框架抽象"><a class="header" href="#rust-for-linux-源码导读--rust-驱动开发与通用时钟管理框架抽象">Rust for Linux 源码导读 | Rust 驱动开发与通用时钟管理框架抽象</a></h1>
+<p>作者： 张汉东</p>
+<blockquote>
+<p>推荐阅读： <a href="https://rustmagazine.github.io/rust_magazine_2021/chapter_12/ref.html">Rust for Linux 源码导读 | Ref 引用计数容器</a></p>
+</blockquote>
+<h2 id="背景概念"><a class="header" href="#背景概念">背景概念</a></h2>
+<p>Rust for Linux 这个项目的目的就是为了将 Rust 引入 Linux，让 Rust 成为 C 语言之后的第二语言。但它最初的目的是：实验性地支持Rust来写内核驱动。</p>
+<p>以往，Linux 内核驱动的编写相对于应用其实是比较复杂的，具体复杂性主要表现在以下两个方面：</p>
+<ul>
+<li>编写设备驱动必须了解Linux 内核基础概念、工作机制、硬件原理等知识</li>
+<li>设备驱动中涉及内存和多线程并发时容易出现 Bug，linux驱动跟linux内核工作在同一层次，一旦发生问题，很容易造成内核的整体崩溃</li>
+</ul>
+<p>引入 Rust 从理想层面来看，一方面在代码抽象和跨平台方面比 C 更有效，另一方面代码质量会更高，有效减少内存和多线程并发类 Bug 。但具体实践如何，是否真如理想中有效，这就需要后续的实验。</p>
+<p>Rust for Linux 就是为了帮助实现这一目标，为 Linux 提供了 Rust 相关的基础设施和方便编写 Linux 驱动的安全抽象。</p>
+<h2 id="rust-for-linux-第四次补丁提审"><a class="header" href="#rust-for-linux-第四次补丁提审">Rust for Linux 第四次补丁提审</a></h2>
+<p>补丁的具体细节可以在Linux 邮件列表中找到：</p>
+<ul>
+<li>RFC: https://lore.kernel.org/lkml/20210414184604.23473-1-ojeda@kernel.org/</li>
+<li>v1:  https://lore.kernel.org/lkml/20210704202756.29107-1-ojeda@kernel.org/</li>
+<li>v2:  https://lore.kernel.org/lkml/20211206140313.5653-1-ojeda@kernel.org/</li>
+<li>v3:  https://lore.kernel.org/lkml/20220117053349.6804-1-ojeda@kernel.org/</li>
+</ul>
+<p>第二次补丁改进摘要可参考：<a href="https://rustmagazine.github.io/rust_magazine_2021/chapter_12/ref.html">Rust for Linux 源码导读 | Ref 引用计数容器</a>。</p>
+<p><strong>第三次补丁改进摘要：</strong></p>
+<ul>
+<li>对 Rust 的支持有一些改进：
+<ul>
+<li>升级到 Rust 1.58.0</li>
+<li>增加了自动检测来判断是否有合适的 Rust 可用工具链（<code>CONFIG_RUST_IS_AVAILABLE</code>，用于替换<code>HAS_RUST</code>）</li>
+<li>移除<code>!COMPILE_TEST</code> </li>
+<li>其他构建系统的改进</li>
+<li>文档改进</li>
+<li>需要的不稳定功能之一，<code>-Zsymbol-mangling-version=v0</code>，在 1.59.0 中变得稳定。另一个，“maybe_uninit_extra”，将在 1.60.0 中。</li>
+</ul>
+</li>
+<li>对抽象和示例驱动程序的一些改进：
+<ul>
+<li>加了将在总线中使用的“IdArray”和“IdTable”，以允许驱动程序指定在编译时保证为零终止（zero-terminated）的设备 ID 表。</li>
+<li>更新了 <code>amba</code> 以使用新的常量设备 ID 表支持。</li>
+<li>初始通用时钟框架抽象。</li>
+<li>平台驱动程序现在通过实现特质（trait）来定义。包括用于简化平台驱动程序注册的新宏和新示例/模板。</li>
+<li><code>dev_*</code> 打印宏。</li>
+<li><code>IoMem&lt;T&gt;</code> 的<code>{read,write}*_relaxed</code> 方法。</li>
+<li>通过删除 <code>FileOpener</code> 来简化文件操作。</li>
+<li>在驱动程序注册的参数中添加了“ThisModule”。</li>
+<li>添加用 Rust 编写的树外 Linux 内核模块的基本模板： [https ://github.com/Rust-for-Linux/rust-out-of-tree-module](https ://github.com/Rust-for-Linux/rust-out-of-tree-module)</li>
+</ul>
+</li>
+</ul>
+<p><strong>第四次补丁改进摘要：</strong></p>
+<ul>
+<li>基础设施更新：
+<ul>
+<li>整合 CI : 英特尔 0DAY/LKP 内核测试机器人 / kernelCI/ GitHub CI</li>
+<li>内核模块不需要写 crate 属性，<code>#![no_std]</code> 和 <code>#![feature(...)]</code> 不再存在，删除样板。</li>
+<li>添加了单目标支持，包括<code>.o</code>、<code>.s</code>、<code>.ll</code>和<code>.i</code>（即宏扩展，类似于 C 预处理源）。</li>
+<li>对<code>helpers.c</code>文件的解释和对helpers的许可和导出的许可。</li>
+<li>文档Logo现在基于矢量 (SVG)。此外，已经为上游提出了 Tux 的矢量版本，并且用于改进自定义Logo支持的 RFC 已提交至上游 Rust。</li>
+<li>添加了关于注释 (<code>//</code>) 和代码文档的编码指南(<code>///</code>)。</li>
+<li><code>is_rust_module.sh</code> 返工。</li>
+<li>现在跳过了叶子模块的<code>.rmeta</code>的生成。</li>
+<li>其他清理、修复和改进。</li>
+</ul>
+</li>
+<li>抽象和驱动更新:
+<ul>
+<li>
+<p>增加了对静态（全局共享变量）同步原语的支持。<code>CONFIG_CONSTRUCTORS</code>被用于实现。</p>
+</li>
+<li>
+<p>通过使用标记类型简化了锁防护，即<code>Guard</code>和<code>GuardMut</code>统一为一个参数化的类型。如果标记是 <code>WriteLock</code>，那么 <code>Guard</code>就会实现<code>DerefMut</code>（以前只由<code>GuardMut</code>实现）。</p>
+</li>
+<li>
+<p>可选参数添加到杂项设备（misc device）的注册中。遵循构建者模式，例如:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>miscdev::Options::new()
+    .mode(0o600)
+    .minor(10)
+    .parent(parent)
+    .register(reg, c_str!(&quot;sample&quot;), ())
+<span class="boring">}
+</span></code></pre></pre>
+</li>
+<li>
+<p>增加了 &quot;RwSemaphore &quot;的抽象，该抽象包裹了C端<code>struct rw_semaphore</code>。</p>
+</li>
+<li>
+<p>新的<code>mm</code>模块和VMA抽象（包装C端<code>struct vm_area_struct</code>）用于<code>mmap</code>。</p>
+</li>
+<li>
+<p>GPIO PL061现在使用最近增加的<code>dev_*!</code> Rust宏。</p>
+</li>
+<li>
+<p>支持<code>！CONFIG_PRINTK</code>情况。</p>
+</li>
+<li>
+<p>其他清理、修复和改进。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="rust-与-linux-设备驱动开发"><a class="header" href="#rust-与-linux-设备驱动开发">Rust 与 Linux 设备驱动开发</a></h2>
+<h3 id="基础概念"><a class="header" href="#基础概念">基础概念</a></h3>
+<p>和应用程序不同，驱动程序是可以直接和硬件设备进行通讯的。驱动程序作为 Linux 内核的一种模块被动态加载到内核中。编译好的模块一般以<code>.ko</code>（kernel object）为文件扩展后缀 (这让我想起自己在 Linux 下安装 Nvidia 驱动报错找不到 <code>nvidia.ko</code> 文件时有多么崩溃)。</p>
+<blockquote>
+<p>但要注意的是，驱动不一定必须是模块，有些驱动是直接编译进内核的；同时模块也不全是驱动。</p>
+</blockquote>
+<p><strong>创建内核驱动基本模式如下：</strong></p>
+<ol>
+<li>通过实现初始化入口点和退出点来对应内核加载和卸载驱动的行为</li>
+</ol>
+<p>基于 Rust for Linux 提供的 <code>kernel</code> 库来实现驱动的话，代码如下：</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// From: https://github.com/Rust-for-Linux/linux/blob/rust/samples/rust/rust_miscdev.rs
+
+// RustMiscdev 是某个设备
+// 通过实现 KernelModule trait 来进行加载时初始化
+impl KernelModule for RustMiscdev {
+    fn init(name: &amp;'static CStr, _module: &amp;'static ThisModule) -&gt; Result&lt;Self&gt; {
+        pr_info!(&quot;Rust miscellaneous device sample (init)\n&quot;);
+
+        let state = SharedState::try_new()?;
+
+        Ok(RustMiscdev {
+            _dev: miscdev::Registration::new_pinned(fmt!(&quot;{name}&quot;), state)?,
+        })
+    }
+}
+
+// 通过实现 Drop trait 来进行卸载时的清理
+impl Drop for RustMiscdev {
+    fn drop(&amp;mut self) {
+        pr_info!(&quot;Rust miscellaneous device sample (exit)\n&quot;);
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<ol start="2">
+<li>编写驱动逻辑</li>
+</ol>
+<p>比如实现文件操作之类：</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// From: https://github.com/Rust-for-Linux/linux/blob/rust/samples/rust/rust_miscdev.rs
+
+struct Token;
+
+// 通过实现 kernel crate 中抽象的 FileOperations 接口
+impl FileOperations for Token {
+    type Wrapper = Ref&lt;SharedState&gt;;
+    type OpenData = Ref&lt;SharedState&gt;;
+
+    kernel::declare_file_operations!(read, write);
+
+    fn open(shared: &amp;Ref&lt;SharedState&gt;, _file: &amp;File) -&gt; Result&lt;Self::Wrapper&gt; {
+        Ok(shared.clone())
+    }
+
+    fn read(
+        shared: RefBorrow&lt;'_, SharedState&gt;,
+        _: &amp;File,
+        data: &amp;mut impl IoBufferWriter,
+        offset: u64,
+    ) -&gt; Result&lt;usize&gt; {
+        // do_something
+    }
+
+    // do more things
+}
+<span class="boring">}
+</span></code></pre></pre>
+<ol start="3">
+<li>编译、加载和测试等。</li>
+</ol>
+<p>编写 Linux 驱动有很多细节内容，这里只是介绍一个简单的模式，来帮助理解 Rust for Linux 中的 <code>kernel</code> 抽象的作用。</p>
+<h3 id="rust-驱动开发示例"><a class="header" href="#rust-驱动开发示例">Rust 驱动开发示例</a></h3>
+<p>去年有人提交过一份 C vs Rust 驱动代码示例：<a href="https://lwn.net/Articles/863459/">A GPIO driver in Rust</a>。可以看得出来，Rust 对硬件抽象的表达能力显著要高于 C 语言。</p>
+<p>下面是这段驱动代码实现的摘要：</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use core::ops::DerefMut;
+use kernel::{
+    amba, bit, declare_id_table, device, gpio,
+    io_mem::IoMem,
+    irq::{self, IrqData, LockedIrqData},
+    power,
+    prelude::*,
+    sync::{IrqDisableSpinLock, Ref},
+};
+
+impl gpio::Chip for PL061Device { 
+    // do_something
+}
+
+impl irq::Chip for PL061Device {
+    // do_something
+}
+
+impl amba::Driver for PL061Device {
+    // do_something
+}
+
+impl power::Operations for PL061Device {
+    // do_something
+}
+
+module_amba_driver! {
+    type: PL061Device,
+    name: b&quot;pl061_gpio&quot;,
+    author: b&quot;Wedson Almeida Filho&quot;,
+    license: b&quot;GPL v2&quot;,
+}
+
+<span class="boring">}
+</span></code></pre></pre>
+<p>这段驱动代码中使用了 Rust for Linux 中提供的 <code>kernel</code> 库，用其中包括的抽象 <code>gpio</code>、<code>irq</code>、<code>amba</code>、<code>power</code>准确表达了这段驱动代码中的结构和实现意图，可以更好地和驱动开发者对驱动开发建立的心智模型对应起来，这就是 Rust 语言的抽象表达能力。</p>
+<ul>
+<li><code>gpio::Chip</code> trait 是对 gpio chip 的一种跨平台抽象接口，它也是一种依赖倒置。让底层不同的gpio chip都依赖同一个接口。</li>
+<li><code>irq::Chip</code> trait 是对内核中 <code>irq_data</code>结构体的抽象接口。中断描述符中会包括底层irq chip相关的数据结构，内核中把这些数据组织在一起，形成<code>struct irq_data</code>。</li>
+<li><code>amba::Driver</code> trait 是 amba（高级微控制器总线结构，）设备驱动抽象接口，由于ARM众多的合作伙伴都会或多或少的使用ARM提供的片内外设，所以众多厂商的ARM处理器的一些外设可以使用相同的驱动。这个 GPIO 驱动也是针对 ARM 平台写的，所以用到这个。</li>
+<li><code>power::Operations</code> trait 是对 Linux 电源管理中各种 Callback 数据结构<code>dev_pm_ops</code>的抽象接口。<code>power</code> 模块中还定义了方便设置callback的宏等。</li>
+</ul>
+<p>看得出来，基于 Rust for Linux 的 <code>kernel</code> 抽象，可以方便地使用 Rust 开发架构良好、可读性强、易维护且更加健壮的内核驱动代码。</p>
+<h2 id="linux-通用时钟框架介绍"><a class="header" href="#linux-通用时钟框架介绍">Linux 通用时钟框架介绍</a></h2>
+<h3 id="背景介绍"><a class="header" href="#背景介绍">背景介绍</a></h3>
+<p>当下通用计算机中的CPU中各个模块都需要时钟驱动，内核就需要一套通用的机制来进行时钟管理。这套通用机制还必须跨平台地方便管理CPU上所有的时钟资源。</p>
+<p>Linux 平台中提供一套通用时钟框架（common clock framework）来管理系统clock资源的子系统，其职能可以分为下面三个部分：</p>
+<ul>
+<li>向其它driver提供操作clocks的通用API。</li>
+<li>实现clock控制的通用逻辑，这部分和硬件无关。</li>
+<li>将和硬件相关的clock控制逻辑封装成操作函数集，交由底层的platform开发者实现，由通用逻辑调用。</li>
+</ul>
+<p>现在主流的 Linux 处理器平台都包含了非常复杂的 clock tree，对应很多clock相关的器件。而这个通用时钟框架管理的对象就是这些clock器件。框架的主要功能包括：</p>
+<ul>
+<li>使能（enable/disable）clk</li>
+<li>设置clk频率</li>
+<li>选择clk的parent</li>
+</ul>
+<p>通用时钟框架的通用接口定义在 Linux 内核中（<a href="https://github.com/Rust-for-Linux/linux/blob/rust/include/linux/clk.h">include/linux/clk.h</a>）。</p>
+<p>每个时钟源对象使用一个<code>struct clk</code>结构来表示。而<code>struct clk</code>结构的具体内容由各平台自己定义。<code>clk.h</code>头文件定义了操作一个clk对象的所有接口。内核的其他地方可以也只能使用<code>clk.h</code>中提供的这些接口函数来操作<code>clk</code>。Rust for Linux 的 <code>kernel</code> crate 就是对 <code>clk.h</code> 的封装。这也是 Rust for Linux 第四次提审的补丁改进的内容之一。</p>
+<p>关于通用时钟框架还有很多细节，这里为了帮助理解代码，只做简要介绍，对细节感兴趣的朋友可以自行检索学习资料（例如：<a href="http://www.wowotech.net/pm_subsystem/clk_overview.html">http://www.wowotech.net/pm_subsystem/clk_overview.html</a>）。</p>
+<h3 id="rust-for-linux-中的简单抽象"><a class="header" href="#rust-for-linux-中的简单抽象">Rust for Linux 中的简单抽象</a></h3>
+<p>Rust 对 <code>clk.h</code> 对绑定相对比较简单，只绑定了部分控制clock的接口，比如 <code>prepare_enable/disable_unprepare</code> 和 <code>get_rate</code>，还有很多接口没有绑定。另外只能用于 atomic 上下文。</p>
+<p>但我们能从中学习到 Unsafe Rust的一些最佳实践（注意代码中的注释）：</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// From: https://github.com/Rust-for-Linux/linux/blob/rust/rust/kernel/clk.rs
+
+use crate::{bindings, error::Result, to_result};
+use core::mem::ManuallyDrop;
+
+/// 表示 `struct clk *`
+///
+/// # Invariants （不变性说明）
+///
+/// 这个指针来自 C语言 端，这里默认 C 端来的是有效指针，信任 C 端
+/// 这种信任对性能有益：零成本（没有检查开销）
+pub struct Clk(*mut bindings::clk);
+
+impl Clk {
+    /// Creates new clock structure from a raw pointer.
+    ///
+    /// # Safety
+    ///
+    /// The pointer must be valid.
+    /// 这里使用unsafe 函数，是因为无法保证传入的指针是否有效，只能靠其调用者来保证
+    /// 所以无法将其抽象为安全防范
+    pub unsafe fn new(clk: *mut bindings::clk) -&gt; Self {
+        Self(clk)
+    }
+
+    /// Returns value of the rate field of `struct clk`.
+    pub fn get_rate(&amp;self) -&gt; usize {
+        // SAFETY: The pointer is valid by the type invariant.
+        // 安全性说明：这个指针已经有上嘛结构体定义时的不变性来保证安全了，所以这是个安全方法
+        unsafe { bindings::clk_get_rate(self.0) as usize }
+    }
+
+    /// Prepares and enables the underlying hardware clock.
+    ///
+    /// This function should not be called in atomic context.
+    pub fn prepare_enable(self) -&gt; Result&lt;EnabledClk&gt; {
+        // SAFETY: The pointer is valid by the type invariant.
+        // 同上
+        to_result(|| unsafe { bindings::clk_prepare_enable(self.0) })?;
+        Ok(EnabledClk(self))
+    }
+
+    impl Drop for Clk {
+    fn drop(&amp;mut self) {
+        // SAFETY: The pointer is valid by the type invariant.
+        unsafe { bindings::clk_put(self.0) };
+    }
+}
+
+
+// 对clock 使能
+/// A clock variant that is prepared and enabled.
+pub struct EnabledClk(Clk);
+
+impl EnabledClk {
+    // 获取频率
+    /// Returns value of the rate field of `struct clk`.
+    pub fn get_rate(&amp;self) -&gt; usize {
+        self.0.get_rate()
+    }
+
+    /// Disables and later unprepares the underlying hardware clock prematurely.
+    ///
+    /// This function should not be called in atomic context.
+    pub fn disable_unprepare(self) -&gt; Clk {
+        let mut clk = ManuallyDrop::new(self);
+        // SAFETY: The pointer is valid by the type invariant.
+        unsafe { bindings::clk_disable_unprepare(clk.0 .0) };
+        core::mem::replace(&amp;mut clk.0, Clk(core::ptr::null_mut()))
+    }
+}
+
+impl Drop for EnabledClk {
+    fn drop(&amp;mut self) {
+        // SAFETY: The pointer is valid by the type invariant.
+        // 安全性同上
+        unsafe { bindings::clk_disable_unprepare(self.0 .0) };
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>上面 <code>clk</code> Rust 安全绑定代码虽然简单，但它反映出了 Rust for Linux 中 Unsafe Rust 安全抽象的一种规范：<strong>利用文档注释中不变性声明，强调了对依赖的内核 C 代码的信任，从而减少了检查达到零成本抽象。</strong> 关于这一点在 <a href="https://github.com/Rust-for-Linux/linux/pull/324">https://github.com/Rust-for-Linux/linux/pull/324</a> 中有很多讨论。</p>
+<p>除clk之外还有 Device 也有部分相关代码。设备驱动在操作设备的clock之前，需要先获取和该clock关联的<code>struct clk</code>指针，在 Rust 代码中就是 <code>clk_ptr</code>。</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// From: https://github.com/Rust-for-Linux/linux/blob/rust/rust/kernel/device.rs
+
+#[cfg(CONFIG_COMMON_CLK)]
+use crate::{clk::Clk, error::from_kernel_err_ptr};
+
+// 该 trait 是一个 Unsafe trait
+// 注释表明，在实现该 trait 的时候需要注意满足其安全条件
+/// A raw device.
+///
+/// # Safety
+///
+/// Implementers must ensure that the `*mut device` returned by [`RawDevice::raw_device`] is
+/// related to `self`, that is, actions on it will affect `self`. For example, if one calls
+/// `get_device`, then the refcount on the device represented by `self` will be incremented.
+///
+/// Additionally, implementers must ensure that the device is never renamed. Commit a5462516aa994
+/// has details on why `device_rename` should not be used.
+pub unsafe trait RawDevice {
+    
+    // do more things
+
+    // clk_get 方法是一个默认实现
+    /// Lookups a clock producer consumed by this device.
+    ///
+    /// Returns a managed reference to the clock producer.
+    #[cfg(CONFIG_COMMON_CLK)]
+    fn clk_get(&amp;self, id: Option&lt;&amp;CStr&gt;) -&gt; Result&lt;Clk&gt; {
+        let id_ptr = match id {
+            Some(cstr) =&gt; cstr.as_char_ptr(),
+            None =&gt; core::ptr::null(),
+        };
+
+        // 安全性保证： `id_ptr`是一个可选值，要么是有效指针 要么是空指针，应该不会产生UB
+        // 但是有效性也是依赖对 Linux C 语言端绑定指针的信任
+        // SAFETY: `id_ptr` is optional and may be either a valid pointer
+        // from the type invariant or NULL otherwise.
+        let clk_ptr = unsafe { from_kernel_err_ptr(bindings::clk_get(self.raw_device(), id_ptr)) }?;
+
+        // 因为上面的 `bindings::clk_get` 安全，那其返回值也认为是有效指针
+        // SAFETY: Clock is initialized with valid pointer returned from `bindings::clk_get` call.
+        unsafe { Ok(Clk::new(clk_ptr)) }
+    }
+
+    // do more things 
+}
+
+<span class="boring">}
+</span></code></pre></pre>
+<p>看得出来， <code>SAFETY</code> 注释粒度非常细，因为它依赖一个前提</p>
+<p>另外，关于更多 Unsafe Rust 代码规范可以参考：<a href="https://rust-coding-guidelines.github.io/rust-coding-guidelines-zh/safe-guides/coding_practice/unsafe_rust.html">Rust 编码规范 - Unsafe Rust 部分</a></p>
+
+                    </main>
+
+                    <script src="https://utteranc.es/client.js"
+                    repo="RustMagazine/rust_magazine_2022"
+                    issue-term="title"
+                    theme="github-light"
+                    crossorigin="anonymous"
+                    async></script>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../Q1/contribute/atom.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../Q1/contribute/atom.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../../ace.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../editor.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../mode-rust.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../theme-dawn.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../theme-tomorrow_night.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        <script type="text/javascript" src="../../mermaid.min.js"></script>
+        <script type="text/javascript" src="../../mermaid-init.js"></script>
+        <script type="text/javascript" src="../../smart-anchor.js"></script>
+    </body>
+</html>
