@@ -106,3 +106,9 @@ Rust 语言团队 Leader Niko 在其博文上畅想 Rust 2024 Edition：
 - 敢于为Unsafe Rust要求更丰富的工具
 
 [https://smallcultfollowing.com/babysteps//blog/2022/02/09/dare-to-ask-for-more-rust2024/](https://smallcultfollowing.com/babysteps//blog/2022/02/09/dare-to-ask-for-more-rust2024/)
+
+## Rust 2022 编译器团队的雄心
+
+
+
+[https://blog.rust-lang.org/inside-rust/2022/02/22/compiler-team-ambitions-2022.html](https://blog.rust-lang.org/inside-rust/2022/02/22/compiler-team-ambitions-2022.html)

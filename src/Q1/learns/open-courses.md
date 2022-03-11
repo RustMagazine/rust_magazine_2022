@@ -8,3 +8,10 @@
 
 - [2021 年](https://reberhardt.com/cs110l/spring-2021/)
 - [2022 年](https://web.stanford.edu/class/cs110l/)
+
+## KAIST CS431: Concurrent Programming
+
+- [https://github.com/kaist-cp/cs431](https://github.com/kaist-cp/cs431)
+- [Slides](https://docs.google.com/presentation/d/1NMg08N1LUNDPuMxNZ-UMbdH13p8LXgMM3esbWRMowhU/edit#slide=id.g419ba1421c_0_9)
+- [Youtube](https://www.youtube.com/watch?v=TTVuUIhdn_g&list=PL5aMzERQ_OZ9j40DJNlsem2qAGoFbfwb4)
+

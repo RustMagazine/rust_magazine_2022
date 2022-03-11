@@ -90,3 +90,9 @@ Kerla 是一个用 Rust 从头开始​​编写的操作系统内核，旨在�
 - [https://kerla.dev/](https://kerla.dev/)
 - [https://github.com/nuta/kerla](https://github.com/nuta/kerla)
 - [Writing a Linux-compatible kernel in Rust](https://seiya.me/writing-linux-clone-in-rust)
+
+## snarkOS: 去中心化操作系统
+
+snarkOS是一个用于私有应用程序的去中心化操作系统。它构成了[Aleo](https://aleo.org/)的主干，使应用程序能够以可公开验证的方式验证和存储状态。
+
+[https://github.com/AleoHQ/snarkOS](https://github.com/AleoHQ/snarkOS)

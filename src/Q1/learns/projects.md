@@ -18,3 +18,8 @@
 
 - [https://github.com/ohsayan/jotsy](https://github.com/ohsayan/jotsy)
 - [介绍文章](https://ohsayan.github.io/2022/02/jotsy-a-self-hosted-notes-app/)
+
+## bevy 实现的扫雷游戏
+
+- [系列文章](https://dev.to/qongzi/series/16975)
+- [项目](https://gitlab.com/qonfucius/minesweeper-tutorial)
