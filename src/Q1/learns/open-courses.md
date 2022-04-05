@@ -15,3 +15,7 @@
 - [Slides](https://docs.google.com/presentation/d/1NMg08N1LUNDPuMxNZ-UMbdH13p8LXgMM3esbWRMowhU/edit#slide=id.g419ba1421c_0_9)
 - [Youtube](https://www.youtube.com/watch?v=TTVuUIhdn_g&list=PL5aMzERQ_OZ9j40DJNlsem2qAGoFbfwb4)
 
+## Rust101: 与伦敦帝国理工学院计算社会系合作的Rust系列讲座
+
+
+youtube地址：[Rust 101 Lecture Series](https://www.youtube.com/playlist?list=PL-zQguBgjr2O4d-B9g_b0WYh1fyXr6MMq)

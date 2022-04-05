@@ -2,6 +2,37 @@
 
 ---
 
+## 科学计算
+
+### Slas v0.2.0 —— Rust静态线性代数系统
+
+提供静态分配的向量、矩阵和张量类型，高效的实现了blas/blis接口，默认情况下使用写时复制行为（又名cow）。
+
+与v0.1.1版本相比，新版本的Slas有很多突破性的变化和功能，包括：
+
+- 模块化后端；
+- 更好的性能；
+- 支持矩阵和张量（张量仍然做不了多少）；
+- 向量支持可选的COW行为；
+- 更好的基准测试和文档；
+
+[https://github.com/unic0rn9k/slas](https://github.com/unic0rn9k/slas)
+
+
+### Panther 一个用 Rust 和 Numpy C API 编写的高性能 python 技术分析库
+
+平均而言，Panther 对一些常见指标的计算比使用 Pandas（行业标准方法）快 9 倍。
+
+[https://github.com/gregyjames/Panther](https://github.com/gregyjames/Panther)
+
+## savage: Rust 编写的全新的计算机代数系统
+
+Savage是一个全新的计算机代数系统，用纯Rust从头编写而成。它的目标依次是正确性、简单性和可用性。整个系统编译成一个单独的、没有依赖关系的可执行文件，大小只有2.5 MB。虽然这个可执行文件将随着Savage的成熟而增长，但他们的计划是最终交付一个有用的计算机代数系统，其大小不超过5 MB。
+
+[https://github.com/p-e-w/savage](https://github.com/p-e-w/savage)
+
+---
+
 ## 生物信息学
 
 > 什么是生物信息学？
@@ -60,5 +91,14 @@ alevin-fry是一套工具，用于快速、准确和节省内存地处理单细�
 
 [https://github.com/COMBINE-lab/alevin-fry](https://github.com/COMBINE-lab/alevin-fry)
 
----
+## 其他
+
+## 用 Rust 和 WASM 重建世界上最短的数学论文
+
+1769年，欧拉提出了欧拉猜想（sum of powers）。1966 年，L. J. Lander 和 T. R. Parkin 用他们使用 CDC 6600 大型计算机发现的反例反驳了这个猜想。 众所周知，他们的论文只包含两句话。
+
+2022年，你用在手机上的浏览器，就可在2秒左右找到他们的反例，以及更多反例。
+
+可以通过该网页 [https://carlkcarlk.github.io/shortestpaper/](https://carlkcarlk.github.io/shortestpaper/) 亲自尝试。 该页面使用 Rust 和 WASM。
+
 

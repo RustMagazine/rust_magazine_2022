@@ -1,11 +1,9 @@
-# 数据处理
+# 开源观察 ｜ 数据处理
 
 ---
 
-## 数据库
 
-
-### Skytable: 高性能、安全可靠的实时 NoSQL 数据库
+## Skytable: 高性能、安全可靠的实时 NoSQL 数据库
 
 Skytable 致力于提供最好的 键值对(key/value) 存储、文档(document)存储和列式(columnar)数据库。Skytable 以前称为 TerrabaseDB（然后是 Skybase），也被社区昵称为“STable”、“Sky”和“SDB”。
 
@@ -17,10 +15,7 @@ Skytable 目前正在开发中，但可以用作高性能、安全和持久的�
 - [https://github.com/skytable/skytable](https://github.com/skytable/skytable)
 
 
-## 基础工具
-
-
-### roaring-rs: 更好的压缩位集（bitset）
+## roaring-rs: 更好的压缩位集（bitset）
 
 [相关论文： 使用 Roaring bitmap 获得更好的位图性能](https://arxiv.org/pdf/1402.6407v4.pdf) 中描述到：
 
@@ -38,3 +33,59 @@ Roaring BitMap 简称为RBM，其实现思路：
 
 - [roaring-rs](https://github.com/RoaringBitmap/roaring-rs)
 
+## Quickwit 0.2 为 ClickHouse 和 Kafka 带来全文搜索
+
+Quickwit 号称用于日志管理的云原生和高性价比搜索引擎。Quickwit 是为日志构建的下一代搜索和分析引擎。它是 Elasticsearch 的一种高度可靠且具有成本效益的替代方案。
+
+当前 0.2 版本发布，将支持 ClickHouse 和 Kafka 的全文搜索，同时新版本主要介绍以下功能：
+
+- 准确一次性提取 Kafka 原生数据
+- 搜索流 API
+- PostgreSQL 元存储
+- 标签修剪
+- 适当的索引管道
+
+- [https://github.com/quickwit-oss/quickwit](https://github.com/quickwit-oss/quickwit)
+- [https://quickwit.io/blog/quickwit-0.2/](https://quickwit.io/blog/quickwit-0.2/)
+
+## Mako: 机器学习的数据处理库
+
+Mako是一个数据处理库，主要用于机器学习。它提供了高效的 pipe 来构建有向非循环数据流图，并提供了一个 DataLoader 来在单独的线程中运行该图。它还提供了通用的标记器和批处理工具来处理文本数据。
+
+[https://github.com/Sidekick-AI/mako](https://github.com/Sidekick-AI/mako)
+
+## Arrow2 发布 v0.9
+
+Arrow2 是 Apache Arrow 的 Rust 实现，是继 C++ 实现之后，Arrow 功能最完整的实现。v0.9 的主要更新：
+
+由 std Vec 支持，从而使其成为：
+
+- 与 Rust 生态的其它的零拷贝
+- 更少的 unsafe
+- 更符合人体工程学
+- 编译速度更快
+- 相同的性能
+- 支持同步和异步读取和写入 Apache Avro
+
+flatbuffers 依赖被 planus 取代，这是 Rust 中 flatbuffers 规范的重新实现
+
+安全性改进和常规维护
+
+完整的更改列表：[https://github.com/jorgecarleitao/arrow2/releases/tag/v0.9.0](https://github.com/jorgecarleitao/arrow2/releases/tag/v0.9.0)
+
+Apache Datafusion 正在考虑采用它作为其后端，请参阅 [https://github.com/apache/arrow-datafusion/issues/1532](https://github.com/apache/arrow-datafusion/issues/1532)
+
+## Databend 发布0.7版本，部署更容易，查询更迅速
+
+- 共享存储（弹性）
+- 存储计算分离（弹性）：存算分离后，增加计算节点时不需要做数据迁移，可以达到秒级增加计算资源的效果。算力的扩张很快。
+- 计算资源可以根据不同的业务做划分（弹性）：例如下图中的node4可以作为数据导入专用节点，node3作为BI计算专用节点。
+- 资源扩张秒级弹性（弹性）：这样的架构计算节点异构化，资源分配粒度更细，资源控制更加灵活。
+
+Blog: [https://databend.rs/blog/databend-0-7-0-release](https://databend.rs/blog/databend-0-7-0-release)
+
+## PancakeDB 的分享
+
+- [https://rustacean-station.org/episode/059-martin-loncaric/](https://rustacean-station.org/episode/059-martin-loncaric/)
+- [https://pancakedb.com/](https://pancakedb.com/)
+- [https://github.com/pancake-db/pancake-db](https://github.com/pancake-db/pancake-db)

@@ -1,4 +1,4 @@
-# WebAssembly
+# 学术动态 ｜ WebAssembly
 
 ## 卡内基梅隆大学论文：使用 WebAssembly 的可证明安全的多语言沙箱
 
@@ -22,3 +22,9 @@ rWasm 机制：
 - rWasm的关键是： 通过将低级代码(Wasm)提升为高级代码（Rust）来完成对低级代码的仿真，从而得到高级语言的保证。因为想要证明的安全沙盒的高级属性本质就是内存安全。
 
 [https://www.jaybosamiya.com/publications/2022/usenix/provably-safe-sandboxing-wasm.pdf](https://www.jaybosamiya.com/publications/2022/usenix/provably-safe-sandboxing-wasm.pdf)
+
+## 论文 ｜ 将 C 程序移植到 WebAssembly 的安全风险
+
+> WebAssembly 是越来越多地使用的跨平台应用程序的编译目标。在本文中，我们调查是否可以透明地将 C 程序交叉编译到 WebAssembly，如果不能，移植会对它们的安全性产生什么影响。我们编译了 17,802 个程序，这些程序对 64 位 x86 和 WebAssembly 二进制文件存在常见漏洞，我们观察到执行 4,911 个二进制文件会在这些平台上产生不同的结果。通过人工检查，我们确定了造成这种差异的三类根本原因：使用不同的标准库实现、WebAssembly 中缺乏安全措施以及执行环境的不同语义。我们描述了我们的观察结果，并讨论了从安全角度来看至关重要且最需要开发人员关注的观察结果。我们得出结论，将现有的 C 程序编译为 WebAssembly 以进行跨平台分发可能需要修改源代码；否则，WebAssembly 应用程序的安全性可能会受到威胁。
+
+[https://arxiv.org/pdf/2112.11745](https://arxiv.org/pdf/2112.11745)

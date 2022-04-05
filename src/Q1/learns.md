@@ -4,3 +4,5 @@
 
 - [开源项目](./learns/projects.md)
 - [博文教程](./learns/blogs.md)
+- [高校公开课](./learns/open-courses.md)
+- [线上视频](./learns/videos.md)

@@ -103,3 +103,49 @@ struct SomeComponent;
 ## Bevy 渐变动画插件发布新版本
 
 [https://github.com/djeedai/bevy_tweening](https://github.com/djeedai/bevy_tweening)
+
+## Sandbox - 像素物理模拟器
+
+Sandbox 是一个像素物理模拟器，灵感来自Sandspiel和Noita等其他模拟器。
+
+- 使用Vulkano的 Vulkan 渲染器
+- Gui 与Egui使用egui_winit_vulkano
+- 使用计算着色器进行细胞自动机模拟
+- .png来自图像的可变形像素对象
+- 简单的物理引擎 Rapier
+
+[https://github.com/hakolao/sandbox](https://github.com/hakolao/sandbox)
+
+## Paudle: 使用Yew编写的类似Wordle的猜字谜游戏
+
+Paudle是对Josh Wardle的优秀文字游戏Wordle的重新实现。这个版本是用Yew和Rust制作的。作者仿照了Wordle的颜色和布局（当然还有游戏逻辑），但实现都是原创的。 与最初的版本不同，这一版本完全是基于客户端的，因此没有什么可以阻止你作弊——如果你能找出如何从运行的WASM中提取当前单词的话。
+
+关于Wordle：
+
+Wordle 和填字游戏都属于字谜游戏的一种。
+
+这个游戏每天更新一期，玩家唯一目标，就是在六次尝试机会之内，猜出一个五个字母的单词。 为此，游戏界面是一个 5×6 的方块阵列。玩家通过下方键盘输入猜测结果后，游戏会给字母方块标上颜色，提示猜测的准确性：
+
+- 绿色 🟩：说明答案里有这个字母、所在位置也正确；
+- 黄色 🟨：说明答案里有这个字母、但不在这个位置；
+- 灰色 ⬜️：说明答案里没有这个字母。
+
+然后，玩家根据获得的提示继续尝试，直到猜对答案，或者用尽六次机会。
+
+[https://github.com/pmsanford/paudle](https://github.com/pmsanford/paudle)
+
+## 劲爆！doukutsu-rs - 洞穴物语完全重制版
+
+[https://github.com/doukutsu-rs/doukutsu-rs](https://github.com/doukutsu-rs/doukutsu-rs)
+
+## Veloren 0.12 发布!
+
+Veloren是一个rust实现的多人像素RPG游戏，Veloren从Cube World、Minecraft这些游戏获取灵感，目前还处在开发阶段，但是已经是可玩的了。
+
+[https://github.com/veloren/veloren](https://github.com/veloren/veloren)
+
+## godot-rust 0.10 版本发布
+
+godot-rust是一个Rust库，为Godot游戏引擎实现本地绑定。这允许你在Godot中开发游戏或其他应用程序，同时受益于Rust的优势，如其类型系统、可扩展性和性能。
+
+[https://github.com/godot-rust/godot-rust](https://github.com/godot-rust/godot-rust)
