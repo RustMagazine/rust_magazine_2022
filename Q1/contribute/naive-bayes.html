@@ -1,0 +1,474 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js rust">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>使用Rust实现朴素贝叶斯（Naive Bayes）算法 - Rust Magazine 2022</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="The roots aren&#x27;t deep but the seeds are planted!">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../../highlight.css">
+        <link rel="stylesheet" href="../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "rust";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../../Q1/toc.html"><strong aria-hidden="true">1.</strong> 2022-Q1</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/lang.html"><strong aria-hidden="true">1.1.</strong> 官方动态</a></li><li class="chapter-item "><a href="../../Q1/hots.html"><strong aria-hidden="true">1.2.</strong> 社区热点</a></li><li class="chapter-item "><a href="../../Q1/learns.html"><strong aria-hidden="true">1.3.</strong> 学习资源</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/learns/projects.html"><strong aria-hidden="true">1.3.1.</strong> 开源项目</a></li><li class="chapter-item "><a href="../../Q1/learns/blogs.html"><strong aria-hidden="true">1.3.2.</strong> 博文教程</a></li><li class="chapter-item "><a href="../../Q1/learns/open-courses.html"><strong aria-hidden="true">1.3.3.</strong> 高校公开课</a></li><li class="chapter-item "><a href="../../Q1/learns/videos.html"><strong aria-hidden="true">1.3.4.</strong> 线上视频</a></li></ol></li><li class="chapter-item "><a href="../../Q1/academic.html"><strong aria-hidden="true">1.4.</strong> 学术动态</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/academic/rust.html"><strong aria-hidden="true">1.4.1.</strong> Rust</a></li><li class="chapter-item "><a href="../../Q1/academic/wasm.html"><strong aria-hidden="true">1.4.2.</strong> WebAssembly</a></li></ol></li><li class="chapter-item "><a href="../../Q1/opensource.html"><strong aria-hidden="true">1.5.</strong> 领域开源</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/opensource/data.html"><strong aria-hidden="true">1.5.1.</strong> 数据处理</a></li><li class="chapter-item "><a href="../../Q1/opensource/cloud.html"><strong aria-hidden="true">1.5.2.</strong> 云原生</a></li><li class="chapter-item "><a href="../../Q1/opensource/game.html"><strong aria-hidden="true">1.5.3.</strong> 游戏与图像处理</a></li><li class="chapter-item "><a href="../../Q1/opensource/os.html"><strong aria-hidden="true">1.5.4.</strong> 操作系统</a></li><li class="chapter-item "><a href="../../Q1/opensource/cliapp.html"><strong aria-hidden="true">1.5.5.</strong> 命令行工具</a></li><li class="chapter-item "><a href="../../Q1/opensource/performance.html"><strong aria-hidden="true">1.5.6.</strong> 性能工具</a></li><li class="chapter-item "><a href="../../Q1/opensource/network.html"><strong aria-hidden="true">1.5.7.</strong> 网络基建</a></li><li class="chapter-item "><a href="../../Q1/opensource/web.html"><strong aria-hidden="true">1.5.8.</strong> Web开发</a></li><li class="chapter-item "><a href="../../Q1/opensource/mobile.html"><strong aria-hidden="true">1.5.9.</strong> 移动开发</a></li><li class="chapter-item "><a href="../../Q1/opensource/frontend.html"><strong aria-hidden="true">1.5.10.</strong> 前端基建</a></li><li class="chapter-item "><a href="../../Q1/opensource/av.html"><strong aria-hidden="true">1.5.11.</strong> 音视频处理</a></li><li class="chapter-item "><a href="../../Q1/opensource/lang-with-rust.html"><strong aria-hidden="true">1.5.12.</strong> 基于Rust的新编程语言</a></li><li class="chapter-item "><a href="../../Q1/opensource/embedded.html"><strong aria-hidden="true">1.5.13.</strong> 嵌入式Rust</a></li><li class="chapter-item "><a href="../../Q1/opensource/scientific-research.html"><strong aria-hidden="true">1.5.14.</strong> 科学艺术</a></li><li class="chapter-item "><a href="../../Q1/opensource/tools.html"><strong aria-hidden="true">1.5.15.</strong> 其他工具</a></li></ol></li><li class="chapter-item "><a href="../../Q1/security.html"><strong aria-hidden="true">1.6.</strong> 安全动态</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/security/unsound.html"><strong aria-hidden="true">1.6.1.</strong> 不健全（Unsound）</a></li><li class="chapter-item "><a href="../../Q1/security/memory.html"><strong aria-hidden="true">1.6.2.</strong> 内存安全问题（Memory）</a></li><li class="chapter-item "><a href="../../Q1/security/memory.html"><strong aria-hidden="true">1.6.3.</strong> 拒绝服务（Dos）</a></li><li class="chapter-item "><a href="../../Q1/security/others.html"><strong aria-hidden="true">1.6.4.</strong> 其他</a></li></ol></li><li class="chapter-item "><a href="../../Q1/business.html"><strong aria-hidden="true">1.7.</strong> 商业动态</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/business/practices.html"><strong aria-hidden="true">1.7.1.</strong> 生产实践</a></li><li class="chapter-item "><a href="../../Q1/business/products.html"><strong aria-hidden="true">1.7.2.</strong> 优秀产品</a></li><li class="chapter-item "><a href="../../Q1/business/blockchain.html"><strong aria-hidden="true">1.7.3.</strong> 区块链</a></li></ol></li><li class="chapter-item "><a href="../../Q1/libs.html"><strong aria-hidden="true">1.8.</strong> Rust 基础库</a></li><li class="chapter-item expanded "><a href="../../Q1/contribute.html"><strong aria-hidden="true">1.9.</strong> 投稿精选</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/contribute/atom.html"><strong aria-hidden="true">1.9.1.</strong> DatenLord | Rust原子类型和内存排序</a></li><li class="chapter-item "><a href="../../Q1/contribute/async-rdma.html"><strong aria-hidden="true">1.9.2.</strong> DatenLord | async-rdma:使高性能网络应用开发更简单</a></li><li class="chapter-item "><a href="../../Q1/contribute/rust-for-linux-clk.html"><strong aria-hidden="true">1.9.3.</strong> Rust for Linux 源码导读 | Rust 驱动开发与通用时钟管理框架抽象</a></li><li class="chapter-item "><a href="../../Q1/contribute/rust-mobile.html"><strong aria-hidden="true">1.9.4.</strong> Rust 移动开发与跨平台模式探究</a></li><li class="chapter-item "><a href="../../Q1/contribute/hw-tls-rfc.html"><strong aria-hidden="true">1.9.5.</strong> 华为 | RFC 8446 &amp; 8998 TLS 1.3总结</a></li><li class="chapter-item "><a href="../../Q1/contribute/async-cancel.html"><strong aria-hidden="true">1.9.6.</strong> Rust 异步与取消</a></li><li class="chapter-item "><a href="../../Q1/contribute/rfc-2603.html"><strong aria-hidden="true">1.9.7.</strong> RFC 2603: Rust Symbol Name Mangling v0</a></li><li class="chapter-item "><a href="../../Q1/contribute/rust-dyn-link.html"><strong aria-hidden="true">1.9.8.</strong> Rust与动态链接</a></li><li class="chapter-item expanded "><a href="../../Q1//contribute/naive-bayes.html" class="active"><strong aria-hidden="true">1.9.9.</strong> 使用Rust实现朴素贝叶斯（Naive Bayes）算法</a></li></ol></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust Magazine 2022</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/RustMagazine/rust_magazine_2022" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h2 id="使用rust实现朴素贝叶斯naive-bayes算法"><a class="header" href="#使用rust实现朴素贝叶斯naive-bayes算法">使用Rust实现朴素贝叶斯（Naive Bayes）算法</a></h2>
+<p>作者： 王江桐、周紫鹏</p>
+<hr />
+<p>在讨论具体代码之前，首先让我们先了解一下相关概念。</p>
+<h3 id="条件概率分布"><a class="header" href="#条件概率分布">条件概率分布</a></h3>
+<p>概率可以反映随机事件出现的可能性大小，而随机事件是指在相同条件下，可能出现也可能不出现的事件。条件概率则指，在某一随机事件已经发生的前提下，另一随机事件发生的概率，写作<code>P(A | B)</code>。如果用韦恩图表示，可以将事件<code>A</code>、<code>B</code>发生的概率表示如下：</p>
+<p><img src="./images/bayes/image-20220205221629260.png" alt="image-20220205221629260" /></p>
+<p>当<code>P(B) ≠ 0</code>时，那么：
+$$
+P(A\ |\ B) = \frac{P(A\ ∩\ B)}{P(B)}
+$$
+当事件<code>B</code>的发生概率为0时，条件概率<code>P(A | B)</code>值为未定义。</p>
+<p>当事件<code>A</code>与<code>B</code>完全独立时，<code>P(A | B) = P(A)</code>。</p>
+<h3 id="贝叶斯定理bayes-theorem"><a class="header" href="#贝叶斯定理bayes-theorem">贝叶斯定理（Bayes Theorem）</a></h3>
+<p>有了上述等式以后，当我们得知事件<code>B</code>发生情况下，所有事件<code>Ai</code>的发生概率时，我们可以计算事件<code>B</code>的发生概率。例如：</p>
+<p><img src="./images/bayes/image-20220205222327064.png" alt="image-20220205222327064" /></p>
+<p>事件<code>B</code>的概率计算如下：
+$$
+\begin{aligned}
+P(B) =\ &amp; \ \ \ \ \  P(A_1) \cdot P(B\ |\ A_1) \
+&amp;+ P(A_2) \cdot P(B\ |\ A_2) \
+&amp;+ P(A_3) \cdot P(B\ |\ A_3) \
+\end{aligned}
+$$
+贝叶斯定理则在此二者基础上推论，当我们知道事件<code>Ai</code>的发生概率，以及事件<code>B</code>的条件概率，即当<code>P(Ai)</code>且<code>P(B | Ai)</code>已知时，我们可以计算事件<code>Ai</code>的条件概率，即<code>P(Ai | B)</code>：
+$$
+\begin{aligned}
+P(A_i \ | \ B) &amp;= \frac{P(A_i ∩ B)}{P(B)} \ 
+&amp;= \frac{P(A_i) \cdot P(B \ | \ A_i)}{P(B)} \ 
+&amp;= \frac{P(A_i) \cdot P(B \ | \ A_i)}{\sum_j^i P(A_j) \cdot P(B \ | \ A_j)} \ 
+\end{aligned}
+$$</p>
+<h3 id="朴素贝叶斯naive-bayes与机器学习"><a class="header" href="#朴素贝叶斯naive-bayes与机器学习">朴素贝叶斯（Naive Bayes）与机器学习</a></h3>
+<p>对于贝叶斯定理，换个角度而言，事件<code>A</code>也可以看作是调查样本<code>D</code>的集合，<code>Ai</code>则是其中单独的一份样本，事件<code>B</code>则可以认为是某个结论，或某种分类结果，即假说<code>H</code>。因此，通过计算假说<code>H</code>成立时，样本出现的概率，即计算<code>P(Di | Hj)</code>，我们可以通过定理计算<code>P(Hj | Di)</code>，即在出现样本<code>Di</code>的情况下，假说<code>H</code>的<code>j</code>分支成立概率是多少。因此，当新样本<code>Dx</code>出现时，计算机可以通过贝叶斯定理计算，在出现该样本<code>Dx</code>的前提下，假说<code>H</code>所有分支<code>j</code>成立的概率。计算出这个概率之后，计算机可以选择最高概率的分支，并且预测新样本<code>Dx</code>属于该分支。</p>
+<p>大致来说，这就是机器学习中的朴素贝叶斯模型。在给定样本集<code>D</code>的情况下，则：
+$$
+\begin{aligned}
+P(H = j_1 \ | \ D_x) &amp;= \frac{P(H = j_1 \ ∩ \ D_x)}{P(D_x)} = \frac{P(D_x \ | \ H = j_1) \cdot P(H = j_1)}{P(D_x)} \
+P(H = j_2 \ | \ D_x) &amp;= \frac{P(H = j_2 \ ∩ \ D_x)}{P(D_x)} = \frac{P(D_x \ | \ H = j_2) \cdot P(H = j_2)}{P(D_x)} \
+... \
+P(H = j_m \ | \ D_x) &amp;= \frac{P(H = j_m \ ∩ \ D_x)}{P(D_x)} = \frac{P(D_x \ | \ H = j_m) \cdot P(H = j_m)}{P(D_x)} \
+\end{aligned}
+$$</p>
+<p>因此，判定新样本<code>Dx</code>属于哪个分支，等同于计算<code>P(Dx | H = j1) · P(H = j1)</code>、<code>P(Dx | H = j2) · P(H = j2)</code>、...、<code>P(Dx | H = jm) · P(H = jm)</code>中的最大值。<code>P(H = jm)</code>与<code>P(Dx | H = jm)</code>的概率可以用样本中该分支出现的频率以及样本的条件概率模拟。不过，朴素贝叶斯模型依赖于一个大前提：每个样本的出现都是完全独立且随机的。如果它们并不是独立且随机的，概率模拟的准确程度就会受到影响，导致分类器结果更容易出现错误。</p>
+<p>朴素贝叶斯分类器（Naive Bayes Classifier）的应用之一是垃圾邮件分类器。一个比较简单的垃圾邮件分类器的工作原理如下：</p>
+<p>给定邮件数据集<code>D</code>，以及它们对应的二元标签值<code>T</code>。已知，当<code>T = 0</code>时，该邮件不是垃圾邮件，当<code>T = 1</code>时，该邮件是垃圾邮件。将邮件中所有出现的词，认为是该邮件的特征<code>F</code>。有了以上信息以后，我们可以模拟计算：</p>
+<ul>
+<li><code>P(T)</code>，即在这些邮件中，<code>T = 1</code>以及<code>T = 0</code>的概率；</li>
+<li><code>P(F | T)</code>，即在这些邮件中，当邮件是垃圾邮件或非垃圾邮件时，某个特征出现的概率；</li>
+<li>当认为特征以及数据之间都是相互独立且随机的时候，<code>P(Fi ∩ Fj | T) = P(Fi | T) · P(Fj | T)</code>。尽管在实际语言中，两个词语之间并非完全独立且随机出现，但是为了便利，暂且以这种方式计算。因此，可以计算<code>P(Fj0 ∩ Fj1 ∩ Fj2 ∩ ... ∩ Fjn, Fji ∈ Dj | T) </code>，即，判定邮件是垃圾邮件的情况下，该邮件<code>Dj</code>出现的概率，以及判定非垃圾邮件的情况下，该邮件出现的概率。</li>
+</ul>
+<p>再一次，计算出以上信息以后，对于新邮件<code>Dx</code>，通过贝叶斯定理，我们可以模拟计算<code>P(T | Dx)</code>，即给定该邮件，是或不是垃圾邮件的概率，从而对其进行分类。不过，实际计算中，只需要计算<code>P(Dx | T) · P(T)</code>并进行比较，并不需要计算<code>P(Dx)</code>。</p>
+<p>虽然如此，计算中仍然存在一个问题：如果邮件<code>Dx</code>中存在样本邮件中没有出现过的词汇，或是垃圾邮件/非垃圾邮件中未出现的词汇，那么<code>P(F | T)</code>的值为0，这会导致整个计算式的乘法结果为0。然而，我们并不能直接判定这个词汇可以直接决定该邮件的标记，因为我们并没有穷尽所有的样本。为了调整这个偏差，可以使用拉普拉斯平滑处理（Laplace Smoothing）来调整概率不为0。拉普拉斯平滑处理为，人为规定数值<code>α</code>，在计算概率时，在分子位置加上<code>α</code>，在分母位则加上<code>2α</code>。在很多场景中，<code>α = 1</code>。</p>
+<h3 id="使用rust实现朴素贝叶斯分类器"><a class="header" href="#使用rust实现朴素贝叶斯分类器">使用Rust实现朴素贝叶斯分类器</a></h3>
+<p>对于给定邮件字符串集合以及它们对应的标记，首先我们需要将其转化成单独的词汇（Token），即获取邮件数据的特征，从而计算相应概率。相对更复杂一点的转换可以涉及词频甚至是词汇的大小写，不过如果只是写一个最基础的朴素贝叶斯分类器，也可以暂时先不考虑这些因素。本文中介绍的实现方法主要来自于《<a href="https://www.freecodecamp.org/news/implement-naive-bayes-with-rust/">How to Implement a Naive Bayes Classifier with Rust</a>》一文，文中，作者使用了Regex库，通过匹配正则表达式来解析词组。Regex库的具体介绍可见Rust Cook Book<a href="https://rust-lang-nursery.github.io/rust-cookbook/text/regex.html">第18章</a>，在此暂时不展开了。</p>
+<p>解析之后，最原始的做法是，使用<code>std::collections::HashSet</code>存储所有的词汇，使用<code>std::collections::HashMap</code>存储词汇以及对应的概率。新建两个结构体如下：</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 单一邮件样本
+pub struct Message&lt;'a&gt; {
+    pub text: &amp;'a str,
+    pub is_spam: bool,
+}
+
+// 分类器
+pub struct NaiveBayesClassifier {
+    pub alpha: f64,
+    pub tokens: HashSet&lt;String&gt;,
+    pub token_ham_counts: HashMap&lt;String, i32&gt;,
+    pub token_spam_counts: HashMap&lt;String, i32&gt;,
+    pub spam_messages_count: i32,
+    pub ham_messages_count: i32,
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>训练朴素贝叶斯分类器则相当于一一解析邮件样本，并且更新对应的数据，以便在预测新样本时进行计算。代码来自于同一篇文章中，摘录如下：</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl NaiveBayesClassifier {
+    pub fn train(&amp;mut self, messages: &amp;[Message]) {
+        for message in messages.iter() {
+            self.increment_message_classifications_count(message);
+            for token in tokenize(&amp;message.text.to_lowercase()) {
+                self.tokens.insert(token.to_string());
+                self.increment_token_count(token, message.is_spam)
+            }
+        }
+    }
+
+    fn increment_message_classifications_count(&amp;mut self, message: &amp;Message) {
+        if message.is_spam {
+            self.spam_messages_count += 1;
+        } else {
+            self.ham_messages_count += 1;
+        }
+    }
+
+    fn increment_token_count(&amp;mut self, token: &amp;str, is_spam: bool) {
+        if !self.token_spam_counts.contains_key(token) {
+            self.token_spam_counts.insert(token.to_string(), 0);
+        }
+
+        if !self.token_ham_counts.contains_key(token) {
+            self.token_ham_counts.insert(token.to_string(), 0);
+        }
+
+        if is_spam {
+            self.increment_spam_count(token);
+        } else {
+            self.increment_ham_count(token);
+        }
+    }
+
+    fn increment_spam_count(&amp;mut self, token: &amp;str) {
+        *self.token_spam_counts.get_mut(token).unwrap() += 1;
+    }
+
+    fn increment_ham_count(&amp;mut self, token: &amp;str) {
+        *self.token_ham_counts.get_mut(token).unwrap() += 1;
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>预测时，套用上述公式，可以计算出<code>P(Dx | T) · P(T)</code>。在进行<code>P(Fi ∩ Fj | T) = P(Fi | T) · P(Fj | T)</code>计算时，由于概率大多都是小数，连续小数的乘积可能会导致精度丢失（Underflow）。因此，将乘积计算替换为对数计算，即：
+$$
+\begin{aligned}
+P(F_0 \ ∩ \ F_1 \ ∩ \ ... \ ∩ \ F_n \ | \ T) &amp;= P(F_0 \ | \ T) \cdot P(F_1 \ | \ T) \cdot \ ... \ \cdot P(F_n \ | \ T) \ 
+&amp;→ ln( \ P(F_0 \ | \ T)\cdot P(F_1 \ | \ T) \cdot \ ... \ \cdot P(F_n \ | \ T) \ ) \
+&amp;= ln(P(F_0 \ | \ T)) \  + \ ln(P(F_1 \ | \ T)) \ + \ ... \ + \ ln(P(F_n \ | \ T))
+\end{aligned}
+$$</p>
+<p>对应的代码摘录如下：</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl NaiveBayesClassifier {
+	pub fn predict(&amp;self, text: &amp;str) -&gt; f64 {
+        let lower_case_text = text.to_lowercase();
+        let message_tokens = tokenize(&amp;lower_case_text);
+        let (prob_if_spam, prob_if_ham) = self.probabilities_of_message(message_tokens);
+
+        return prob_if_spam / (prob_if_spam + prob_if_ham);
+    }
+
+    fn probabilities_of_message(&amp;self, message_tokens: HashSet&lt;&amp;str&gt;) -&gt; (f64, f64) {
+        let mut log_prob_if_spam = 0.;
+        let mut log_prob_if_ham = 0.;
+
+        for token in self.tokens.iter() {
+            let (prob_if_spam, prob_if_ham) = self.probabilites_of_token(&amp;token);
+
+            if message_tokens.contains(token.as_str()) {
+                log_prob_if_spam += prob_if_spam.ln();
+                log_prob_if_ham += prob_if_ham.ln();
+            } else {
+                log_prob_if_spam += (1. - prob_if_spam).ln();
+                log_prob_if_ham += (1. - prob_if_ham).ln();
+            }
+        }
+
+        let prob_if_spam = log_prob_if_spam.exp();
+        let prob_if_ham = log_prob_if_ham.exp();
+
+        return (prob_if_spam, prob_if_ham);
+    }
+
+    fn probabilites_of_token(&amp;self, token: &amp;str) -&gt; (f64, f64) {
+        let prob_of_token_spam = (self.token_spam_counts[token] as f64 + self.alpha)
+            / (self.spam_messages_count as f64 + 2. * self.alpha);
+
+        let prob_of_token_ham = (self.token_ham_counts[token] as f64 + self.alpha)
+            / (self.ham_messages_count as f64 + 2. * self.alpha);
+
+        return (prob_of_token_spam, prob_of_token_ham);
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>最后，一个可能的测试样本：</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// ...lib.rs
+
+pub fn new_classifier(alpha: f64) -&gt; NaiveBayesClassifier {
+    return NaiveBayesClassifier {
+        alpha,
+        tokens: HashSet::new(),
+        token_ham_counts: HashMap::new(),
+        token_spam_counts: HashMap::new(),
+        spam_messages_count: 0,
+        ham_messages_count: 0,
+    };
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn naive_bayes() {
+        let train_messages = [
+            Message {
+                text: &quot;Free Bitcoin viagra XXX christmas deals 😻😻😻&quot;,
+                is_spam: true,
+            },
+            Message {
+                text: &quot;My dear Granddaughter, please explain Bitcoin over Christmas dinner&quot;,
+                is_spam: false,
+            },
+            Message {
+                text: &quot;Here in my garage...&quot;,
+                is_spam: true,
+            },
+        ];
+
+        let alpha = 1.;
+        let num_spam_messages = 2.;
+        let num_ham_messages = 1.;
+
+        let mut model = new_classifier(alpha);
+        model.train(&amp;train_messages);
+
+        let mut expected_tokens: HashSet&lt;String&gt; = HashSet::new();
+        for message in train_messages.iter() {
+            for token in tokenize(&amp;message.text.to_lowercase()) {
+                expected_tokens.insert(token.to_string());
+            }
+        }
+
+        let input_text = &quot;Bitcoin crypto academy Christmas deals&quot;;
+
+        let probs_if_spam = [
+            1. - (1. + alpha) / (num_spam_messages + 2. * alpha), // &quot;Free&quot;  (not present)
+            (1. + alpha) / (num_spam_messages + 2. * alpha),      // &quot;Bitcoin&quot;  (present)
+            1. - (1. + alpha) / (num_spam_messages + 2. * alpha), // &quot;viagra&quot;  (not present)
+            1. - (1. + alpha) / (num_spam_messages + 2. * alpha), // &quot;XXX&quot;  (not present)
+            (1. + alpha) / (num_spam_messages + 2. * alpha),      // &quot;christmas&quot;  (present)
+            (1. + alpha) / (num_spam_messages + 2. * alpha),      // &quot;deals&quot;  (present)
+            1. - (1. + alpha) / (num_spam_messages + 2. * alpha), // &quot;my&quot;  (not present)
+            1. - (0. + alpha) / (num_spam_messages + 2. * alpha), // &quot;dear&quot;  (not present)
+            1. - (0. + alpha) / (num_spam_messages + 2. * alpha), // &quot;granddaughter&quot;  (not present)
+            1. - (0. + alpha) / (num_spam_messages + 2. * alpha), // &quot;please&quot;  (not present)
+            1. - (0. + alpha) / (num_spam_messages + 2. * alpha), // &quot;explain&quot;  (not present)
+            1. - (0. + alpha) / (num_spam_messages + 2. * alpha), // &quot;over&quot;  (not present)
+            1. - (0. + alpha) / (num_spam_messages + 2. * alpha), // &quot;dinner&quot;  (not present)
+            1. - (1. + alpha) / (num_spam_messages + 2. * alpha), // &quot;here&quot;  (not present)
+            1. - (1. + alpha) / (num_spam_messages + 2. * alpha), // &quot;in&quot;  (not present)
+            1. - (1. + alpha) / (num_spam_messages + 2. * alpha), // &quot;garage&quot;  (not present)
+        ];
+
+        let probs_if_ham = [
+            1. - (0. + alpha) / (num_ham_messages + 2. * alpha), // &quot;Free&quot;  (not present)
+            (1. + alpha) / (num_ham_messages + 2. * alpha),      // &quot;Bitcoin&quot;  (present)
+            1. - (0. + alpha) / (num_ham_messages + 2. * alpha), // &quot;viagra&quot;  (not present)
+            1. - (0. + alpha) / (num_ham_messages + 2. * alpha), // &quot;XXX&quot;  (not present)
+            (1. + alpha) / (num_ham_messages + 2. * alpha),      // &quot;christmas&quot;  (present)
+            (0. + alpha) / (num_ham_messages + 2. * alpha),      // &quot;deals&quot;  (present)
+            1. - (1. + alpha) / (num_ham_messages + 2. * alpha), // &quot;my&quot;  (not present)
+            1. - (1. + alpha) / (num_ham_messages + 2. * alpha), // &quot;dear&quot;  (not present)
+            1. - (1. + alpha) / (num_ham_messages + 2. * alpha), // &quot;granddaughter&quot;  (not present)
+            1. - (1. + alpha) / (num_ham_messages + 2. * alpha), // &quot;please&quot;  (not present)
+            1. - (1. + alpha) / (num_ham_messages + 2. * alpha), // &quot;explain&quot;  (not present)
+            1. - (1. + alpha) / (num_ham_messages + 2. * alpha), // &quot;over&quot;  (not present)
+            1. - (1. + alpha) / (num_ham_messages + 2. * alpha), // &quot;dinner&quot;  (not present)
+            1. - (0. + alpha) / (num_ham_messages + 2. * alpha), // &quot;here&quot;  (not present)
+            1. - (0. + alpha) / (num_ham_messages + 2. * alpha), // &quot;in&quot;  (not present)
+            1. - (0. + alpha) / (num_ham_messages + 2. * alpha), // &quot;garage&quot;  (not present)
+        ];
+
+        let p_if_spam_log: f64 = probs_if_spam.iter().map(|p| p.ln()).sum();
+        let p_if_spam = p_if_spam_log.exp();
+
+        let p_if_ham_log: f64 = probs_if_ham.iter().map(|p| p.ln()).sum();
+        let p_if_ham = p_if_ham_log.exp();
+
+        // P(message | spam) / (P(messge | spam) + P(message | ham)) rounds to 0.97
+        assert!((model.predict(input_text) - p_if_spam / (p_if_spam + p_if_ham)).abs() &lt; 0.000001);
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+
+                    </main>
+
+                    <script src="https://utteranc.es/client.js"
+                    repo="RustMagazine/rust_magazine_2022"
+                    issue-term="title"
+                    theme="github-light"
+                    crossorigin="anonymous"
+                    async></script>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../Q1/contribute/rust-dyn-link.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../Q1/contribute/rust-dyn-link.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../../ace.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../editor.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../mode-rust.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../theme-dawn.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../theme-tomorrow_night.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        <script type="text/javascript" src="../../mermaid.min.js"></script>
+        <script type="text/javascript" src="../../mermaid-init.js"></script>
+        <script type="text/javascript" src="../../smart-anchor.js"></script>
+    </body>
+</html>

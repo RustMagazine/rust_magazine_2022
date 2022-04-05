@@ -1,0 +1,572 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js rust">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>RFC 2603: Rust Symbol Name Mangling v0 - Rust Magazine 2022</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="The roots aren&#x27;t deep but the seeds are planted!">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../../highlight.css">
+        <link rel="stylesheet" href="../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "rust";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../../Q1/toc.html"><strong aria-hidden="true">1.</strong> 2022-Q1</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/lang.html"><strong aria-hidden="true">1.1.</strong> 官方动态</a></li><li class="chapter-item "><a href="../../Q1/hots.html"><strong aria-hidden="true">1.2.</strong> 社区热点</a></li><li class="chapter-item "><a href="../../Q1/learns.html"><strong aria-hidden="true">1.3.</strong> 学习资源</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/learns/projects.html"><strong aria-hidden="true">1.3.1.</strong> 开源项目</a></li><li class="chapter-item "><a href="../../Q1/learns/blogs.html"><strong aria-hidden="true">1.3.2.</strong> 博文教程</a></li><li class="chapter-item "><a href="../../Q1/learns/open-courses.html"><strong aria-hidden="true">1.3.3.</strong> 高校公开课</a></li><li class="chapter-item "><a href="../../Q1/learns/videos.html"><strong aria-hidden="true">1.3.4.</strong> 线上视频</a></li></ol></li><li class="chapter-item "><a href="../../Q1/academic.html"><strong aria-hidden="true">1.4.</strong> 学术动态</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/academic/rust.html"><strong aria-hidden="true">1.4.1.</strong> Rust</a></li><li class="chapter-item "><a href="../../Q1/academic/wasm.html"><strong aria-hidden="true">1.4.2.</strong> WebAssembly</a></li></ol></li><li class="chapter-item "><a href="../../Q1/opensource.html"><strong aria-hidden="true">1.5.</strong> 领域开源</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/opensource/data.html"><strong aria-hidden="true">1.5.1.</strong> 数据处理</a></li><li class="chapter-item "><a href="../../Q1/opensource/cloud.html"><strong aria-hidden="true">1.5.2.</strong> 云原生</a></li><li class="chapter-item "><a href="../../Q1/opensource/game.html"><strong aria-hidden="true">1.5.3.</strong> 游戏与图像处理</a></li><li class="chapter-item "><a href="../../Q1/opensource/os.html"><strong aria-hidden="true">1.5.4.</strong> 操作系统</a></li><li class="chapter-item "><a href="../../Q1/opensource/cliapp.html"><strong aria-hidden="true">1.5.5.</strong> 命令行工具</a></li><li class="chapter-item "><a href="../../Q1/opensource/performance.html"><strong aria-hidden="true">1.5.6.</strong> 性能工具</a></li><li class="chapter-item "><a href="../../Q1/opensource/network.html"><strong aria-hidden="true">1.5.7.</strong> 网络基建</a></li><li class="chapter-item "><a href="../../Q1/opensource/web.html"><strong aria-hidden="true">1.5.8.</strong> Web开发</a></li><li class="chapter-item "><a href="../../Q1/opensource/mobile.html"><strong aria-hidden="true">1.5.9.</strong> 移动开发</a></li><li class="chapter-item "><a href="../../Q1/opensource/frontend.html"><strong aria-hidden="true">1.5.10.</strong> 前端基建</a></li><li class="chapter-item "><a href="../../Q1/opensource/av.html"><strong aria-hidden="true">1.5.11.</strong> 音视频处理</a></li><li class="chapter-item "><a href="../../Q1/opensource/lang-with-rust.html"><strong aria-hidden="true">1.5.12.</strong> 基于Rust的新编程语言</a></li><li class="chapter-item "><a href="../../Q1/opensource/embedded.html"><strong aria-hidden="true">1.5.13.</strong> 嵌入式Rust</a></li><li class="chapter-item "><a href="../../Q1/opensource/scientific-research.html"><strong aria-hidden="true">1.5.14.</strong> 科学艺术</a></li><li class="chapter-item "><a href="../../Q1/opensource/tools.html"><strong aria-hidden="true">1.5.15.</strong> 其他工具</a></li></ol></li><li class="chapter-item "><a href="../../Q1/security.html"><strong aria-hidden="true">1.6.</strong> 安全动态</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/security/unsound.html"><strong aria-hidden="true">1.6.1.</strong> 不健全（Unsound）</a></li><li class="chapter-item "><a href="../../Q1/security/memory.html"><strong aria-hidden="true">1.6.2.</strong> 内存安全问题（Memory）</a></li><li class="chapter-item "><a href="../../Q1/security/memory.html"><strong aria-hidden="true">1.6.3.</strong> 拒绝服务（Dos）</a></li><li class="chapter-item "><a href="../../Q1/security/others.html"><strong aria-hidden="true">1.6.4.</strong> 其他</a></li></ol></li><li class="chapter-item "><a href="../../Q1/business.html"><strong aria-hidden="true">1.7.</strong> 商业动态</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/business/practices.html"><strong aria-hidden="true">1.7.1.</strong> 生产实践</a></li><li class="chapter-item "><a href="../../Q1/business/products.html"><strong aria-hidden="true">1.7.2.</strong> 优秀产品</a></li><li class="chapter-item "><a href="../../Q1/business/blockchain.html"><strong aria-hidden="true">1.7.3.</strong> 区块链</a></li></ol></li><li class="chapter-item "><a href="../../Q1/libs.html"><strong aria-hidden="true">1.8.</strong> Rust 基础库</a></li><li class="chapter-item expanded "><a href="../../Q1/contribute.html"><strong aria-hidden="true">1.9.</strong> 投稿精选</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/contribute/atom.html"><strong aria-hidden="true">1.9.1.</strong> DatenLord | Rust原子类型和内存排序</a></li><li class="chapter-item "><a href="../../Q1/contribute/async-rdma.html"><strong aria-hidden="true">1.9.2.</strong> DatenLord | async-rdma:使高性能网络应用开发更简单</a></li><li class="chapter-item "><a href="../../Q1/contribute/rust-for-linux-clk.html"><strong aria-hidden="true">1.9.3.</strong> Rust for Linux 源码导读 | Rust 驱动开发与通用时钟管理框架抽象</a></li><li class="chapter-item "><a href="../../Q1/contribute/rust-mobile.html"><strong aria-hidden="true">1.9.4.</strong> Rust 移动开发与跨平台模式探究</a></li><li class="chapter-item "><a href="../../Q1/contribute/hw-tls-rfc.html"><strong aria-hidden="true">1.9.5.</strong> 华为 | RFC 8446 &amp; 8998 TLS 1.3总结</a></li><li class="chapter-item "><a href="../../Q1/contribute/async-cancel.html"><strong aria-hidden="true">1.9.6.</strong> Rust 异步与取消</a></li><li class="chapter-item expanded "><a href="../../Q1/contribute/rfc-2603.html" class="active"><strong aria-hidden="true">1.9.7.</strong> RFC 2603: Rust Symbol Name Mangling v0</a></li><li class="chapter-item "><a href="../../Q1/contribute/rust-dyn-link.html"><strong aria-hidden="true">1.9.8.</strong> Rust与动态链接</a></li><li class="chapter-item "><a href="../../Q1//contribute/naive-bayes.html"><strong aria-hidden="true">1.9.9.</strong> 使用Rust实现朴素贝叶斯（Naive Bayes）算法</a></li></ol></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust Magazine 2022</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/RustMagazine/rust_magazine_2022" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h2 id="rfc-2603-rust-symbol-name-mangling-v0"><a class="header" href="#rfc-2603-rust-symbol-name-mangling-v0">RFC 2603: Rust Symbol Name Mangling v0</a></h2>
+<p>作者：王江桐、周紫鹏</p>
+<hr />
+<p><a href="https://rust-lang.github.io/rfcs/2603-rust-symbol-name-mangling-v0.html">RFC 2603</a> 更新了编译器生成组名的规则，使其更一致并且更易解码。在之后，这一规则可能会成为语言规范或/和 Rust 稳定 ABI 的一部分，不过目前这一规则的实现只保留在 Rust 编译器的逻辑里。</p>
+<p>目前的组名规则存在以下问题：</p>
+<ul>
+<li>组名过程中，存在泛型参数以及其他信息的丢失，无法从符号名称中辨认出原先的类型参数；</li>
+<li>现有的规则并不一致，大部分遵从 <a href="http://refspecs.linuxbase.org/cxxabi-1.86.html#mangling">Itanium ABI</a> 规则，但是有一些并不是这样；</li>
+<li>有些符号名字会包含符号 <code>.</code>，但是这一符号并不被所有平台支持；</li>
+<li>目前符号的生成与编译器内部逻辑强耦合，生成的符号名字无法被其他编译器实现或外部工具复现。
+<ul>
+<li>目前的组名会包含一个哈希值来确保不同的函数最后会映射不同的符号名，哈希值由编译器的内部逻辑生成，这导致了组名无法被快速复现。</li>
+</ul>
+</li>
+</ul>
+<p>新的规则一一修复了这些问题，并去除了哈希值。</p>
+<h3 id="组名规则与例子"><a class="header" href="#组名规则与例子">组名规则与例子</a></h3>
+<h4 id="unicode-参数名"><a class="header" href="#unicode-参数名">Unicode 参数名</a></h4>
+<p>Rust 允许 Unicode 参数名，不过会使用 <a href="https://tools.ietf.org/html/rfc3492">Punycode</a> 编码将其转换为 ASCII 字符串。编码举例如下：</p>
+<table><thead><tr><th>Original</th><th>Punycode</th><th>Punycode + Encoding</th></tr></thead><tbody>
+<tr><td>føø</td><td>f-5gaa</td><td>f_5gaa</td></tr>
+<tr><td>α_ω</td><td>_-ylb7e</td><td>__ylb7e</td></tr>
+<tr><td>铁锈</td><td>n84amf</td><td>n84amf</td></tr>
+<tr><td>🤦</td><td>fq9h</td><td>fq9h</td></tr>
+<tr><td>ρυστ</td><td>2xaedc</td><td>2xaedc</td></tr>
+</tbody></table>
+<p>对于以下模块：</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>mod gödel {
+  mod escher {
+    fn bach() {}
+  }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>组名为：</p>
+<pre><code>_RNvNtNtC7mycrateu8gdel_5qa6escher4bach
+                 &lt;--------&gt;
+              Unicode component
+
+</code></pre>
+<p>转换组名时，在编码之后，会在开头添加 <code>u</code> 表示这是 Unicode 部分。</p>
+<h4 id="无泛型参数的函数"><a class="header" href="#无泛型参数的函数">无泛型参数的函数</a></h4>
+<p>对于以下可以通过绝对路径确定的函数 <code>bar</code>：</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>mod foo {
+  fn bar() {}
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>其对应组名可能为 <code>NNC7mycrate3foo3bar</code>。字母 <code>N</code> 表示开始标记（Start-Tag）。为了区分不同 crate 中的同名函数，组名需要包含 crate-id，crate-id 以 <code>C</code> 作为开始标记。数字 3 来自游程编码，形似于 <a href="http://refspecs.linuxbase.org/cxxabi-1.86.html#mangling">Itanium C++ ABI</a> 用于标识符的编码格式。游程编码（Run-Length Encoding，RLE），又称行程长度编码或变动长度编码法，是一种与资料性质无关的无损数据压缩技术，基于“使用变动长度的码来取代连续重复出现的原始资料来实现压缩。举例来说，一组资料串&quot;AAAABBBCCDEEEE&quot;，由4个A、3个B、2个C、1个D、4个E组成，经过变动长度编码法可将资料压缩为4A3B2C1D4E（由14个单位转成10个单位）。</p>
+<p>对于同名但是类型不同的两个函数：</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn foo() {
+    fn bar() {}
+}
+
+mod foo {
+    fn bar() {}
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>前者组名为 <code>NvNvC7mycrate3foo3bar </code>，后者组名为 <code>NvNtC7mycrate3foo3bar </code>，来区分前者，即函数 <code>foo</code> ，定义于值命名空间，而后者，即模块 <code>foo</code>，定义于类型命名空间。</p>
+<p>在使用宏的情况下，在同一上下文中，实例可能会含有重名的情况。例如：</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>mod foo {
+    fn bar'0() {}
+    // The second `bar` function was introduced by macro expansion.
+    fn bar'1() {}
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>编译器会自动增加数字索引来区分这两者，生成的组名分别为 <code>NvNtC7mycrate3foo3bar </code> 和 <code>NvNtC7mycrate3foos_3bar </code>。<code>s_</code> 代表该同名函数的第二种情况。这一区分规则也同样应用于区分同名 crate。</p>
+<p>Rust 不允许函数重载，即函数同名，但是参数不同的情况。组名不需要对此种情况进行区分。</p>
+<p>最后，完整生成的组名可能会包含一个 <code>_R</code> 前缀。举例如下：</p>
+<pre><code>_RNvNtCs1234_7mycrate3foo3bar
+&lt;&gt;^^^^^&lt;----&gt;&lt;------&gt;&lt;--&gt;&lt;--&gt;
+||||||   |      |     |   |
+||||||   |      |     |   +--- &quot;bar&quot; identifier
+||||||   |      |     +------- &quot;foo&quot; identifier
+||||||   |      +------------- &quot;mycrate&quot; identifier
+||||||   +-------------------- disambiguator for &quot;mycrate&quot;
+|||||+------------------------ start-tag for &quot;mycrate&quot;
+||||+------------------------- namespace tag for &quot;foo&quot;
+|||+-------------------------- start-tag for &quot;foo&quot;
+||+--------------------------- namespace tag for &quot;bar&quot;
+|+---------------------------- start-tag for &quot;bar&quot;
++----------------------------- common Rust symbol prefix
+</code></pre>
+<h4 id="泛型函数"><a class="header" href="#泛型函数">泛型函数</a></h4>
+<p>泛型函数的具体参数会添加到组名中，以 <code>I</code> 作为开始标记，来区分不同的泛型函数。例如：</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>std::mem::align_of::&lt;f64&gt;
+<span class="boring">}
+</span></code></pre></pre>
+<p>组名为：</p>
+<pre><code>_RINvNtC3std3mem8align_ofdE
+  ^                      ^^
+  |                      ||
+  |                      |+--- end of argument list
+  |                      +--- f64
+  +--- start-tag
+</code></pre>
+<p>原始类型会遵从 Itanium 规范，编码为单一的小写字母，其他的具体类型会以它们的绝对路径编码，形式类似于编码无反省参数的函数。引用、元组、以及函数指针则以如下例子中的规则编码：</p>
+<pre><code>std::mem::align_of::&lt;usize&gt;: _RINvNtC3std3mem8align_ofjE
+std::mem::align_of::&lt;&amp;char&gt;: _RINvNtC3std3mem8align_ofRcE
+std::mem::align_of::&lt;std::mem::Discriminant&gt;: _RINvNtC3std3mem8align_ofNtNtC3std3mem12DiscriminantE
+std::mem::align_of::&lt;&amp;mut (&amp;str,())&gt;: _RINvNtC3std3mem8align_ofQTReuEE
+</code></pre>
+<p>同样，为了区分不同上下文（例如不同 crate）中的同名泛型函数，编译器会在后缀添加 crate-id：</p>
+<pre><code>_RINvNtC3std3mem8align_ofjEC3foo (for crate &quot;foo&quot;)
+_RINvNtC3std3mem8align_ofjEC3bar (for crate &quot;bar&quot;)
+</code></pre>
+<h4 id="闭包"><a class="header" href="#闭包">闭包</a></h4>
+<p>编译器会为匿名函数闭包生成名字，这个名字会用于编译组名。例如：</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>mod foo {
+  fn bar(x: u32) {
+    let a = |x| { x + 1 }; // local name: NC&lt;...&gt;0
+    let b = |x| { x + 2 }; // local name: NC&lt;...&gt;s_0
+
+    a(b(x))
+  }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>闭包的局部名称为 <code>NC&lt;...&gt;0</code>，<code>C</code> 是命名域标记，<code>&lt;...&gt;</code> 部分则表示父路径，数字 0 代表它们的名字长度为0。因此，这两个闭包的组名分别为 <code>NCNvNtC7mycrate3foo3bar0 </code> 以及 <code>NCNvNtC7mycrate3foo3bars_0 </code>。</p>
+<h4 id="方法"><a class="header" href="#方法">方法</a></h4>
+<p>方法的组名规则如下：</p>
+<ul>
+<li>对于内部 <code>impl</code> 块：e.g. <code>&lt;Foo&lt;u32, char&gt;&gt;::some_method</code></li>
+<li>对于 trait 方法：e.g. <code>&lt;Foo&lt;u32, char&gt; as SomeTrait&lt;Quux&gt;&gt;::some_method</code></li>
+</ul>
+<p>父路径不仅包含 crate-id，而是以 <code>impl</code> 块开头，<code>impl</code> 块包含自身的类型以及实现的 trait 名。扩展后的父路径包含如下语法：</p>
+<pre><code>&lt;path&gt; = C &lt;identifier&gt;                      // crate-id root
+       | M &lt;type&gt;                            // inherent impl root
+       | X &lt;type&gt; &lt;path&gt;                     // trait impl root
+       | N &lt;namespace&gt; &lt;path&gt; &lt;identifier&gt;   // nested path
+       | I &lt;path&gt; {&lt;generic-arg&gt;} E          // generic arguments
+       
+&lt;impl-path&gt; = [&lt;disambiguator&gt;] &lt;path&gt;
+</code></pre>
+<p>实际例子：</p>
+<pre><code>&lt;mycrate::Foo&lt;u32&gt;&gt;::foo =&gt; _RNvMINtC7mycrate3FoomE3foo
+&lt;u32 as mycrate::Foo&gt;::foo =&gt; _RNvXmNtC7mycrate3Foo3foo
+&lt;mycrate::Foo&lt;u32&gt; as mycrate::Bar&lt;u64&gt;&gt;::foo =&gt; _RNvXINtC7mycrate3FoomEINtC7mycrate3BaryE3foo
+</code></pre>
+<h4 id="泛型-trait-中的类型"><a class="header" href="#泛型-trait-中的类型">泛型 trait 中的类型</a></h4>
+<p>在如下例子中：</p>
+<pre><pre class="playground"><code class="language-rust">#![allow(unused)]
+fn main() {
+    struct Foo&lt;T&gt;(T);
+
+    impl&lt;T&gt; From&lt;T&gt; for Foo&lt;T&gt; {
+      default fn from(x: T) -&gt; Self {
+        static MSG: &amp;str = &quot;...&quot;;
+        panic!(&quot;{}&quot;, MSG)
+      }
+    }
+
+    impl&lt;T: Default&gt; From&lt;T&gt; for Foo&lt;T&gt; {
+      fn from(x: T) -&gt; Self {
+        static MSG: &amp;str = &quot;123&quot;;
+        panic!(&quot;{}&quot;, MSG)
+      }
+    }
+}
+</code></pre></pre>
+<p><code>MSG</code> 的绝对路径为 <code>&lt;Foo&lt;_&gt; as From&lt;_&gt;&gt;::foo::MSG</code>。两个 trait 都是 <code>From</code>，因此需要在组名中添加父路径来区分这两个 trait。</p>
+<p>对应的组名为：</p>
+<pre><code>_RNvNvXs2_C7mycrateINtC7mycrate3FoopEINtNtC3std7convert4FrompE4from3MSG
+_RNvNvXs3_C7mycrateINtC7mycrate3FoopEINtNtC3std7convert4FrompE4from3MSG
+       &lt;----------&gt;&lt;----------------&gt;&lt;-----------------------&gt;
+        impl-path      self-type            trait-name
+
+</code></pre>
+<h4 id="压缩和替代"><a class="header" href="#压缩和替代">压缩和替代</a></h4>
+<p>在一些情况下，Rust 泛型会导致参数的绝对名字非常长，而参数的名字长度会影响编译器、链接器、等其它程序的性能。例如，对于如下函数：</p>
+<pre><pre class="playground"><code class="language-rust">#![allow(unused)]
+fn main() {
+    fn quux(s: Vec&lt;u32&gt;) -&gt; impl Iterator&lt;Item = (u32, usize)&gt; {
+        s.into_iter()
+         .map(|x| x + 1)
+         .filter(|&amp;x| x &gt; 10)
+         .zip(0..)
+         .chain(iter::once((0, 0)))
+    }
+}
+</code></pre></pre>
+<p>它的返回值为：</p>
+<pre><code>std::iter::Chain&lt;
+  std::iter::Zip&lt;
+    std::iter::Filter&lt;
+      std::iter::Map&lt;
+        std::vec::IntoIter&lt;u32&gt;,
+        [closure@src/main.rs:16:11: 16:18]&gt;,
+      [closure@src/main.rs:17:14: 17:25]&gt;,
+    std::ops::RangeFrom&lt;usize&gt;&gt;,
+  std::iter::Once&lt;(u32, usize)&gt;&gt;
+</code></pre>
+<p>对于此种情况，如果定义中某一部分出现了多次，那么编译器会采用压缩算法，使用某一个标记来替代这一重复元素。粗略来说，这一算法为：当组名开始时，对于后续出现的重复部分，以反向引用代替。反向引用的形式为 <code>B&lt;base-62-number&gt;_</code>。</p>
+<p>可以替代的部分有：</p>
+<ul>
+<li>所有路径的前缀，以及重复路径本身</li>
+<li>除了基础类型以外的所有类型</li>
+<li>类型级常量</li>
+</ul>
+<p>例如，对于以下参数名：</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>std::iter::Chain&lt;std::iter::Zip&lt;std::vec::IntoIter&lt;u32&gt;, std::vec::IntoIter&lt;u32&gt;&gt;&gt;
+<span class="boring">}
+</span></code></pre></pre>
+<p>不使用压缩的情况下，完整的组名为：</p>
+<pre><code>  0         10        20        30        40        50        60        70        80        90
+_RINtNtC3std4iter5ChainINtNtC3std4iter3ZipINtNtC3std3vec8IntoItermEINtNtC3std3vec8IntoItermEEE
+                            5----              5----                    5----
+                          3-----------                                43---------
+                                                                    41--------------------
+                                                                   40-----------------------
+</code></pre>
+<p>压缩之后的组名为：</p>
+<pre><code>_RINtNtC3std4iter5ChainINtB2_3ZipINtNtB4_3vec8IntoItermEBt_EE
+                          ^^^         ^^^               ^^^     back references
+</code></pre>
+<h4 id="完整的组名语法集"><a class="header" href="#完整的组名语法集">完整的组名语法集</a></h4>
+<ul>
+<li>非终端相关参数由尖括号表示（e.g. <code>&lt;path&gt;</code>）</li>
+<li>终端相关以双引号表示（e.g. <code>&quot;_R&quot;</code>）</li>
+<li>可选项以方括号表示（e.g. <code>[&lt;disambiguator&gt;]</code>）</li>
+<li>重复项（0或多次）由花括号表示（e.g. <code>{&lt;type&gt;}</code>）</li>
+<li>备注由 <code>//</code> 表示</li>
+</ul>
+<pre><code>// The &lt;decimal-number&gt; specifies the encoding version.
+&lt;symbol-name&gt; =
+    &quot;_R&quot; [&lt;decimal-number&gt;] &lt;path&gt; [&lt;instantiating-crate&gt;] [&lt;vendor-specific-suffix&gt;]
+
+&lt;path&gt; = &quot;C&quot; &lt;identifier&gt;                    // crate root
+       | &quot;M&quot; &lt;impl-path&gt; &lt;type&gt;              // &lt;T&gt; (inherent impl)
+       | &quot;X&quot; &lt;impl-path&gt; &lt;type&gt; &lt;path&gt;       // &lt;T as Trait&gt; (trait impl)
+       | &quot;Y&quot; &lt;type&gt; &lt;path&gt;                   // &lt;T as Trait&gt; (trait definition)
+       | &quot;N&quot; &lt;namespace&gt; &lt;path&gt; &lt;identifier&gt; // ...::ident (nested path)
+       | &quot;I&quot; &lt;path&gt; {&lt;generic-arg&gt;} &quot;E&quot;      // ...&lt;T, U&gt; (generic args)
+       | &lt;backref&gt;
+
+// Path to an impl (without the Self type or the trait).
+// The &lt;path&gt; is the parent, while the &lt;disambiguator&gt; distinguishes
+// between impls in that same parent (e.g. multiple impls in a mod).
+// This exists as a simple way of ensure uniqueness, and demanglers
+// don't need to show it (unless the location of the impl is desired).
+&lt;impl-path&gt; = [&lt;disambiguator&gt;] &lt;path&gt;
+
+// The &lt;decimal-number&gt; is the length of the identifier in bytes.
+// &lt;bytes&gt; is the identifier itself, and it's optionally preceded by &quot;_&quot;,
+// to separate it from its length - this &quot;_&quot; is mandatory if the &lt;bytes&gt;
+// starts with a decimal digit, or &quot;_&quot;, in order to keep it unambiguous.
+// If the &quot;u&quot; is present then &lt;bytes&gt; is Punycode-encoded.
+&lt;identifier&gt; = [&lt;disambiguator&gt;] &lt;undisambiguated-identifier&gt;
+&lt;disambiguator&gt; = &quot;s&quot; &lt;base-62-number&gt;
+&lt;undisambiguated-identifier&gt; = [&quot;u&quot;] &lt;decimal-number&gt; [&quot;_&quot;] &lt;bytes&gt;
+
+// Namespace of the identifier in a (nested) path.
+// It's an a-zA-Z character, with a-z reserved for implementation-internal
+// disambiguation categories (and demanglers should never show them), while
+// A-Z are used for special namespaces (e.g. closures), which the demangler
+// can show in a special way (e.g. `NC...` as `...::{closure}`), or just
+// default to showing the uppercase character.
+&lt;namespace&gt; = &quot;C&quot;      // closure
+            | &quot;S&quot;      // shim
+            | &lt;A-Z&gt;    // other special namespaces
+            | &lt;a-z&gt;    // internal namespaces
+
+&lt;generic-arg&gt; = &lt;lifetime&gt;
+              | &lt;type&gt;
+              | &quot;K&quot; &lt;const&gt; // forward-compat for const generics
+
+// An anonymous (numbered) lifetime, either erased or higher-ranked.
+// Index 0 is always erased (can show as '_, if at all), while indices
+// starting from 1 refer (as de Bruijn indices) to a higher-ranked
+// lifetime bound by one of the enclosing &lt;binder&gt;s.
+&lt;lifetime&gt; = &quot;L&quot; &lt;base-62-number&gt;
+
+// Specify the number of higher-ranked (for&lt;...&gt;) lifetimes to bound.
+// &lt;lifetime&gt; can then later refer to them, with lowest indices for
+// innermost lifetimes, e.g. in `for&lt;'a, 'b&gt; fn(for&lt;'c&gt; fn(...))`,
+// any &lt;lifetime&gt;s in ... (but not inside more binders) will observe
+// the indices 1, 2, and 3 refer to 'c, 'b, and 'a, respectively.
+// The number of bound lifetimes is value of &lt;base-62-number&gt; + 1.
+&lt;binder&gt; = &quot;G&quot; &lt;base-62-number&gt;
+
+&lt;type&gt; = &lt;basic-type&gt;
+       | &lt;path&gt;                      // named type
+       | &quot;A&quot; &lt;type&gt; &lt;const&gt;          // [T; N]
+       | &quot;S&quot; &lt;type&gt;                  // [T]
+       | &quot;T&quot; {&lt;type&gt;} &quot;E&quot;            // (T1, T2, T3, ...)
+       | &quot;R&quot; [&lt;lifetime&gt;] &lt;type&gt;     // &amp;T
+       | &quot;Q&quot; [&lt;lifetime&gt;] &lt;type&gt;     // &amp;mut T
+       | &quot;P&quot; &lt;type&gt;                  // *const T
+       | &quot;O&quot; &lt;type&gt;                  // *mut T
+       | &quot;F&quot; &lt;fn-sig&gt;                // fn(...) -&gt; ...
+       | &quot;D&quot; &lt;dyn-bounds&gt; &lt;lifetime&gt; // dyn Trait&lt;Assoc = X&gt; + Send + 'a
+       | &lt;backref&gt;
+
+&lt;basic-type&gt; = &quot;a&quot;      // i8
+             | &quot;b&quot;      // bool
+             | &quot;c&quot;      // char
+             | &quot;d&quot;      // f64
+             | &quot;e&quot;      // str
+             | &quot;f&quot;      // f32
+             | &quot;h&quot;      // u8
+             | &quot;i&quot;      // isize
+             | &quot;j&quot;      // usize
+             | &quot;l&quot;      // i32
+             | &quot;m&quot;      // u32
+             | &quot;n&quot;      // i128
+             | &quot;o&quot;      // u128
+             | &quot;s&quot;      // i16
+             | &quot;t&quot;      // u16
+             | &quot;u&quot;      // ()
+             | &quot;v&quot;      // ...
+             | &quot;x&quot;      // i64
+             | &quot;y&quot;      // u64
+             | &quot;z&quot;      // !
+             | &quot;p&quot;      // placeholder (e.g. for generic params), shown as _
+
+// If the &quot;U&quot; is present then the function is `unsafe`.
+// The return type is always present, but demanglers can
+// choose to omit the ` -&gt; ()` by special-casing &quot;u&quot;.
+&lt;fn-sig&gt; = [&lt;binder&gt;] [&quot;U&quot;] [&quot;K&quot; &lt;abi&gt;] {&lt;type&gt;} &quot;E&quot; &lt;type&gt;
+
+&lt;abi&gt; = &quot;C&quot;
+      | &lt;undisambiguated-identifier&gt;
+
+&lt;dyn-bounds&gt; = [&lt;binder&gt;] {&lt;dyn-trait&gt;} &quot;E&quot;
+&lt;dyn-trait&gt; = &lt;path&gt; {&lt;dyn-trait-assoc-binding&gt;}
+&lt;dyn-trait-assoc-binding&gt; = &quot;p&quot; &lt;undisambiguated-identifier&gt; &lt;type&gt;
+&lt;const&gt; = &lt;type&gt; &lt;const-data&gt;
+        | &quot;p&quot; // placeholder, shown as _
+        | &lt;backref&gt;
+
+// The encoding of a constant depends on its type. Integers use their value,
+// in base 16 (0-9a-f), not their memory representation. Negative integer
+// values are preceded with &quot;n&quot;. The bool value false is encoded as `0_`, true
+// value as `1_`. The char constants are encoded using their Unicode scalar
+// value.
+&lt;const-data&gt; = [&quot;n&quot;] {&lt;hex-digit&gt;} &quot;_&quot;
+
+// &lt;base-62-number&gt; uses 0-9-a-z-A-Z as digits, i.e. 'a' is decimal 10 and
+// 'Z' is decimal 61.
+// &quot;_&quot; with no digits indicates the value 0, while any other value is offset
+// by 1, e.g. &quot;0_&quot; is 1, &quot;Z_&quot; is 62, &quot;10_&quot; is 63, etc.
+&lt;base-62-number&gt; = {&lt;0-9a-zA-Z&gt;} &quot;_&quot;
+
+&lt;backref&gt; = &quot;B&quot; &lt;base-62-number&gt;
+
+// We use &lt;path&gt; here, so that we don't have to add a special rule for
+// compression. In practice, only a crate root is expected.
+&lt;instantiating-crate&gt; = &lt;path&gt;
+
+// There are no restrictions on the characters that may be used
+// in the suffix following the `.` or `$`.
+&lt;vendor-specific-suffix&gt; = (&quot;.&quot; | &quot;$&quot;) &lt;suffix&gt;
+</code></pre>
+
+                    </main>
+
+                    <script src="https://utteranc.es/client.js"
+                    repo="RustMagazine/rust_magazine_2022"
+                    issue-term="title"
+                    theme="github-light"
+                    crossorigin="anonymous"
+                    async></script>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../Q1/contribute/async-cancel.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../../Q1/contribute/rust-dyn-link.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../Q1/contribute/async-cancel.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../../Q1/contribute/rust-dyn-link.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../../ace.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../editor.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../mode-rust.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../theme-dawn.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../theme-tomorrow_night.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        <script type="text/javascript" src="../../mermaid.min.js"></script>
+        <script type="text/javascript" src="../../mermaid-init.js"></script>
+        <script type="text/javascript" src="../../smart-anchor.js"></script>
+    </body>
+</html>

@@ -1,0 +1,661 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js rust">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Rust 移动开发与跨平台模式探究 - Rust Magazine 2022</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="The roots aren&#x27;t deep but the seeds are planted!">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../../highlight.css">
+        <link rel="stylesheet" href="../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "rust";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../../Q1/toc.html"><strong aria-hidden="true">1.</strong> 2022-Q1</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/lang.html"><strong aria-hidden="true">1.1.</strong> 官方动态</a></li><li class="chapter-item "><a href="../../Q1/hots.html"><strong aria-hidden="true">1.2.</strong> 社区热点</a></li><li class="chapter-item "><a href="../../Q1/learns.html"><strong aria-hidden="true">1.3.</strong> 学习资源</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/learns/projects.html"><strong aria-hidden="true">1.3.1.</strong> 开源项目</a></li><li class="chapter-item "><a href="../../Q1/learns/blogs.html"><strong aria-hidden="true">1.3.2.</strong> 博文教程</a></li><li class="chapter-item "><a href="../../Q1/learns/open-courses.html"><strong aria-hidden="true">1.3.3.</strong> 高校公开课</a></li><li class="chapter-item "><a href="../../Q1/learns/videos.html"><strong aria-hidden="true">1.3.4.</strong> 线上视频</a></li></ol></li><li class="chapter-item "><a href="../../Q1/academic.html"><strong aria-hidden="true">1.4.</strong> 学术动态</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/academic/rust.html"><strong aria-hidden="true">1.4.1.</strong> Rust</a></li><li class="chapter-item "><a href="../../Q1/academic/wasm.html"><strong aria-hidden="true">1.4.2.</strong> WebAssembly</a></li></ol></li><li class="chapter-item "><a href="../../Q1/opensource.html"><strong aria-hidden="true">1.5.</strong> 领域开源</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/opensource/data.html"><strong aria-hidden="true">1.5.1.</strong> 数据处理</a></li><li class="chapter-item "><a href="../../Q1/opensource/cloud.html"><strong aria-hidden="true">1.5.2.</strong> 云原生</a></li><li class="chapter-item "><a href="../../Q1/opensource/game.html"><strong aria-hidden="true">1.5.3.</strong> 游戏与图像处理</a></li><li class="chapter-item "><a href="../../Q1/opensource/os.html"><strong aria-hidden="true">1.5.4.</strong> 操作系统</a></li><li class="chapter-item "><a href="../../Q1/opensource/cliapp.html"><strong aria-hidden="true">1.5.5.</strong> 命令行工具</a></li><li class="chapter-item "><a href="../../Q1/opensource/performance.html"><strong aria-hidden="true">1.5.6.</strong> 性能工具</a></li><li class="chapter-item "><a href="../../Q1/opensource/network.html"><strong aria-hidden="true">1.5.7.</strong> 网络基建</a></li><li class="chapter-item "><a href="../../Q1/opensource/web.html"><strong aria-hidden="true">1.5.8.</strong> Web开发</a></li><li class="chapter-item "><a href="../../Q1/opensource/mobile.html"><strong aria-hidden="true">1.5.9.</strong> 移动开发</a></li><li class="chapter-item "><a href="../../Q1/opensource/frontend.html"><strong aria-hidden="true">1.5.10.</strong> 前端基建</a></li><li class="chapter-item "><a href="../../Q1/opensource/av.html"><strong aria-hidden="true">1.5.11.</strong> 音视频处理</a></li><li class="chapter-item "><a href="../../Q1/opensource/lang-with-rust.html"><strong aria-hidden="true">1.5.12.</strong> 基于Rust的新编程语言</a></li><li class="chapter-item "><a href="../../Q1/opensource/embedded.html"><strong aria-hidden="true">1.5.13.</strong> 嵌入式Rust</a></li><li class="chapter-item "><a href="../../Q1/opensource/scientific-research.html"><strong aria-hidden="true">1.5.14.</strong> 科学艺术</a></li><li class="chapter-item "><a href="../../Q1/opensource/tools.html"><strong aria-hidden="true">1.5.15.</strong> 其他工具</a></li></ol></li><li class="chapter-item "><a href="../../Q1/security.html"><strong aria-hidden="true">1.6.</strong> 安全动态</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/security/unsound.html"><strong aria-hidden="true">1.6.1.</strong> 不健全（Unsound）</a></li><li class="chapter-item "><a href="../../Q1/security/memory.html"><strong aria-hidden="true">1.6.2.</strong> 内存安全问题（Memory）</a></li><li class="chapter-item "><a href="../../Q1/security/memory.html"><strong aria-hidden="true">1.6.3.</strong> 拒绝服务（Dos）</a></li><li class="chapter-item "><a href="../../Q1/security/others.html"><strong aria-hidden="true">1.6.4.</strong> 其他</a></li></ol></li><li class="chapter-item "><a href="../../Q1/business.html"><strong aria-hidden="true">1.7.</strong> 商业动态</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/business/practices.html"><strong aria-hidden="true">1.7.1.</strong> 生产实践</a></li><li class="chapter-item "><a href="../../Q1/business/products.html"><strong aria-hidden="true">1.7.2.</strong> 优秀产品</a></li><li class="chapter-item "><a href="../../Q1/business/blockchain.html"><strong aria-hidden="true">1.7.3.</strong> 区块链</a></li></ol></li><li class="chapter-item "><a href="../../Q1/libs.html"><strong aria-hidden="true">1.8.</strong> Rust 基础库</a></li><li class="chapter-item expanded "><a href="../../Q1/contribute.html"><strong aria-hidden="true">1.9.</strong> 投稿精选</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/contribute/atom.html"><strong aria-hidden="true">1.9.1.</strong> DatenLord | Rust原子类型和内存排序</a></li><li class="chapter-item "><a href="../../Q1/contribute/async-rdma.html"><strong aria-hidden="true">1.9.2.</strong> DatenLord | async-rdma:使高性能网络应用开发更简单</a></li><li class="chapter-item "><a href="../../Q1/contribute/rust-for-linux-clk.html"><strong aria-hidden="true">1.9.3.</strong> Rust for Linux 源码导读 | Rust 驱动开发与通用时钟管理框架抽象</a></li><li class="chapter-item expanded "><a href="../../Q1/contribute/rust-mobile.html" class="active"><strong aria-hidden="true">1.9.4.</strong> Rust 移动开发与跨平台模式探究</a></li><li class="chapter-item "><a href="../../Q1/contribute/hw-tls-rfc.html"><strong aria-hidden="true">1.9.5.</strong> 华为 | RFC 8446 &amp; 8998 TLS 1.3总结</a></li><li class="chapter-item "><a href="../../Q1/contribute/async-cancel.html"><strong aria-hidden="true">1.9.6.</strong> Rust 异步与取消</a></li><li class="chapter-item "><a href="../../Q1/contribute/rfc-2603.html"><strong aria-hidden="true">1.9.7.</strong> RFC 2603: Rust Symbol Name Mangling v0</a></li><li class="chapter-item "><a href="../../Q1/contribute/rust-dyn-link.html"><strong aria-hidden="true">1.9.8.</strong> Rust与动态链接</a></li><li class="chapter-item "><a href="../../Q1//contribute/naive-bayes.html"><strong aria-hidden="true">1.9.9.</strong> 使用Rust实现朴素贝叶斯（Naive Bayes）算法</a></li></ol></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust Magazine 2022</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/RustMagazine/rust_magazine_2022" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="rust-移动开发与跨平台模式探究"><a class="header" href="#rust-移动开发与跨平台模式探究">Rust 移动开发与跨平台模式探究</a></h1>
+<p>作者：张汉东</p>
+<h2 id="引子"><a class="header" href="#引子">引子</a></h2>
+<p>Rust 在服务端和嵌入式领域已经有很多跨平台模式的应用案例了，今天主要是来探究一下 Rust 在移动开发领域的跨平台开发模式。</p>
+<p>本文中涉及所有信息均来自于互联网，如有错漏，请及时反馈。</p>
+<h2 id="rust-语言-对-ios-和-android-平台支持状态"><a class="header" href="#rust-语言-对-ios-和-android-平台支持状态">Rust 语言 对 iOS 和 Android 平台支持状态</a></h2>
+<p>目前 Rust 对 iOS 和 Android 平台 Target 都是 Tier 2  和 Tier 3 级别的支持，并且都支持 std 。</p>
+<ul>
+<li>Tier 2 表示在 Rust 项目的 CI 中会检查这些 Target 可以顺利构建，但不保证测试能通过。一般情况下，Tier 2 级的 Target 会正常工作。</li>
+<li>Tier 3 则不会在 Rust 项目的 CI 中出现。所以，在相应的平台下，不一定会构建成功。</li>
+</ul>
+<p><strong>对 iOS 的支持：</strong></p>
+<p>Tier 2:</p>
+<ul>
+<li><code>aarch64-apple-ios</code>，即 ARM64 iOS</li>
+<li><code>aarch64-apple-ios-sim</code>，即 Apple iOS Simulator on ARM64</li>
+<li><code>x86_64-apple-ios</code>，即 64-bit x86 iOS</li>
+</ul>
+<p>Tier 3:</p>
+<ul>
+<li><code>aarch64-apple-ios-macabi</code>，即Apple Catalyst on ARM64</li>
+<li><code>armv7-apple-ios</code>，即ARMv7 iOS, Cortex-a8</li>
+<li><code>armv7s-apple-ios</code></li>
+<li><code>i386-apple-ios</code>，即32-bit x86 iOS</li>
+<li><code>x86_64-apple-ios-macabi</code>，即Apple Catalyst on x86_64</li>
+</ul>
+<p><strong>对 Android 的支持：</strong></p>
+<p>Tier 2:</p>
+<ul>
+<li><code>aarch64-linux-android</code> ，即 ARM64 Android</li>
+<li><code>arm-linux-androideabi</code>，即 ARMv7 Android</li>
+<li><code>armv7-linux-androideabi</code>，即 ARMv7a Android</li>
+<li><code>i686-linux-android</code>，即 32-bit x86 Android</li>
+<li><code>thumbv7neon-linux-androideabi</code>， 即 Thumb2-mode ARMv7a Android with NEON</li>
+<li><code>x86_64-linux-android</code>，即 64-bit x86 Android</li>
+</ul>
+<p>看得出来，Rust 对 iOS 和 Android 的支持还算可以。</p>
+<h2 id="rust-用于移动开发的几种方式"><a class="header" href="#rust-用于移动开发的几种方式">Rust 用于移动开发的几种方式</a></h2>
+<h3 id="跨平台组件"><a class="header" href="#跨平台组件">跨平台组件</a></h3>
+<p>一些公司使用 Rust 来开发跨平台组件，即，在 iOS 和 Andriod 之间共享代码。</p>
+<p><img src="./images/mobile/1.png" alt="1" /></p>
+<p>对于 iOS ，Rust 可以直接通过FFi 的方式绑定 C-ABI 来进行交互，可以参考 Mozilla 近期发布的这篇<a href="https://blog.mozilla.org/data/2022/01/31/this-week-in-glean-building-and-deploying-a-rust-library-on-ios/">文章</a>来了解如何在 iOS 应用中部署 Rust 库。对于 Android ，Rust 通过 JNI 相关的库来进行相关绑定，Rust 社区生态也有一些类似于 <a href="https://github.com/rust-windowing/android-ndk-rs">android-ndk-rs</a>的工具来进行 NDK 开发。</p>
+<p><strong>可以把这种模式称为：应用的 Rust 后端（App Backend-Rust）</strong>。当然，Rust 也可以编译到 WebAssembly ，也可以共享到浏览器端（应用条件比客户端相对严格一些）或桌面端（比如 Electron）。</p>
+<h4 id="公司dropbox"><a class="header" href="#公司dropbox">公司：Dropbox</a></h4>
+<p><strong>为什么不用 Cpp 来共享代码？</strong></p>
+<p>也许可以从 Dropbox 在 2019 年发布的文章<a href="https://dropbox.tech/mobile/the-not-so-hidden-cost-of-sharing-code-between-ios-and-android">《在 iOS 和 Android 之间共享代码的隐藏成本》</a>中看到问题所在：Cpp共享代码会带来四类隐藏成本。以下摘要：</p>
+<ul>
+<li>自定义框架和库的开销。为了和平台交互，需要自定义框架和库，这是一种成本。如果使用本地语言（java/kotlin/swift）则无需做这些工作。使用cpp的话，对开源社区贡献价值也很小，因为 cpp 几乎不存在移动开源社区。</li>
+<li>自定义开发环境的开销。移动生态本身非常成熟，移动 IDE 非常丰富，谷歌和苹果都投入了大量资源，使它们成为相应平台上开发人员的最佳开发体验。但是使用 cpp 共享代码则意味着放弃这些好处。cpp 共享代码中本身也充斥着各种 Bug ，调试这些 Bug 很困难，尤其是多线程下的问题。</li>
+<li>解决平台间差异的开销。不同操作系统之间是有实际的差异存在，必须花费大量时间将代码集成到不同平台并编写特定于平台的代码。（cpp 在跨平台抽象方面不如 Rust 更加容易？）</li>
+<li>培训、招聘和留住开发人员的开销。有经验的 cpp 工程师越来越难以聘请（一年时间招不到人），尤其是对移动开发感兴趣的。所以，缺乏维护 C++ 代码库的关键专业知识的人才，从而导致花大量时间成本招聘和内部培训，但其实内部工程师大多对 cpp 的学习没什么兴趣，内部培训也成了问题。另外，移动开发人员根本不想从事 C++ 项目，这也导致了移动开发人员的离职。</li>
+</ul>
+<p>如果写一次代码到处复用的成本开销超过了其收益，就没有必要使用这种策略了。所以， Dropbox 又回归了使用本地语言进行移动开发，直到现在 2022年。今年3月份 Dropbox 的一篇博客也说明了这一情况：<a href="https://dropbox.tech/mobile/making-camera-uploads-for-android-faster-and-more-reliable">使 Android 的相机上传更快更可靠</a> 。</p>
+<p><strong>Dropbox Capture 桌面客户端使用 Rust 开发跨平台组件</strong></p>
+<p>虽然在移动领域，Dropbox 放弃了使用 Cpp 共享代码这种策略，但也没有使用 Rust。然而在 2021 年，Dropbox 的另一个团队，<a href="https://www.dropbox.com/capture">Dropbox Capture</a> 则使用 Rust 来构建其桌面客户端的跨平台同步引擎组件。Capture 是一个视觉交流工具，旨在使团队可以轻松地使用屏幕录像、视频消息、屏幕截图或 GIF 异步共享他们的工作。</p>
+<p>为什么使用 Rust 呢？</p>
+<p>一方面，Rust 在 Dropbox 的产品中应用面越来越广，团队经验提升；另一方面，Rust 本身非常符合 Capture 这个场景，希望更好地控制截屏和录制能力、更好的错误处理以及更快的幕后性能。</p>
+<p>使用 Rust 的收益：</p>
+<ul>
+<li>没有自定义框架和库的开销。使用开源的 neon，可以轻松地从 TypeScript 调用本机操作系统代码，而无需任何开销（而且更可靠）。</li>
+<li>更好的错误处理。极大提升了处理错误的能力。在 macOS 和 Windows 上使用一致的 API，使得团队能够添加更强大更统一的日志记录和监控。</li>
+<li>更多的控制力。构建跨平台代码更加简单。将代码放到同一个地方可以轻松解决一些以往难以定位的问题。</li>
+<li>更少的空间占用。使用 Rust 库让团队不再需要大约 17MB 的 Swift 库，而且还更省内存。</li>
+<li>更容易扩展新特性。迁移到 Rust 也让团队能够做以前无法做的事情。比如，能够为 Windows 带来以前只存在于 macOS 上的功能。还能够引入新的裁剪工具、新的录制控件，并添加新的录制类型。Rust 能够让团队比以前更快、更省力地构建它们。</li>
+</ul>
+<p>根据以上 Dropbox 的实践，可以对 Rust vs Cpp 在跨平台共享组件方面的优劣有一定了解。接下来再看看其他公司的实践。</p>
+<h4 id="公司-fullstory"><a class="header" href="#公司-fullstory">公司： FullStory</a></h4>
+<p><a href="https://www.fullstory.com/">FullStory 公司</a> 提供了数字体验智能 (DXI) 平台，提供了数据分析服务。该平台也提供了针对移动应用的数据采集功能，其中跨平台组件使用 Rust 开发。</p>
+<p><strong>为什么选择 Rust ？</strong></p>
+<p>当前的移动生态系统主要由 iOS 和 Android 设备组成。任何想要接触大多数移动用户的人都会发现自己必须开发两个版本的应用程序。</p>
+<p>这两个平台存在显着差异：在语言级别上，iOS 应用程序主要是用 Swift（历史上是 ObjC）编写的；另一方面，Android 应用程序主要是用 Java 编写的，如今 Kotlin 越来越受欢迎。因为平台对现代移动应用程序想要做的所有事情都有不同的抽象，从创建按钮小部件到地理定位都不同，所以维护两个不同语言的版本会随着业务发展越来越困难。</p>
+<p>FullSotry 公司面临的问题可能更加复杂，因为它们是提供框架给别人去使用，而不是直接发布应用程序。所以要考虑技术选择对客户的影响，例如与他们的代码进行有害交互的可能性，以及在 CPU 和内存使用方面对用户可见的性能影响。</p>
+<p><strong>如何使用 Rust ？</strong></p>
+<p>首先制定了一个粗略的设计准则： Rust 代码应包含与平台无关的通用代码，特定平台的代码应该保留在特定平台的代码中。</p>
+<p>代码组织结构：</p>
+<ul>
+<li><code>shared-core</code> crate，包含了大部分通用代码，并且使用 trait 来定义特定平台部分的接口。</li>
+<li><code>shared-android</code> crate，用于提供与 Java 共享的代码接口。</li>
+<li><code>shared-ios</code> crate， 用于提供与 ObjectiveC 共享的代码接口。</li>
+<li><code>shared-mock</code> crate ，为了便于核心 Rust 代码的开发而实现了一个“模拟”平台，它提供所有相同的接口，但只是在桌面环境中运行。这有助于在纯 Rust 环境中开发许多东西，并避免了移动工具链的集成痛苦。</li>
+</ul>
+<p>对于 iOS ，将 Rust 代码构建为静态库，使用 Ditto 编写脚本来构建 Rust 工具链，使用与 XCode 一致的 LLVM 版本。</p>
+<p>对于 Android，将 Rust 构建为静态库，通过 CMake 与一些 C 代码链接，再给 Java 库共享。</p>
+<p><strong>使用 Rust 以后的优势</strong></p>
+<ol>
+<li>能够编写高性能代码，而无需花费过多时间进行优化</li>
+<li>不必追踪客户在平台提供的 Rust 代码中报告的数据竞争导致的奇怪崩溃或错误</li>
+<li>可以有信任地引入对平台代码库不熟悉的开发人员，他们知道编译器会限制他们由于没有完全理解“烧入”他们大脑的代码而造成的损害。（Rust 语言比较受欢迎，新人也愿意学习）</li>
+</ol>
+<p><strong>移动开发中使用 Rust 带来的痛苦是什么？</strong></p>
+<p>FullStory 工程师在 hacknews 上面<a href="https://news.ycombinator.com/item?id=27493037">透露</a>：</p>
+<p>&quot;The only real pain we felt was around iOS bitcode and that was mainly Apple's fault because they make the whole process so Byzantine if you aren't using clang.&quot;</p>
+<p>&quot;我们唯一真正感到痛苦的是围绕着iOS的位码，这主要是苹果的错，因为如果你不使用clang，他们会使整个过程变得非常复杂。&quot;</p>
+<p>关于此问题，在 Rust issues 中有记录：<a href="https://github.com/rust-lang/rust/issues/35968">https://github.com/rust-lang/rust/issues/35968 （未解决）</a>，导致FullStory 团队无法直接使用上游 Rust 工具链，他们的解决办法是使用与 Xcode 相同版本的 LLVM来提供带有嵌入式 LLVM 位码的框架。</p>
+<h4 id="公司1password"><a class="header" href="#公司1password">公司：1Password</a></h4>
+<p>1Password 现在也加入了 Rust 基金会。其产品大约 63% 的 1Password 核心代码（加密和同步数据）使用了 Rust 。用 Rust 开发的跨平台组件来支持多个平台，包括移动端和浏览器（将 Rust 编译为 WebAssembly）。但 1Password 把这种方式叫「混合（hybrid）应用程序开发」。</p>
+<blockquote>
+<p>1Password 也开源了一些跨平台库。比如， <a href="https://github.com/1Password/sys-locale">sys-locale</a>，轻量级获取位置的跨平台库，支持 iOS/ Android/ MacOS/ Linux/ Windows/ WebAssembly 。还有一个早期开源的 <code>TypeShare</code>库，用于把一些用Rust写的类型生成为其他语言的对应类戏，目前已经不再维护，但是其公司内部还在使用。</p>
+</blockquote>
+<p>下面这张图展示了1Password Linux 版本下 core 相关架构。</p>
+<p><img src="./images/mobile/1password.png" alt="1password" /></p>
+<p>首先，1Password 这个 core 库是完全独立的 Rust 库，它定义了明确的 API 来供各个客户端来使用。</p>
+<p><code>op-app</code>和<code>op-ui</code>用于整合其他crates。大部分状态被完全保留在内部，以确保密钥和其他secrets得到正确的处理，同时也使每个客户端UI能够专注于他们的优势，而不是业务逻辑。 <code>foundation</code>  crate 为 core 提供特定平台的服务（OS Services）。等等。</p>
+<p>目前这个通用的 core 库在 Linux 端比较成功，1Password 团队表示会在下一代 1Password 的产品中也采用这种架构。</p>
+<blockquote>
+<p>1Password 趣事：</p>
+<p>翻到一篇2019年论文，探讨了流行的<a href="https://www.ise.io/casestudies/password-manager-hacking/">密码管理器的安全最佳实践</a>，包括 1Password 。并且同年，在 1P 社区论坛中针对该论文中提到 1P的安全问题引起<a href="https://1password.community/discussion/comment/493134#Comment_493134">激烈讨论</a>，1P 成员也第一次提到 Rust 语言，也许这是 1P使用 Rust 的开端，现在1Password 是 Rust 基金会成员。</p>
+</blockquote>
+<h4 id="公司字节跳动-飞书"><a class="header" href="#公司字节跳动-飞书">公司：字节跳动-飞书</a></h4>
+<p>关于飞书使用 Rust 的公开资料很少，只有2019年字节跳动王枞在QCon分享的<a href="https://www.infoq.cn/article/oh79weak7z3s2xavo*bv">《Rust 跨平台客户端开发在字节跳动的实践》</a>，从其中可以了解到，飞书使用 Rust 也是做跨平台组件。飞书客户端非 UI 部分由 Rust 跨平台实现，目前包括移动端和桌面端共 5 个平台。</p>
+<p><strong>为什么跨平台使用Rust?</strong></p>
+<ol>
+<li>客户端开发有一定复杂度
+<ol>
+<li>性能需求
+<ol>
+<li>在有限的资源里满足日益增长的需求</li>
+<li>需要更少的耗电量来满足日益增长的需求</li>
+</ol>
+</li>
+<li>实施复杂性
+<ol>
+<li>几乎是单体架构</li>
+<li>底层代码的安全保障较少</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>各个平台之间存在差异，团队不想做重复性的工作和 犯同样的错误。</li>
+</ol>
+<p><strong>考虑跨平台能带来的收益：</strong></p>
+<ul>
+<li>只需要一份代码库来进行设计、实施和审查</li>
+<li>唯一面向服务端的客户端，便于实施安全策略</li>
+</ul>
+<p><strong>如何做跨平台：</strong></p>
+<ul>
+<li>不能影响用户体验。App应该做到性能足够好、耗电尽量少。</li>
+<li>与原生平台交互应该非常方便</li>
+<li>不应只是单独的一些组件，而是对整体代码做过权衡之后的核心代码（非 UI 代码可以跨平台，UI 代码使用本地语言）。</li>
+</ul>
+<p><strong>语言选择：</strong></p>
+<ul>
+<li>需要一个有安全性保证的系统级语言</li>
+<li>Cpp 不够，因为需要团队中每个人都是 Cpp 大师才能满足团队安全标准</li>
+<li>Rust 则有编译器，它就像一个大师一样，随时守护每个人编写的代码</li>
+<li>Rust 能保证内存安全和并发安全，意味着，可以让团队专注于业务，降低错误率</li>
+<li>Rust 对底层控制力强，但又不失现代语言的高级特性和抽象能力，可降低项目的维护成本</li>
+</ul>
+<p><strong>飞书架构：</strong></p>
+<p><img src="./images/mobile/feishu.png" alt="feishu" /></p>
+<p>如图，基本架构是通过一个线程池来管理不同的线程进行交互。</p>
+<p><img src="./images/mobile/feishu2.png" alt="feishu2" /></p>
+<p>Rust 进程 和 Swift / Java / NodeJS 通过 FFi 和  Protocol Buffers （类似 RPC）的方式来进行调用。</p>
+<p>Rust 库的模块组织结构如下：</p>
+<p><img src="./images/mobile/feishu3.png" alt="feishu3" /></p>
+<p>每个crate都是独立构建、运行、测试和依赖。底层的一些 crate 不会频繁变动。</p>
+<p>用到的 Rust 技术栈为：</p>
+<p><img src="./images/mobile/feishu4.png" alt="feishu4" /></p>
+<p><strong>遇到的问题：</strong></p>
+<ol>
+<li>优化编译文件大小</li>
+<li>Rust LLVM 和 苹果的 LLVM 版本不同，比特位不兼容 （和 FullStory 公司问题相同）</li>
+</ol>
+<h4 id="苹果商店免费精品游戏piccolo"><a class="header" href="#苹果商店免费精品游戏piccolo">苹果商店免费精品游戏：Piccolo</a></h4>
+<p>Piccolo 是一款适用于 iPhone、iPad 和（通过<a href="https://developer.apple.com/mac-catalyst/">Mac Catalyst</a>）macOS 的 Othello（黑白棋） 应用程序，收获了 AppStore 2022年2月精选和2021年最爱游戏荣誉。</p>
+<p>作者在其<a href="https://nadim.computer/posts/2022-02-11-maccatalyst.html">博客文章</a>里探讨了 Rust 是比 Swfit 更适合编写游戏 AI 模块的语言。</p>
+<p>博客文章主要观点摘要：</p>
+<ul>
+<li>Swift 并不是一种适合高度优化和高性能 AI 编程的语言。比如目前还不支持固定长度数组。</li>
+<li>使用 Rust 编写 Othello AI 模块，并在 iPhone/iPad/macOS 平台之间共享。</li>
+<li>在为 Swift 生成 Rust 绑定时（通过 C-ABI），作者声明在使用<code>cbindgen</code> 这个工具时需要注意，有时会在 Swift 代码的上下文中生成对 C 绑定不友好的函数签名，因为 Swfit 对某些类型支持不完善， 所以还需要在生成之后手工检查一下。</li>
+<li>同样遇到了 Rust 工具链 LLVM 和  Apple 中使用 LLVM 版本不同而导致 BitCode 不兼容的问题。他使用了 <a href="https://github.com/getditto/rust-bitcode">rust-bitcode</a> 来解决这个问题。</li>
+</ul>
+<h4 id="开源产品-appflowy"><a class="header" href="#开源产品-appflowy">开源产品： AppFlowy</a></h4>
+<p><a href="https://www.appflowy.io/">AppFlowy</a>是一款开源的笔记类应用，类似于 Notion 。但 AppFlowy 相比Notion更加灵活，用户不仅可以DIY自己的域名、页面外观，还可以跨多个平台使用。</p>
+<blockquote>
+<p>虽然飞书使用 Rust 开发跨平台组件的细节不得而知，但是据飞书开发成员透露，其应用思路应该和 AppFlowy 是相似的。</p>
+</blockquote>
+<p>AppFlowy 使用 Rust 和 Flutter 来开发，官方也通过一篇文章来介绍 <a href="https://blog-appflowy.ghost.io/tech-design-flutter-rust/">AppFlowy 的整体架构</a>。</p>
+<p>AppFlowy 的前端和后端服务都用到了 Rust。这里主要谈前端架构。</p>
+<p>前端架构 AppFlowy 采用了领域驱动设计（DDD）的概念，采用分层架构</p>
+<blockquote>
+<p>DDD，简单来说，就是业务架构映射到了系统架构之上，并能充分隔离业务和技术的边界。一般通过分层架构和六边形架构实现业务与技术实现的隔离。</p>
+<p>分层架构：遵循“关注点分离”原则来进行上下分层，将属于业务逻辑的关注点放到领域层（Domain Layer）中，而将支撑业务逻辑的技术实现放到基础设施层（Infrastructure Layer）中。另外还有一个应用层（Application Layer），一方面通过暴露业务应用服务的 API 来作为业务的逻辑门面（Facade），另一方面它又是业务和技术实现的粘合剂。</p>
+<p>六边形架构（端口-适配器）：遵循“内外分离”原则来分层。内部代表了应用的业务逻辑，外部代表应用的驱动逻辑、基础设施和其他诸如UI/DB 等层，这样更加清晰地勾勒出业务逻辑与技术实现的边界，且将业务逻辑放在了架构的核心位置。体现业务逻辑的应用层与领域层处于六边形架构的内核，并通过内部的六边形边界与基础设施的模块隔离开。在进行软件开发时，只要恪守架构上的六边形边界，就不会让技术实现的复杂度污染到业务逻辑，保证了领域的整洁。如果我们在领域层或应用层抽象了技术实现的接口，再通过依赖注入将控制的方向倒转，业务内核就会变得更加的稳定，不会因为技术选型或其他决策的变化而导致领域代码的修改。</p>
+</blockquote>
+<p><img src="./images/mobile/appflowy.png" alt="appflowy" /></p>
+<p>AppFlowy 的前端架构分层了两大部分：</p>
+<ul>
+<li>UI 组件：负责 UI 部分，按 DDD 分层架构分为表示层、应用层和领域层。基于 Flutter 实现。
+<ul>
+<li>表示层：由 Widget 和 Widget 的状态组成，负责向用户呈现信息并解释用户命令。</li>
+<li>应用层：不包含任何复杂的业务逻辑，是业务和技术实现的粘合剂。</li>
+<li>领域层：代表业务，管理业务状态或委托给基础设施层。不依赖于任何其他层。</li>
+</ul>
+</li>
+<li>数据组件：负责数据相关逻辑，按 DDD 分层架构是基础设施层。基于 Rust 来实现。
+<ul>
+<li>支持更高层的通用技术能力。它处理 API、持久性、网络等。</li>
+</ul>
+</li>
+</ul>
+<p><img src="./images/mobile/appflowy2.png" alt="appflowy2" /></p>
+<p>抽象层级由基础设施层到表示层递增，复杂度则相反。</p>
+<p><strong>如何跨平台</strong></p>
+<p><img src="./images/mobile/appflowy3.png" alt="appflowy3" /></p>
+<p>拿 Flutter 来说，AppFlowy 通过实现 FlowySDK 来做到跨平台：在 Flutter 中定义接口，在 Rust 中实现接口，然后通过 Dart FFi 来绑定 Rust 实现，利用事件分发机制来。</p>
+<p><img src="./images/mobile/appflowy4.png" alt="appflowy4" /></p>
+<p>这种模式的优点是：</p>
+<ul>
+<li>可以轻松地添加或删除模块。也可以将模块变成动态库并按需加载，从而提高性能。</li>
+<li>方便灵活。FlowySDK 很容易集成到不同的平台，因为它的 FFI 接口很简单。</li>
+<li>更好的控制能力。用不同的 CPU/IO 资源无缝地对不同的事件进行分类。</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>性能问题。 Flutter 和 Rust 之间通信使用 protobuf ，序列化和反序列化有一定开销。</li>
+<li>Event-Dispatch 模式对于开发人员来说心智负担过重。该团队没有使用 <a href="https://github.com/fzyzcjy/flutter_rust_bridge">flutter_rust_bridge</a> ，是因为在他们开发的时候，Flutter 在 Web 和桌面上没有得到很好的支持。介于团队成员只有两人（创业团队），所以选择了Event-Dispatch 这种可以更加减少工作量的方式。</li>
+</ul>
+<p><strong>AppFlowy DDD 架构整体业务处理流程</strong></p>
+<p><img src="./images/mobile/appflowy5.png" alt="appflowy5" /></p>
+<p>流程如下：</p>
+<ol>
+<li>表示层的 Widget UI 小部件与用户互动，并将这些互动转移到特定的 Flutter Bloc 事件中。Bloc 将事件引起的变化发回给 Wdiget，最后，它根据新的状态更新用户界面。这里的 Bloc 代表 DDD 中应用层，它使用领域层提供的资源库或服务来处理 Bloc事件。</li>
+<li>将数据传递给下一层。</li>
+<li>Repository 中定义了实现其业务需求的接口和数据模型。数据模型使用 Rust 中生成的protobuf来描述数据模型。使用protobuf能够更容易地将数据从Flutter端转换到Rust端，或者反之亦然，但序列化和反序列化是有代价的。一般没有问题，但有时在处理图片时会有内存问题，但可以优化。</li>
+<li>将请求序列化为二进制数据，并通过<code>Dart_ffi</code>将其送入<code>FlowySDK</code>。</li>
+<li>调度器（Dispatcher）找到请求的处理程序，然后用其数据调用它。每个模块声明它能处理哪些事件，并向调度器注册自己。</li>
+<li>处理程序将提取二进制数据，并根据事件将其反序列化为一个特定的数据结构，并做一些业务逻辑。</li>
+<li>将返回值序列化为二进制数据，并将其发送至调度器。</li>
+<li>响应包含一个状态代码，二进制数据作为返回值传递给调用者（caller）。</li>
+<li>将二进制数据反序列化为一个特定的 Dart 对象。</li>
+<li>传播<code>protobuf</code>对象到上层</li>
+<li>Bloc 等待 <code>future</code>的完成，如果状态发生变化，则重建 Widget。</li>
+</ol>
+<p><strong>相关</strong></p>
+<p><code>flutter_rust_bridge</code> 的作者 fzyzcjy 也在和 AppFlowy 的开发者沟通，后续 AppFlowy 有可能使用 <code>flutter_rust_bridge</code>，但目前这个进展比较缓慢。</p>
+<h4 id="开源项目glean"><a class="header" href="#开源项目glean">开源项目：Glean</a></h4>
+<p><a href="https://github.com/mozilla/glean">Glean</a>是 Mozilla 开源的一款现代化跨平台遥测（Telemetry）库。它提供了 Glean SDK支持 <code>Rust/  Kotlin / Swift / Python / JavaScript / QML</code> 等多语言和开发环境。其中 <code>Rust/ Kotlin/ Swift/ Python</code>  SDK 是基于一个 Rust core 库来构建的，而 <code>Javascript/ QML</code> 是基于 JavaScript 核心库构建。</p>
+<blockquote>
+<p><em>Telemetry</em>（<em>遥测技术</em>），一般是指从物理网元或者虚拟网元上远程实时高速采集数据，实现对网络实时、高速和更精细的监控技术。</p>
+</blockquote>
+<p><strong>跨平台支持：</strong></p>
+<p>Glean 使用 <a href="https://mozilla.github.io/uniffi-rs/">uniffi-rs</a> 来自动生成 Rust 库 FFi 绑定，通过需要编写一个接口定义语言（基于<a href="https://heycam.github.io/webidl/">WebIDL</a>）文件来描述目标语言可用的方法和数据结构。然后可以生成 Kotlin / Swift 绑定。</p>
+<p><img src="./images/mobile/mozilla.png" alt="mozilla" /></p>
+<h3 id="跨平台开源框架-和-游戏引擎"><a class="header" href="#跨平台开源框架-和-游戏引擎">跨平台开源框架 和 游戏引擎</a></h3>
+<p>除了使用 Rust 开发跨平台共享组件之外，在 Rust 生态中，也有一些框架和游戏引擎来帮助你实现跨平台的应用和游戏。</p>
+<h4 id="gui-框架--tauri"><a class="header" href="#gui-框架--tauri">GUI 框架 ： Tauri</a></h4>
+<p><a href="https://github.com/tauri-apps/tauri">Tauri</a> 主要是用于开发桌面平台，相比于 Electron 来说，更加轻量、性能更好。Tauri 可以使开发者利用每个平台的 Webview 技术栈，通过 JS Api 调用后台接口。目前支持 Windows/ MacOS/ Linux 等平台，对于 iOS / Android 移动平台的支持正在进行中。</p>
+<blockquote>
+<p>1Password 8 使用 Electron 开发，引起很多用户的不满。因为 Electron 占用资源过多，也存在内存泄漏问题和安全隐患。用户们考虑到只是一个密码管理软件，不应该占用过多系统资源。也许未来 Tauri 会是一个好的替代。</p>
+</blockquote>
+<p><strong>Tauri 架构</strong></p>
+<p>Tauri 主要由两大组件构成：</p>
+<ul>
+<li>Tauri Core ，它是一个“伞形”的组织结构，由多个子crate组合而成。
+<ul>
+<li><code>tauri-build</code>，实现了一些宏来帮助 Tauri 使用 Cargo 进行编译</li>
+<li><code>tauri-codegen</code>，用于处理内嵌的资源（assets）</li>
+<li><code>tauri-macros</code>，基于 <code>tauri-codegen</code>为 上下文、处理程序和命令提供了一些宏。</li>
+<li><code>tauri-runtime</code>， WebView 粘合层</li>
+<li><code>tauri-runtime-wry</code>，为tauri自己维护的跨平台渲染库 wry 提供直接的系统级交互，比如打印、监视器检测和其他与窗口相关的任务</li>
+<li><code>tauri-utils</code>，通用代码库。</li>
+<li><code>tauri</code>，门面层抽象，整合了上面几个库，提供最终 API </li>
+</ul>
+</li>
+<li>Tauri Tool，是一个外部工具库
+<ul>
+<li><code>api</code>，是由 TypeScript 实现的，用于创建ESM(ES6Module)和CJS(CommonJS)，便于前端框架导入 js endpoint，这样 Webview 就可以调用并监听后端的活动了。</li>
+<li><code>bundler</code>，由 Rust 实现，实际是改造了<code>cargo-bundle</code> crate，用于为各个操作系统平台打包程序。</li>
+<li><code>cli-rs</code>，Rust 实现的跨平台 Cli 。</li>
+<li><code>cli-js</code>，是对 <code>cli-rs</code>的包装，使用 <code>napi-rs</code>为每个平台生成 npm 包。</li>
+<li><code>webdriver</code>，之前叫<code>tauri-driver</code>，是一个跨平台 WebDriver  Server。</li>
+</ul>
+</li>
+<li>其他
+<ul>
+<li><code>tauri-app/create-tauri-app</code>，TypeScript实现的一个脚手架工具，帮助开发者快速创建 Tauri App。</li>
+</ul>
+</li>
+</ul>
+<p><strong>跨平台支持</strong></p>
+<ul>
+<li><code>tauri-app/tao</code>，纯 Rust 实现的跨平台应用程序窗口创建库，支持 Windows、macOS、Linux、iOS 和 Android 等所有主要平台，基于 <a href="https://github.com/rust-windowing/winit"><code>winit</code></a>二次开发。</li>
+<li><code>tauri-app/wry</code>，纯 Rust 实现的跨平台 WebView 渲染库，支持 Windows、macOS 和 Linux 等所有主要桌面平台。Tauri 使用 WRY 作为抽象层，负责确定使用哪个 webview（以及如何进行交互）。因为现在 iOS 和 macOS 都是用 <code>wkwebview</code>，所以相当于也支持了 iOS 。而对于 Andriod 的支持还在进行中。</li>
+</ul>
+<p><code>tauri-app/tao</code> 利用 Rust 的 trait 和 features 机制，完美实现了跨平台架构：</p>
+<p>使用统一的 <code>Window</code> 、<code>Clipboard</code>、 <code>EventLoop</code> 等窗口抽象：</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Window 抽象
+pub struct Window {
+  pub(crate) window: platform_impl::Window,
+}
+
+// Clipboard 抽象
+#[derive(Debug, Clone, Default)]
+/// Object that allows you to access the `Clipboard` instance.
+pub struct Clipboard(ClipboardPlatform);
+
+// EventLoop 抽象
+pub struct EventLoop&lt;T: 'static&gt; {
+  pub(crate) event_loop: platform_impl::EventLoop&lt;T&gt;,
+  pub(crate) _marker: ::std::marker::PhantomData&lt;*mut ()&gt;, // Not Send nor Sync
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>其内部由 <code>platform_impl</code>门面模块来负责调用各个平台的特定实现：</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[cfg(target_os = &quot;windows&quot;)]
+#[path = &quot;windows/mod.rs&quot;]
+mod platform;
+#[cfg(any(
+  target_os = &quot;linux&quot;,
+  target_os = &quot;dragonfly&quot;,
+  target_os = &quot;freebsd&quot;,
+  target_os = &quot;netbsd&quot;,
+  target_os = &quot;openbsd&quot;
+))]
+#[path = &quot;linux/mod.rs&quot;]
+mod platform;
+#[cfg(target_os = &quot;macos&quot;)]
+#[path = &quot;macos/mod.rs&quot;]
+mod platform;
+#[cfg(target_os = &quot;android&quot;)]
+#[path = &quot;android/mod.rs&quot;]
+mod platform;
+#[cfg(target_os = &quot;ios&quot;)]
+#[path = &quot;ios/mod.rs&quot;]
+mod platform;
+<span class="boring">}
+</span></code></pre></pre>
+<p>对于 <code>tauri-app/wry</code>来说，跨平台架构的实现也是和 <code>tao</code> 类似的。</p>
+<p>建立统一的跨平台抽象：</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// WebView 抽象
+pub struct WebView {
+  window: Rc&lt;Window&gt;,
+  webview: InnerWebView, 
+}
+
+pub struct WebViewBuilder&lt;'a&gt; {
+    pub webview: WebViewAttributes,
+    web_context: Option&lt;&amp;'a mut WebContext&gt;,
+    window: Window,
+}
+
+impl&lt;'a&gt; WebViewBuilder&lt;'a&gt; {
+    pub fn build(self) -&gt; Result&lt;WebView&gt; {
+        let window = Rc::new(self.window);
+        let webview = InnerWebView::new(window.clone(), self.webview, self.web_context)?;
+        Ok(WebView { window, webview })
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>​		而内部的 <code>InnerWebView</code> 则是平台特定行为代码，通过 cfg 和 features 来构造一个统一的门面模块，完成跨平台分发。</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[cfg(target_os = &quot;android&quot;)]
+pub(crate) mod android;
+#[cfg(target_os = &quot;android&quot;)]
+use android::*;
+#[cfg(any(
+  target_os = &quot;linux&quot;,
+  target_os = &quot;dragonfly&quot;,
+  target_os = &quot;freebsd&quot;,
+  target_os = &quot;netbsd&quot;,
+  target_os = &quot;openbsd&quot;
+))]
+pub(crate) mod webkitgtk;
+#[cfg(any(
+  target_os = &quot;linux&quot;,
+  target_os = &quot;dragonfly&quot;,
+  target_os = &quot;freebsd&quot;,
+  target_os = &quot;netbsd&quot;,
+  target_os = &quot;openbsd&quot;
+))]
+use webkitgtk::*;
+#[cfg(any(target_os = &quot;macos&quot;, target_os = &quot;ios&quot;))]
+pub(crate) mod wkwebview;
+#[cfg(any(target_os = &quot;macos&quot;, target_os = &quot;ios&quot;))]
+use wkwebview::*;
+#[cfg(target_os = &quot;windows&quot;)]
+pub(crate) mod webview2;
+#[cfg(target_os = &quot;windows&quot;)]
+use self::webview2::*;
+<span class="boring">}
+</span></code></pre></pre>
+<p>看得出来，使用 Rust 进行跨平台开发，是非常简洁的。</p>
+<h4 id="游戏引擎bevy"><a class="header" href="#游戏引擎bevy">游戏引擎：Bevy</a></h4>
+<p><a href="https://bevyengine.org/">Bevy</a> 是一个数据驱动的游戏引擎，目前在社区的声望很高，也得到了很多公司的赞助。Bevy 也是跨平台的，在主流桌面操作系统（Linux、macOS、Windows）上开箱即用，无需特殊配置。Bevy 的目标还有 Web 浏览器（通过 WebAssembly，有一定限制）、移动设备（Android 和 iOS，可以构建但不一定能运行）和游戏主机（等待支持）。</p>
+<p><strong>跨平台支持</strong></p>
+<p>Bevy 本身的抽象程度比较高，跨平台支持主要是依赖于底层的一些库：</p>
+<ul>
+<li><a href="https://github.com/rust-windowing/winit"><code>winit</code></a>，包装为 <code>bevy_winit</code> crate，来提供跨平台窗口。跟tauri-app 类似。</li>
+<li><a href="https://github.com/gfx-rs/wgpu"><code>wgpu</code></a>，用于 <code>bevy_render</code> crate，来提供跨平台渲染。这样在 <code>bevy_ui</code> 中就不需要关心特定平台细节了。</li>
+<li>其他，比如底层音频库、I/O、Log处理、资源管理等都做了跨平台相关处理。</li>
+</ul>
+<p>这些底层库实现跨平台的模式和上面 Tauri 的架构是相似的。</p>
+<h3 id="一些移动开发工具介绍"><a class="header" href="#一些移动开发工具介绍">一些移动开发工具介绍</a></h3>
+<p><a href="https://github.com/BrainiumLLC/cargo-mobile">cargo-mobile</a> 是一个与框架无关的工具，可以生成 Rust 移动项目的所有样板文件，并且包含大量用于在移动设备上构建和运行的便捷命令，可以提升 Rust 在移动领域的开发体验。目前仅支持 macOS 和 Linux 。</p>
+<p><a href="https://github.com/rust-windowing/android-ndk-rs">ndk-rs</a>， Android NDK 的 Rust 绑定库。该库在 Rust 移动领域生态中应用比较广泛，上面提到到公司产品和项目基本都用到了它。</p>
+<h2 id="android-官方支持-rust-的方式"><a class="header" href="#android-官方支持-rust-的方式">Android 官方支持 Rust 的方式</a></h2>
+<p>自 2019 年以来，Android 团队一直致力于将 Rust 编程语言引入 Android 开源项目 (AOSP)中。在 2021 年 4月，谷歌宣布 Android 开源项目（AOSP）现在支持 Rust 编程语言来开发 OS。</p>
+<p>关键信息摘录：</p>
+<ul>
+<li>
+<p>在 Android 系统中，使用 <a href="https://android.googlesource.com/platform/build/soong/+/refs/heads/master/README.md">Soong</a>来代替 Cargo 作为构建系统和包管理器。但是也注重，Android 生态尽量减少与 Rust 社区的分歧，当有对 Rust 社区有益的贡献时，会以独立 cargo  crate 的方式贡献给社区。之所以不用 Cargo 完全是出于为了在 Android 中扩大使用 Rust 而做的考虑，Cargo 不太适合当前 Android 整体构建环境。</p>
+</li>
+<li>
+<p>不支持 <code>build.rs</code>构建脚本。因为 <code>build.rs</code>需要仔细审查，为了避免在添加或更新第三方时引起供应链攻击之类的事情发生。而且 <code>build.rs</code>的常用功能，Soong 已经支持了。但支持过程宏。</p>
+</li>
+<li>
+<p>仍然支持第三方 crates。</p>
+</li>
+<li>
+<p>默认支持动态链接。Rust 生态是默认静态链接，但是对于 Android 来说，这种方式存在一定问题。因此，默认情况下，Soong 选择为设备目标动态链接 crate。</p>
+</li>
+<li>
+<p>Soong 还提供了对 <code>bindgen</code> / <code>cxx</code>/ <code>protobuf</code>/ <code>grpc</code>等 crates 的支持，为了方便开发。Android 团队充分验证了 Rust 和 C++ 之间的互操作性已经在很大程度上足以在 Android 中方便地使用 Rust。</p>
+</li>
+<li>
+<p>也将 <code>rust-analyzer</code> / <code>clippy</code>/ <code>rustfmt</code>集成到了 构建系统中。</p>
+</li>
+</ul>
+<h2 id="给apple-的一封公开信请用-rust-替换-objective-c"><a class="header" href="#给apple-的一封公开信请用-rust-替换-objective-c">给Apple 的一封公开信：请用 Rust 替换 Objective-C</a></h2>
+<p>IronCore Labs 公司 CEO（ Patrick Walsh ）去年（2021.10）在其官网发布了一篇 <a href="https://blog.ironcorelabs.com/an-open-letter-to-apple-please-please-replace-objective-c-with-rust-10df606c3dce">给Apple 的一封公开信：请用 Rust 替换 Objective-C</a> 的文章，内容摘要：</p>
+<ul>
+<li>iOS 15.1 更新<a href="https://support.apple.com/en-us/HT212867">修复了 22 个漏洞</a>。谢谢你。但在这 22 个漏洞中，至少有 16 个是由于内存错误造成的，包括整数溢出、内存损坏、越界读写、释放后使用、缓冲区溢出等。</li>
+<li>建议 Apple 通过 Rust 与 Swfit 的互操作性，让 Rust 语言成为苹果技术栈中一等公民。</li>
+<li>然后使用 Rust 重写CoreAudio、CoreGraphics 和 WebKit 等关键部分，这些都是现实世界中针对 Apple 客户的攻击的主要载体。</li>
+</ul>
+<p>这是一项艰巨的工作，但它会带来巨大的投资回报。迁移到 Rust 可以消除 70% 的漏洞，并且可能更接近 95% 的可远程利用的漏洞。专注于解析来自不受信任来源的数据的库将使Apple平台更加安全。</p>
+<h2 id="参考"><a class="header" href="#参考">参考</a></h2>
+<ul>
+<li><a href="https://foundation.rust-lang.org/posts/2022-03-08-member-spotlight-1password/">https://foundation.rust-lang.org/posts/2022-03-08-member-spotlight-1password/</a></li>
+<li><a href="https://www.fullstory.com/blog/rust-at-fullstory-part-2-mobile-sdk/">https://www.fullstory.com/blog/rust-at-fullstory-part-2-mobile-sdk/</a></li>
+<li><a href="https://digvijayu.medium.com/building-cross-platform-library-with-rust-for-ios-and-android-c56a448e4804">https://digvijayu.medium.com/building-cross-platform-library-with-rust-for-ios-and-android-c56a448e4804</a></li>
+<li><a href="https://foundation.rust-lang.org/news/2022-03-08-member-spotlight-1password/">https://foundation.rust-lang.org/news/2022-03-08-member-spotlight-1password/</a></li>
+<li><a href="https://foundation.rust-lang.org/news/2022-03-08-member-spotlight-1password/">https://dteare.medium.com/behind-the-scenes-of-1password-for-linux-d59b19143a23</a></li>
+<li><a href="https://github.com/QConChina/QConBeijing2019/tree/master/%E7%A7%BB%E5%8A%A8%E6%96%B0%E7%94%9F%E6%80%81">https://github.com/QConChina/QConBeijing2019/tree/master/%E7%A7%BB%E5%8A%A8%E6%96%B0%E7%94%9F%E6%80%81</a></li>
+<li><a href="https://rustrepo.com/repo/i-schuetz-rust_android_ios-rust-mobile">https://rustrepo.com/repo/i-schuetz-rust_android_ios-rust-mobile</a></li>
+<li><a href="https://github.com/Dushistov/flapigen-rs">https://github.com/Dushistov/flapigen-rs</a></li>
+<li><a href="https://github.com/ivanschuetz/wasm-rust-d3">https://github.com/ivanschuetz/wasm-rust-d3</a></li>
+<li><a href="https://github.com/Co-Epi/app-backend-rust">https://github.com/Co-Epi/app-backend-rust</a></li>
+<li><a href="https://macroquad.rs/tutorials/android/">https://macroquad.rs/tutorials/android/</a></li>
+<li><a href="http://dockone.io/article/2434630">http://dockone.io/article/2434630</a></li>
+<li><a href="https://dev.to/tauri/announcing-tauri-beta-more-efficient-crossplatform-apps-with-better-features-1nbd">https://dev.to/tauri/announcing-tauri-beta-more-efficient-crossplatform-apps-with-better-features-1nbd</a></li>
+<li><a href="https://tauri.studio/docs/development/security">https://tauri.studio/docs/development/security</a></li>
+<li><a href="https://rustmagazine.github.io/rust_magazine_2021/chapter_5/running_rust_on_android.html">https://rustmagazine.github.io/rust_magazine_2021/chapter_5/running_rust_on_android.html</a></li>
+<li><a href="https://source.android.com/setup/build/rust/building-rust-modules/overview">https://source.android.com/setup/build/rust/building-rust-modules/overview</a></li>
+<li><a href="https://blog.mozilla.org/data/2022/01/31/this-week-in-glean-building-and-deploying-a-rust-library-on-ios/">https://blog.mozilla.org/data/2022/01/31/this-week-in-glean-building-and-deploying-a-rust-library-on-ios/</a></li>
+<li><a href="https://blog.ironcorelabs.com/an-open-letter-to-apple-please-please-replace-objective-c-with-rust-10df606c3dce">https://blog.ironcorelabs.com/an-open-letter-to-apple-please-please-replace-objective-c-with-rust-10df606c3dce</a></li>
+<li><a href="https://nadim.computer/posts/2022-02-11-maccatalyst.html">https://nadim.computer/posts/2022-02-11-maccatalyst.html</a></li>
+<li><a href="https://security.googleblog.com/2021/06/rustc-interop-in-android-platform.html">https://security.googleblog.com/2021/06/rustc-interop-in-android-platform.html</a></li>
+<li><a href="https://source.android.com/setup/build/rust/building-rust-modules/android-rust-modules">https://source.android.com/setup/build/rust/building-rust-modules/android-rust-modules</a></li>
+</ul>
+
+                    </main>
+
+                    <script src="https://utteranc.es/client.js"
+                    repo="RustMagazine/rust_magazine_2022"
+                    issue-term="title"
+                    theme="github-light"
+                    crossorigin="anonymous"
+                    async></script>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../Q1/contribute/rust-for-linux-clk.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../../Q1/contribute/hw-tls-rfc.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../Q1/contribute/rust-for-linux-clk.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../../Q1/contribute/hw-tls-rfc.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../../ace.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../editor.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../mode-rust.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../theme-dawn.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../theme-tomorrow_night.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        <script type="text/javascript" src="../../mermaid.min.js"></script>
+        <script type="text/javascript" src="../../mermaid-init.js"></script>
+        <script type="text/javascript" src="../../smart-anchor.js"></script>
+    </body>
+</html>

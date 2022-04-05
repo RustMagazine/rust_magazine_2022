@@ -1,0 +1,390 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js rust">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>DatenLord | async-rdma:使高性能网络应用开发更简单 - Rust Magazine 2022</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="The roots aren&#x27;t deep but the seeds are planted!">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../../highlight.css">
+        <link rel="stylesheet" href="../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "rust";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../../Q1/toc.html"><strong aria-hidden="true">1.</strong> 2022-Q1</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/lang.html"><strong aria-hidden="true">1.1.</strong> 官方动态</a></li><li class="chapter-item "><a href="../../Q1/hots.html"><strong aria-hidden="true">1.2.</strong> 社区热点</a></li><li class="chapter-item "><a href="../../Q1/learns.html"><strong aria-hidden="true">1.3.</strong> 学习资源</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/learns/projects.html"><strong aria-hidden="true">1.3.1.</strong> 开源项目</a></li><li class="chapter-item "><a href="../../Q1/learns/blogs.html"><strong aria-hidden="true">1.3.2.</strong> 博文教程</a></li><li class="chapter-item "><a href="../../Q1/learns/open-courses.html"><strong aria-hidden="true">1.3.3.</strong> 高校公开课</a></li><li class="chapter-item "><a href="../../Q1/learns/videos.html"><strong aria-hidden="true">1.3.4.</strong> 线上视频</a></li></ol></li><li class="chapter-item "><a href="../../Q1/academic.html"><strong aria-hidden="true">1.4.</strong> 学术动态</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/academic/rust.html"><strong aria-hidden="true">1.4.1.</strong> Rust</a></li><li class="chapter-item "><a href="../../Q1/academic/wasm.html"><strong aria-hidden="true">1.4.2.</strong> WebAssembly</a></li></ol></li><li class="chapter-item "><a href="../../Q1/opensource.html"><strong aria-hidden="true">1.5.</strong> 领域开源</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/opensource/data.html"><strong aria-hidden="true">1.5.1.</strong> 数据处理</a></li><li class="chapter-item "><a href="../../Q1/opensource/cloud.html"><strong aria-hidden="true">1.5.2.</strong> 云原生</a></li><li class="chapter-item "><a href="../../Q1/opensource/game.html"><strong aria-hidden="true">1.5.3.</strong> 游戏与图像处理</a></li><li class="chapter-item "><a href="../../Q1/opensource/os.html"><strong aria-hidden="true">1.5.4.</strong> 操作系统</a></li><li class="chapter-item "><a href="../../Q1/opensource/cliapp.html"><strong aria-hidden="true">1.5.5.</strong> 命令行工具</a></li><li class="chapter-item "><a href="../../Q1/opensource/performance.html"><strong aria-hidden="true">1.5.6.</strong> 性能工具</a></li><li class="chapter-item "><a href="../../Q1/opensource/network.html"><strong aria-hidden="true">1.5.7.</strong> 网络基建</a></li><li class="chapter-item "><a href="../../Q1/opensource/web.html"><strong aria-hidden="true">1.5.8.</strong> Web开发</a></li><li class="chapter-item "><a href="../../Q1/opensource/mobile.html"><strong aria-hidden="true">1.5.9.</strong> 移动开发</a></li><li class="chapter-item "><a href="../../Q1/opensource/frontend.html"><strong aria-hidden="true">1.5.10.</strong> 前端基建</a></li><li class="chapter-item "><a href="../../Q1/opensource/av.html"><strong aria-hidden="true">1.5.11.</strong> 音视频处理</a></li><li class="chapter-item "><a href="../../Q1/opensource/lang-with-rust.html"><strong aria-hidden="true">1.5.12.</strong> 基于Rust的新编程语言</a></li><li class="chapter-item "><a href="../../Q1/opensource/embedded.html"><strong aria-hidden="true">1.5.13.</strong> 嵌入式Rust</a></li><li class="chapter-item "><a href="../../Q1/opensource/scientific-research.html"><strong aria-hidden="true">1.5.14.</strong> 科学艺术</a></li><li class="chapter-item "><a href="../../Q1/opensource/tools.html"><strong aria-hidden="true">1.5.15.</strong> 其他工具</a></li></ol></li><li class="chapter-item "><a href="../../Q1/security.html"><strong aria-hidden="true">1.6.</strong> 安全动态</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/security/unsound.html"><strong aria-hidden="true">1.6.1.</strong> 不健全（Unsound）</a></li><li class="chapter-item "><a href="../../Q1/security/memory.html"><strong aria-hidden="true">1.6.2.</strong> 内存安全问题（Memory）</a></li><li class="chapter-item "><a href="../../Q1/security/memory.html"><strong aria-hidden="true">1.6.3.</strong> 拒绝服务（Dos）</a></li><li class="chapter-item "><a href="../../Q1/security/others.html"><strong aria-hidden="true">1.6.4.</strong> 其他</a></li></ol></li><li class="chapter-item "><a href="../../Q1/business.html"><strong aria-hidden="true">1.7.</strong> 商业动态</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/business/practices.html"><strong aria-hidden="true">1.7.1.</strong> 生产实践</a></li><li class="chapter-item "><a href="../../Q1/business/products.html"><strong aria-hidden="true">1.7.2.</strong> 优秀产品</a></li><li class="chapter-item "><a href="../../Q1/business/blockchain.html"><strong aria-hidden="true">1.7.3.</strong> 区块链</a></li></ol></li><li class="chapter-item "><a href="../../Q1/libs.html"><strong aria-hidden="true">1.8.</strong> Rust 基础库</a></li><li class="chapter-item expanded "><a href="../../Q1/contribute.html"><strong aria-hidden="true">1.9.</strong> 投稿精选</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/contribute/atom.html"><strong aria-hidden="true">1.9.1.</strong> DatenLord | Rust原子类型和内存排序</a></li><li class="chapter-item expanded "><a href="../../Q1/contribute/async-rdma.html" class="active"><strong aria-hidden="true">1.9.2.</strong> DatenLord | async-rdma:使高性能网络应用开发更简单</a></li><li class="chapter-item "><a href="../../Q1/contribute/rust-for-linux-clk.html"><strong aria-hidden="true">1.9.3.</strong> Rust for Linux 源码导读 | Rust 驱动开发与通用时钟管理框架抽象</a></li><li class="chapter-item "><a href="../../Q1/contribute/rust-mobile.html"><strong aria-hidden="true">1.9.4.</strong> Rust 移动开发与跨平台模式探究</a></li><li class="chapter-item "><a href="../../Q1/contribute/hw-tls-rfc.html"><strong aria-hidden="true">1.9.5.</strong> 华为 | RFC 8446 &amp; 8998 TLS 1.3总结</a></li><li class="chapter-item "><a href="../../Q1/contribute/async-cancel.html"><strong aria-hidden="true">1.9.6.</strong> Rust 异步与取消</a></li><li class="chapter-item "><a href="../../Q1/contribute/rfc-2603.html"><strong aria-hidden="true">1.9.7.</strong> RFC 2603: Rust Symbol Name Mangling v0</a></li><li class="chapter-item "><a href="../../Q1/contribute/rust-dyn-link.html"><strong aria-hidden="true">1.9.8.</strong> Rust与动态链接</a></li><li class="chapter-item "><a href="../../Q1//contribute/naive-bayes.html"><strong aria-hidden="true">1.9.9.</strong> 使用Rust实现朴素贝叶斯（Naive Bayes）算法</a></li></ol></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust Magazine 2022</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/RustMagazine/rust_magazine_2022" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="async-rdma使高性能网络应用开发更简单"><a class="header" href="#async-rdma使高性能网络应用开发更简单">async-rdma:使高性能网络应用开发更简单</a></h1>
+<p>作者：王恒宇</p>
+<blockquote>
+<p>王恒宇，中科院软件所基础软件实验室研究生。主要研究方向为软硬件融合，对物联网、操作系统、Serverless等方向感兴趣。DatenLord社区async-rdma项目贡献者之一，曾获嵌入式芯片与系统设计竞赛一等奖等多项国家级奖项，参与编写《openEuler操作系统》一书。</p>
+</blockquote>
+<p><a href="https://github.com/datenlord/async-rdma">async-rdma</a>是由<a href="https://github.com/datenlord">DatenLord社区</a>发起的Rust异步RDMA编程库，致力于提升高性能网络应用的开发效率。在介绍async-rdma之前我们先来了解一下RDMA的概念及其使用方式。</p>
+<h2 id="rdma简介"><a class="header" href="#rdma简介">RDMA简介</a></h2>
+<p>RDMA(Remote Direct Memory Access)直译为远程直接内存访问，是一种将一台主机内存中的内容直接传输到另一台主机内存中的技术。
+计算机中常用的DMA技术避免了CPU忙于将数据从I/O设备拷贝到内存，RDMA则将这一能力拓展到了通过网络连接的多台主机之间。</p>
+<p>RDMA在初始化阶段完成后可以由用户态程序通过用户态驱动直接操作RDMA网卡收发数据，无需陷入内核，避免了上下文切换，也无需CPU进行内存拷贝。
+凭借绕过内核(kernel bypass)和零拷贝(zero copy)等特性，RDMA能以极低的CPU占用率实现高吞吐、低时延网络通信。
+这里简要介绍下文中用到的RDMA的核心概念，若想进一步了解RDMA的细节可以关注知乎的<a href="https://zhuanlan.zhihu.com/p/164908617">系列博客</a>，或更进一步翻阅<a href="https://cw.infinibandta.org/document/dl/8566">RDMA协议规范</a>了解细节。</p>
+<ul>
+<li>
+<p>MR(Memory Region)：RDMA应用程序向操作系统申请和注册的一片内存，用于后续RDMA操作。MR不光有地址和长度，还包含其他RDMA特有的元数据，如权限位，除本地读写权限还有远端读写权限等。</p>
+</li>
+<li>
+<p>两种操作类型：</p>
+<ol>
+<li>
+<p>单端操作(SEND &amp; RECV)</p>
+<ul>
+<li>发送、接收数据，一端Send前需要对端先Receive</li>
+<li>对端CPU需要感知每次收发操作</li>
+<li>用于交换元数据等小数据量操作</li>
+</ul>
+</li>
+<li>
+<p>双端操作(READ &amp; WRITE)</p>
+<ul>
+<li>直接对目标主机内存进行读写，请求发送前后对端无需进行操作</li>
+<li>对端CPU不感知单端操作，读写完成后网卡自动响应</li>
+<li>RDMA的主要优势所在，适用于大数据量传输</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+<h2 id="现有rdma开发方法"><a class="header" href="#现有rdma开发方法">现有RDMA开发方法</a></h2>
+<p>我们使用Socket API编写基于TCP/IP的网络应用，基于RDMA的网络应用开发则使用由C语言编写的Verbs API。
+Verbs API提供了统一的编程接口，屏蔽了RDMA底层协议复杂多样的实现，保障了应用程序的通用性。
+以下是两个Verbs API实例，暂且不关注其各个参数的具体含义，只观察其类型就可以发现其中隐含的内存安全问题。
+我们无法确定裸指针所指数据是否有效，在开发过程中很容易遇到空指针、野指针、内存泄露和多次释放等常见内存安全问题。</p>
+<pre><code class="language-c">// 注册MR，使用前需先申请内存
+struct ibv_mr *ibv_reg_mr(struct ibv_pd *pd, void *addr, size_t length, enum ibv_access_flags access)
+// 数据请求发送接口
+int ibv_post_send(struct ibv_qp *qp, struct ibv_send_wr *wr, struct ibv_send_wr **bad_wr)
+</code></pre>
+<p>Rust提供了以上内存安全问题的高效解决方案，从语言层面帮助我们避免了上述问题。
+DatenLord社区提供了Verbs API的Rust封装库：<a href="https://github.com/datenlord/rdma-sys">rdma-sys</a>。</p>
+<h2 id="为什么要做async-rdma"><a class="header" href="#为什么要做async-rdma">为什么要做async-rdma？</a></h2>
+<p>然而，Verbs API低层级抽象导致的开发效率低的问题是单纯使用Rust封装所无法解决的。
+这就是为什么有了rdma-sys库后还要再做一个async-rdma。
+具体来说，就<code>ibv_post_send()</code>接口而言,参数所用到的数据结构是非常复杂的，直接操作这些参数需要对RDMA有很深入的了解，这会给开发者带来很大认知负担，并且使用时极易出错。
+以下是Verbs复杂数据结构的一个例子供大家体会，其成员变量还包含其他让人头大的数据结构。</p>
+<pre><code class="language-c">// Verbs复杂数据结构示意，无需关注细节
+struct ibv_send_wr 
+{
+    uint64_t wr_id;
+    struct ibv_send_wr *next;
+    struct ibv_sge *sg_list;
+    int num_sge;
+    enum ibv_wr_opcode opcode;
+    enum ibv_send_flags send_flags;
+    uint32_t imm_data;/* network byte order */
+    union
+    {
+        struct 
+        {
+            uint64_t remote_addr;
+            uint32_t rkey;
+        } rdma;
+        struct 
+        {
+            uint64_t remote_addr;
+            uint64_t compare_add;
+            uint64_t swap;
+            uint32_t rkey;
+        } atomic;
+        struct 
+        {
+            struct ibv_ah *ah;
+            uint32_t remote_qpn;
+            uint32_t remote_qkey;
+        } ud;
+    } wr;
+    uint32_t xrc_remote_srq_num;
+};
+</code></pre>
+<h3 id="简化api"><a class="header" href="#简化api">简化API</a></h3>
+<p>每次发送数据请求都要处理这些复杂的数据结构显然是非常痛苦的。
+因此async-rdma的首项工作就是对这些数据结构之间的关系进行整理，简化操作逻辑。
+例如库中的<code>Rdma</code>数据结构记录了双端建立稳定连接所需的各种参数，后续通信过程中用到相关数据可直接复用而无需用户填充。
+通过高层次抽象的数据结构封装，使得每次数据操作只需要用户填入必要的信息。</p>
+<p>如下代码所示，申请注册MR时用户只需要指定存放的数据类型或大小即可。
+SEND操作也只需要指定要发送哪个MR的数据，底层Verbs接口所用到的复杂参数由库填充。
+当然，为了实现操作的便捷性，库中除了提供类型间转换的逻辑外，还使用了一些默认参数。
+这些对于这些参数将提供修改接口供进阶开发者配置。</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 在本地申请一片存放i32类型数据的用于RDMA操作的内存空间。
+let mut lmr = rdma.alloc_local_mr(Layout::new::&lt;i32&gt;())?;
+// 将上述申请的内存区域中的数据发送到对端。
+rdma.send(&amp;lmr).await?;
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="辅助资源管理"><a class="header" href="#辅助资源管理">辅助资源管理</a></h3>
+<p>只将这些参数的处理过程进行封装也还是不够的，因为这解决不了资源管理困难的问题。
+复杂的数据结构背后是各种需要管理的资源，如本地注册的内存和从远端申请的内存，以及它们的状态、权限等。</p>
+<p>要达到在远端主机CPU不感知的情况下对其内存进行读写，需要双端事先和事后交换元数据用以申请和释放远端资源。
+即不光要管理本地资源，还要与远端主机协同管理远端资源，相比传统的网络应用开发复杂性更高。
+async-rdma提供了Verbs API之外面向应用层语义的上层接口，使得建立连接、远端资源协同管理等操作变得简单。</p>
+<p>在建立连接时，后台会自动运行Agent服务线程，其接收到上层接口发出的请求后，通过与远端Agent交互进行元数据交换，完成建立连接、远端资源申请释放等操作。
+借助于Rust的生命周期机制，当本地或远端资源被Drop时，Agent会清理本地资源或自动向远端发送资源释放的请求，开发者无需感知。
+以下代码展示了建立连接、申请本地和远端内存，通过RDMA WRITE操作通信和最终资源释放的过程。</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>/// 模拟客户端链接服务端
+async fn client(addr: SocketAddrV4) -&gt; io::Result&lt;()&gt; {
+    // 通过TCP连接远端，与远端交换用于建立稳定连接的元数据并启动Agent
+    // 连接建立后，后续元数据交换通过RDMA SEND RECV操作进行
+    let rdma = Rdma::connect(addr, 1, 1, 512).await?;
+    // 申请一块本地用于RDMA操作的内存(MR)
+    let mut lmr = rdma.alloc_local_mr(Layout::new::&lt;i32&gt;())?;
+    // 申请一块远端的内存(MR)
+    let mut rmr = rdma.request_remote_mr(Layout::new::&lt;i32&gt;()).await?;
+    // 将要发送的数据填入本地MR
+    unsafe { *(lmr.as_ptr() as *mut i32) = 666 };
+    // 通过RDMA WRITE操作将本地内存所存数据写入远端内存，远端不感知也无需处理本次请求
+    rdma.write(&amp;lmr, &amp;mut rmr).await?;
+    // rmr会在生命周期结束时向远端发送释放请求, lmr释放逻辑只需在本地执行。
+    Ok(())
+}
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="异步io"><a class="header" href="#异步io">异步I/O</a></h3>
+<p>如本项目名中的<code>async</code>，本库提供的涉及I/O的接口都是异步的。
+使用Verbs API时，每一次RDMA SEND、WRITE等请求后，都需要使用<code>poll()</code>方法轮询接收对端应答，才能确定请求是否正确完成。
+首先忙等肯定是低效的，当然也可以由开发者实现异步逻辑，但轮询到的响应是前面哪次请求的也不确定，需要额外的逻辑去判断。</p>
+<p>为了避免所有开发者都实现一遍上述逻辑，我们借助tokio实现了异步的RDMA请求处理逻辑。
+当前task发出RDMA请求后即让出，当对端响应事件返回本机后，由后台服务程序唤醒与响应信息对应的task。
+这避免了忙等开销，也无需开发者处理请求与响应间的对应关系，详细实现可见仓库中的<a href="https://github.com/datenlord/async-rdma/blob/master/doc/event_listener_arch.md">文档</a>。
+当然，事件驱动的异步逻辑在提高机器利用效率的同时可能会带来一定时延。对低时延有极致要求的场景可以牺牲效率换取低时延，有相关需求的朋友可以参与贡献忙等接口。</p>
+<h2 id="结语"><a class="header" href="#结语">结语</a></h2>
+<p>总结一下，async-rdma主要提供了以下接口和功能：</p>
+<ul>
+<li>
+<p>用于主机之间建立RDMA稳定连接的异步接口，如<code>connect()</code>。</p>
+</li>
+<li>
+<p>高抽象层级的异步RDMA数据收发操作接口，如<code>write()</code>。</p>
+</li>
+<li>
+<p>高抽象层级的异步远端RDMA内存管理接口和本地RDMA内存管理接口，如<code>alloc_remote_mr()</code>。</p>
+</li>
+<li>
+<p>用于支持上述异步接口，以及辅助管理远端内存的后台服务，如<code>Agent</code>。</p>
+</li>
+</ul>
+<p>除此之外，async-rdma还在不断完善错误的自动处理和提供尽可能详细的错误提示信息。
+Verbs API在进行MR的管理或数据传输操作时遇到错误只返回系统错误代码，包含的信息很少。
+有的错误处理逻辑会出现上层错误代码覆盖底层错误代码，返回对开发者具有误导性的错误代码。
+一些错误在自己的应用程序中很难发现，要到用户态驱动甚至内核代码中去找。
+这显然是极为低效和不友好的，也是async-rdma想要解决的问题。</p>
+<p>当前async-rdma尚处于早期开发阶段，提供了常用功能接口，但项目在稳定性等方面仍有待加强。
+DatenLord的目标是将其打造成产品级软件，使之能够广泛应用于生产环境中。</p>
+<p>我们近期的主要开发目标如下：</p>
+<ol>
+<li>提高内存管理效率，改造通用内存分配器jemalloc使其能够分配MR，减少MR注册等慢速路径操作数量。</li>
+<li>完善错误处理，使后台服务尝试自动处理错误，并在尝试失败后返回详细错误信息和操作建议。</li>
+<li>完善测试，包括单元测试，压力测试，性能测试等，以发现潜在问题和辅助性能调优。</li>
+<li>提供更多配置接口，当前一些配置参数为默认值且尚未给出用户自定义接口，缺乏灵活性。</li>
+</ol>
+<p>其中目标3、4不需要对RDMA或者本项目有非常深入的了解，只需了解对外暴露的上层接口，或熟悉Rust语言即可。
+因此非常适合想要入门的朋友参与贡献，社区也会提供引导和帮助。
+我们为每一个接口都提供了说明文档和使用样例，同时提供了在虚拟机中搭建RDMA应用运行环境的配置指南(无需特殊硬件支持)，此前未接触过RDMA的朋友也可以尝试。
+欢迎大家提出问题和建议，欢迎对本项目感兴趣的朋友加入DatenLord社区一起参与贡献。</p>
+<p>DatenLord社区的主项目为高性能分布式存储系统：datenlord，async-rdma是其子项目之一，更多项目见<a href="https://github.com/datenlord">社区github仓库</a>。</p>
+<h2 id="相关链接"><a class="header" href="#相关链接">相关链接</a></h2>
+<ul>
+<li>async-rdma
+<ul>
+<li>Github: <a href="https://github.com/datenlord/async-rdma">https://github.com/datenlord/async-rdma</a></li>
+<li>Crate: <a href="https://crates.io/crates/async-rdma">https://crates.io/crates/async-rdma</a></li>
+<li>Docs: <a href="https://docs.rs/async-rdma/0.1.0/async_rdma">https://docs.rs/async-rdma/0.1.0/async_rdma</a></li>
+</ul>
+</li>
+<li>rdma-sys: <a href="https://github.com/datenlord/rdma-sys">https://github.com/datenlord/rdma-sys</a></li>
+<li>DatenLord: <a href="https://github.com/datenlord">https://github.com/datenlord</a></li>
+<li>RDMA专栏文章: <a href="https://zhuanlan.zhihu.com/p/164908617">https://zhuanlan.zhihu.com/p/164908617</a></li>
+<li>RDMA协议规范: <a href="https://cw.infinibandta.org/document/dl/8566">https://cw.infinibandta.org/document/dl/8566</a></li>
+</ul>
+
+                    </main>
+
+                    <script src="https://utteranc.es/client.js"
+                    repo="RustMagazine/rust_magazine_2022"
+                    issue-term="title"
+                    theme="github-light"
+                    crossorigin="anonymous"
+                    async></script>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../Q1/contribute/atom.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../../Q1/contribute/rust-for-linux-clk.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../Q1/contribute/atom.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../../Q1/contribute/rust-for-linux-clk.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../../ace.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../editor.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../mode-rust.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../theme-dawn.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../theme-tomorrow_night.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        <script type="text/javascript" src="../../mermaid.min.js"></script>
+        <script type="text/javascript" src="../../mermaid-init.js"></script>
+        <script type="text/javascript" src="../../smart-anchor.js"></script>
+    </body>
+</html>

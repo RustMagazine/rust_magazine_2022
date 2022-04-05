@@ -1,0 +1,1680 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js rust">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>华为 | RFC 8446 &amp; 8998 TLS 1.3总结 - Rust Magazine 2022</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="The roots aren&#x27;t deep but the seeds are planted!">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../../highlight.css">
+        <link rel="stylesheet" href="../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "rust";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../../Q1/toc.html"><strong aria-hidden="true">1.</strong> 2022-Q1</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/lang.html"><strong aria-hidden="true">1.1.</strong> 官方动态</a></li><li class="chapter-item "><a href="../../Q1/hots.html"><strong aria-hidden="true">1.2.</strong> 社区热点</a></li><li class="chapter-item "><a href="../../Q1/learns.html"><strong aria-hidden="true">1.3.</strong> 学习资源</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/learns/projects.html"><strong aria-hidden="true">1.3.1.</strong> 开源项目</a></li><li class="chapter-item "><a href="../../Q1/learns/blogs.html"><strong aria-hidden="true">1.3.2.</strong> 博文教程</a></li><li class="chapter-item "><a href="../../Q1/learns/open-courses.html"><strong aria-hidden="true">1.3.3.</strong> 高校公开课</a></li><li class="chapter-item "><a href="../../Q1/learns/videos.html"><strong aria-hidden="true">1.3.4.</strong> 线上视频</a></li></ol></li><li class="chapter-item "><a href="../../Q1/academic.html"><strong aria-hidden="true">1.4.</strong> 学术动态</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/academic/rust.html"><strong aria-hidden="true">1.4.1.</strong> Rust</a></li><li class="chapter-item "><a href="../../Q1/academic/wasm.html"><strong aria-hidden="true">1.4.2.</strong> WebAssembly</a></li></ol></li><li class="chapter-item "><a href="../../Q1/opensource.html"><strong aria-hidden="true">1.5.</strong> 领域开源</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/opensource/data.html"><strong aria-hidden="true">1.5.1.</strong> 数据处理</a></li><li class="chapter-item "><a href="../../Q1/opensource/cloud.html"><strong aria-hidden="true">1.5.2.</strong> 云原生</a></li><li class="chapter-item "><a href="../../Q1/opensource/game.html"><strong aria-hidden="true">1.5.3.</strong> 游戏与图像处理</a></li><li class="chapter-item "><a href="../../Q1/opensource/os.html"><strong aria-hidden="true">1.5.4.</strong> 操作系统</a></li><li class="chapter-item "><a href="../../Q1/opensource/cliapp.html"><strong aria-hidden="true">1.5.5.</strong> 命令行工具</a></li><li class="chapter-item "><a href="../../Q1/opensource/performance.html"><strong aria-hidden="true">1.5.6.</strong> 性能工具</a></li><li class="chapter-item "><a href="../../Q1/opensource/network.html"><strong aria-hidden="true">1.5.7.</strong> 网络基建</a></li><li class="chapter-item "><a href="../../Q1/opensource/web.html"><strong aria-hidden="true">1.5.8.</strong> Web开发</a></li><li class="chapter-item "><a href="../../Q1/opensource/mobile.html"><strong aria-hidden="true">1.5.9.</strong> 移动开发</a></li><li class="chapter-item "><a href="../../Q1/opensource/frontend.html"><strong aria-hidden="true">1.5.10.</strong> 前端基建</a></li><li class="chapter-item "><a href="../../Q1/opensource/av.html"><strong aria-hidden="true">1.5.11.</strong> 音视频处理</a></li><li class="chapter-item "><a href="../../Q1/opensource/lang-with-rust.html"><strong aria-hidden="true">1.5.12.</strong> 基于Rust的新编程语言</a></li><li class="chapter-item "><a href="../../Q1/opensource/embedded.html"><strong aria-hidden="true">1.5.13.</strong> 嵌入式Rust</a></li><li class="chapter-item "><a href="../../Q1/opensource/scientific-research.html"><strong aria-hidden="true">1.5.14.</strong> 科学艺术</a></li><li class="chapter-item "><a href="../../Q1/opensource/tools.html"><strong aria-hidden="true">1.5.15.</strong> 其他工具</a></li></ol></li><li class="chapter-item "><a href="../../Q1/security.html"><strong aria-hidden="true">1.6.</strong> 安全动态</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/security/unsound.html"><strong aria-hidden="true">1.6.1.</strong> 不健全（Unsound）</a></li><li class="chapter-item "><a href="../../Q1/security/memory.html"><strong aria-hidden="true">1.6.2.</strong> 内存安全问题（Memory）</a></li><li class="chapter-item "><a href="../../Q1/security/memory.html"><strong aria-hidden="true">1.6.3.</strong> 拒绝服务（Dos）</a></li><li class="chapter-item "><a href="../../Q1/security/others.html"><strong aria-hidden="true">1.6.4.</strong> 其他</a></li></ol></li><li class="chapter-item "><a href="../../Q1/business.html"><strong aria-hidden="true">1.7.</strong> 商业动态</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/business/practices.html"><strong aria-hidden="true">1.7.1.</strong> 生产实践</a></li><li class="chapter-item "><a href="../../Q1/business/products.html"><strong aria-hidden="true">1.7.2.</strong> 优秀产品</a></li><li class="chapter-item "><a href="../../Q1/business/blockchain.html"><strong aria-hidden="true">1.7.3.</strong> 区块链</a></li></ol></li><li class="chapter-item "><a href="../../Q1/libs.html"><strong aria-hidden="true">1.8.</strong> Rust 基础库</a></li><li class="chapter-item expanded "><a href="../../Q1/contribute.html"><strong aria-hidden="true">1.9.</strong> 投稿精选</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/contribute/atom.html"><strong aria-hidden="true">1.9.1.</strong> DatenLord | Rust原子类型和内存排序</a></li><li class="chapter-item "><a href="../../Q1/contribute/async-rdma.html"><strong aria-hidden="true">1.9.2.</strong> DatenLord | async-rdma:使高性能网络应用开发更简单</a></li><li class="chapter-item "><a href="../../Q1/contribute/rust-for-linux-clk.html"><strong aria-hidden="true">1.9.3.</strong> Rust for Linux 源码导读 | Rust 驱动开发与通用时钟管理框架抽象</a></li><li class="chapter-item "><a href="../../Q1/contribute/rust-mobile.html"><strong aria-hidden="true">1.9.4.</strong> Rust 移动开发与跨平台模式探究</a></li><li class="chapter-item expanded "><a href="../../Q1/contribute/hw-tls-rfc.html" class="active"><strong aria-hidden="true">1.9.5.</strong> 华为 | RFC 8446 &amp; 8998 TLS 1.3总结</a></li><li class="chapter-item "><a href="../../Q1/contribute/async-cancel.html"><strong aria-hidden="true">1.9.6.</strong> Rust 异步与取消</a></li><li class="chapter-item "><a href="../../Q1/contribute/rfc-2603.html"><strong aria-hidden="true">1.9.7.</strong> RFC 2603: Rust Symbol Name Mangling v0</a></li><li class="chapter-item "><a href="../../Q1/contribute/rust-dyn-link.html"><strong aria-hidden="true">1.9.8.</strong> Rust与动态链接</a></li><li class="chapter-item "><a href="../../Q1//contribute/naive-bayes.html"><strong aria-hidden="true">1.9.9.</strong> 使用Rust实现朴素贝叶斯（Naive Bayes）算法</a></li></ol></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust Magazine 2022</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/RustMagazine/rust_magazine_2022" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="华为--rfc-8446--8998-tls-13总结"><a class="header" href="#华为--rfc-8446--8998-tls-13总结">华为 | RFC 8446 &amp; 8998 TLS 1.3总结</a></h1>
+<p>作者：王江桐、薛磊、陈明煜</p>
+<blockquote>
+<p>本篇为 RFC 8446 TLS 1.3 内容整理与概述，非完整中文翻译，对于一些内容有顺序调整、添加说明、跳过和省略。RFC 8446 英文原文可见 https://datatracker.ietf.org/doc/html/rfc8446，中文网站自动翻译可见 https://rfc2cn.com/rfc8446.html。</p>
+</blockquote>
+<h2 id="tls-13概述"><a class="header" href="#tls-13概述">TLS 1.3概述：</a></h2>
+<ul>
+<li>服务端永远需要验证，客户端可选验证</li>
+<li>组成部分：握手 (Handshake，协商链接的安全参数) 和 记录协议层（Record Protocol）</li>
+<li>与之前版本不完全兼容</li>
+<li><strong>大端</strong>传输 [p19]</li>
+<li>禁止重协商</li>
+<li>包括四种类型内容：
+<ul>
+<li>handshake</li>
+<li>application_data</li>
+<li>alert</li>
+<li>change_cipher_spec，仅为兼容性目的使用</li>
+</ul>
+</li>
+</ul>
+<h2 id="12-与-tls-12-差异"><a class="header" href="#12-与-tls-12-差异">1.2 与 TLS 1.2 差异</a></h2>
+<h4 id="主要差异"><a class="header" href="#主要差异">主要差异</a></h4>
+<ul>
+<li>修改了握手流程以及握手状态机，使得握手流程更加高效安全
+<ul>
+<li>ServerHello之后的所有握手消息现在都已加密。新引入的 EncryptedExtensions 消息允许以前在服务器Hello中以明文形式发送的各种扩展也可以享受保密保护</li>
+<li>合并 Hello 消息以及密钥交换消息</li>
+<li>修改恢复握手机制，使用 PSK 以及对应的 NewSessionTicket 消息，废弃 TLS 1.2 中的 SessionID 以及原来的 Ticket 模式</li>
+<li>废弃 TLS 1.2 版本的协商机制，使用 supported_versions 扩展表示支持 TLS 1.3，而非使用 Hello 消息中的版本参数</li>
+<li>删除例如 ChangeCipherSpec 等的冗余消息，只出于兼容性考虑保留部分处理机制</li>
+<li>废弃压缩模式，删除椭圆曲线算法的点格式协商</li>
+<li>添加重试机制</li>
+<li>添加了 0-RTT（零往返时间）模式，以牺牲某些安全属性为代价，在连接设置时为某些应用程序数据节省了往返时间</li>
+</ul>
+</li>
+<li>增加了新的扩展</li>
+<li>增加了 post-handshake 流程</li>
+<li>修改密码套成员以及主密钥计算方式
+<ul>
+<li>将密钥交换算法的协商从密码包中分离出来</li>
+<li>对于对称算法，只支持使用 AEAD</li>
+<li>对于其他算法，去除了不安全的算法（如 MD5 与 SHA1），添加了新的算法（如 Ed25519 / 448）</li>
+<li>对关键的密钥派生函数进行了重新设计。主密钥现在将通过 HKDF 计算，而非 PRF</li>
+</ul>
+</li>
+</ul>
+<h4 id="国密与-tls-13"><a class="header" href="#国密与-tls-13">国密与 TLS 1.3</a></h4>
+<p>TLS 1.3 与国密算法支持的定义于 <a href="https://datatracker.ietf.org/doc/html/rfc8998">RFC 8998</a> 中。对于 TLS 1.3 的主要修改如下：</p>
+<ul>
+<li>在算法套中新增国密算法套
+<ul>
+<li>AEAD：TLS_SM4_GCM_SM3，TLS_SM4_CCM_SM3</li>
+<li>签名算法：sm2sig_sm3</li>
+<li>密钥交换算法：curveSM2</li>
+</ul>
+</li>
+</ul>
+<p>RFC 8998 没有仔细规定如何使用密钥交换，可参考国家密码局规范 <a href="http://www.gmbz.org.cn/main/viewfile/20180110021416665180.html">GMT 0024-2014 《SSL VPN 技术规范》</a>，使用 SM2 密钥交换时，双方必须互相发送证书，交换彼此公钥，再通过一般方式交换 DH 计算得出的 DH 公钥。</p>
+<h4 id="细节表"><a class="header" href="#细节表">细节表</a></h4>
+<table><thead><tr><th>大项</th><th>具体</th><th>TLS 1.3</th><th>TLS 1.2 及 之前版本</th><th></th></tr></thead><tbody>
+<tr><td>握手</td><td>握手流程</td><td>客户端在 ClientHello 的扩展中发送密钥交换相关信息</td><td>客户端在 Certificate 之后发送 ClientKeyExchange</td><td>改</td></tr>
+<tr><td></td><td></td><td>不使用 HelloRequest</td><td>HelloRequest</td><td>删</td></tr>
+<tr><td></td><td></td><td>使用 HelloRetryRequest</td><td></td><td>增</td></tr>
+<tr><td></td><td>握手设置</td><td>不使用压缩</td><td></td><td>删</td></tr>
+<tr><td></td><td>post-handshake</td><td>TLS 1.3 有 post-handshake 机制，使用 application traffic key 加密，可发送 NewSessionTicket Msg，验证，更新密钥</td><td>TLS 1.2 在 Finished 之后更改密钥需要重新握手，即重协商，但是这个有安全问题</td><td>改</td></tr>
+<tr><td></td><td>版本表示</td><td>使用 supported_versions 扩展</td><td>使用 ClientHello.client_version / ServerHello.server_version</td><td>改</td></tr>
+<tr><td></td><td>ClientHello</td><td>废弃使用 SessionID，使用一个随机数</td><td>使用 SessionID</td><td>删</td></tr>
+<tr><td></td><td></td><td>不使用 PRF</td><td>cipher suites 要声明 PRF 算法</td><td>删</td></tr>
+<tr><td></td><td>ServerHello</td><td>ServerHello 之后消息全部加密</td><td></td><td>改</td></tr>
+<tr><td></td><td>Finished Msg</td><td>verify_data 长度取决于 HMAC 计算的结果</td><td>verify_data 长度固定为12字节</td><td>改</td></tr>
+<tr><td></td><td></td><td>使用 HMAC</td><td>使用 PRF</td><td>改</td></tr>
+<tr><td></td><td>0-RTT 模式</td><td>可以发送 EarlyData</td><td></td><td>增</td></tr>
+<tr><td>恢复</td><td></td><td>废弃 Session ID / Ticket 机制，改用 PSK (Pre-Shared Secret Key)</td><td>Session ID / Ticket</td><td>改</td></tr>
+<tr><td></td><td></td><td>resumption-PSK 也需要协商扩展，每一次握手都需要协商扩展</td><td></td><td>增</td></tr>
+<tr><td>记录层</td><td>nonce 计算</td><td>见 #5.2</td><td>使用明确的 nonce [p83，#5.3]</td><td>改</td></tr>
+<tr><td></td><td>version</td><td>废弃之前版本使用的 TLSPlaintext.lagacy_record_version / TLSCiphertext.lagacy_record_version，出于兼容性目的保留，但是并不使用</td><td></td><td>删</td></tr>
+<tr><td></td><td>TLSCiphertext.length</td><td>长度限制为 2^14 + 255</td><td>长度限制为 2^14 + 2048</td><td>改</td></tr>
+<tr><td></td><td>TLSCiphertext</td><td>encrypted_record -&gt; AEAD 结果</td><td>fragment -&gt; 加密 + MAC</td><td>改</td></tr>
+<tr><td></td><td>密钥计算</td><td>使用 HKDF；密钥的长度和哈希算法的输出长度保持一致；密钥计算与 TLS 1.2 不同</td><td>使用 PRF [p64，#8.1；p25，#6.3]；master secret 长度为48字节 [p17]</td><td>改</td></tr>
+<tr><td>内容类型</td><td>ChangeCipherSpec</td><td>不使用，出于兼容性目的会发送和略过指定值</td><td></td><td>删</td></tr>
+<tr><td>算法</td><td>对称算法</td><td>仅保留 AEAD</td><td></td><td>删</td></tr>
+<tr><td></td><td>(EC)DHE</td><td>根据指定位数填充高位位数不足的0</td><td>之前版本会去除高位的0</td><td>改</td></tr>
+<tr><td></td><td></td><td>废弃未验证的DH密码套</td><td></td><td>删</td></tr>
+<tr><td></td><td>KDF</td><td>使用 HKDF</td><td>使用 KDF</td><td>改</td></tr>
+<tr><td></td><td>ECC</td><td>新算法</td><td></td><td>增</td></tr>
+<tr><td></td><td>ECC</td><td>去除点格式协商，只能使用未压缩格式点</td><td></td><td>改</td></tr>
+<tr><td></td><td>RSA</td><td>使用 RSASSA-PSS</td><td></td><td>增</td></tr>
+<tr><td>扩展</td><td>supported_groups</td><td>重命名为 supported_groups，签名算法独立协商，不一起协商</td><td>原名 elliptic_curves，且只包括椭圆曲线算法，并且同时用于协商 ECDSA 的曲线</td><td>改</td></tr>
+<tr><td></td><td>supported_groups</td><td>删除不安全加密套，保留 AEAD</td><td></td><td>删</td></tr>
+<tr><td></td><td>算法套结构体</td><td>改名为 SignatureScheme。signature_algorithms 这一扩展有别的定义</td><td>枚举 SignatureAlgorithm</td><td>改</td></tr>
+<tr><td></td><td>SCT</td><td>SCT 信息作为扩展和 CertificateEntry 一起发送</td><td>SCT 作为扩展和 ServerHello 一起发送</td><td>改</td></tr>
+<tr><td></td><td>OCSP Status and SCT</td><td>OCSP 信息在 CertificateEntry 中附带，且 status_request 扩展必须保持 CertificateStatus 结构</td><td>扩展值为空来表示协商该扩展，并将 OSCP 信息放到 CertificateStatus Msg中</td><td>改</td></tr>
+<tr><td></td><td>Exporters</td><td>使用 HKDF 代替 PRF，且 context 为空或长度为0时，在 TLS 1.3 中，计算结果是<strong>相同</strong>的</td><td>使用 TLS pseudorandom function (PRF)。context 为空或长度为0时，计算结果<strong>不同</strong></td><td>改</td></tr>
+<tr><td></td><td>trusted_ca_keys</td><td>废弃</td><td></td><td>删</td></tr>
+<tr><td></td><td>status_request_v2</td><td>废弃</td><td></td><td>删</td></tr>
+<tr><td></td><td>cookie</td><td>可以使用 cookie</td><td></td><td>增</td></tr>
+<tr><td>Alert</td><td>Closure alert</td><td>对于 close_notify，发送表明发送方不会再发送新的消息了，随后发送的信息应当被忽略。必须在结束写链接之前发送，除非发送了 error alert。对于读链接没有影响。</td><td>此前版本中，收到 close_notify 之后，另外一方必须中断写，并且立马发送 close_notify。</td><td>改</td></tr>
+</tbody></table>
+<h4 id="所有算法套"><a class="header" href="#所有算法套">所有算法套</a></h4>
+<table><thead><tr><th>值</th><th>RFC</th><th>出现位置</th><th>算法名</th></tr></thead><tbody>
+<tr><td>0x13,0x01</td><td>8446</td><td>ClientHello / ServerHello.cipher_suites</td><td>TLS_AES_128_GCM_SHA256</td></tr>
+<tr><td>0x13,0x02</td><td>8446</td><td>ClientHello / ServerHello.cipher_suites</td><td>TLS_AES_256_GCM_SHA384</td></tr>
+<tr><td>0x13,0x03</td><td>8446</td><td>ClientHello / ServerHello.cipher_suites</td><td>TLS_CHACHA20_POLY1305_SHA256</td></tr>
+<tr><td>0x13,0x04</td><td>8446</td><td>ClientHello / ServerHello.cipher_suites</td><td>TLS_AES_128_CCM_SHA256</td></tr>
+<tr><td>0x13,0x05</td><td>8446</td><td>ClientHello / ServerHello.cipher_suites</td><td>TLS_AES_128_CCM_8_SHA256</td></tr>
+<tr><td>0x00,0xC6</td><td>8998</td><td>ClientHello / ServerHello.cipher_suites</td><td>TLS_SM4_GCM_SM3</td></tr>
+<tr><td>0x00,0xC7</td><td>8998</td><td>ClientHello / ServerHello.cipher_suites</td><td>TLS_SM4_CCM_SM3</td></tr>
+<tr><td></td><td></td><td></td><td></td></tr>
+<tr><td>0x0401</td><td>8446</td><td>signature_algorithm(_cert) 扩展</td><td>rsa_pkcs1_sha256</td></tr>
+<tr><td>0x0501</td><td>8446</td><td>signature_algorithm(_cert) 扩展</td><td>rsa_pkcs1_sha384</td></tr>
+<tr><td>0x0601</td><td>8446</td><td>signature_algorithm(_cert) 扩展</td><td>rsa_pkcs1_sha512</td></tr>
+<tr><td>0x0403</td><td>8446</td><td>signature_algorithm(_cert) 扩展</td><td>ecdsa_secp256r1_sha256</td></tr>
+<tr><td>0x0503</td><td>8446</td><td>signature_algorithm(_cert) 扩展</td><td>ecdsa_secp384r1_sha384</td></tr>
+<tr><td>0x0603</td><td>8446</td><td>signature_algorithm(_cert) 扩展</td><td>ecdsa_secp521r1_sha512</td></tr>
+<tr><td>0x0804</td><td>8446</td><td>signature_algorithm(_cert) 扩展</td><td>rsa_pss_rsae_sha256</td></tr>
+<tr><td>0x0805</td><td>8446</td><td>signature_algorithm(_cert) 扩展</td><td>rsa_pss_rsae_sha384</td></tr>
+<tr><td>0x0806</td><td>8446</td><td>signature_algorithm(_cert) 扩展</td><td>rsa_pss_rsae_sha512</td></tr>
+<tr><td>0x0807</td><td>8446</td><td>signature_algorithm(_cert) 扩展</td><td>ed25519</td></tr>
+<tr><td>0x0808</td><td>8446</td><td>signature_algorithm(_cert) 扩展</td><td>ed448</td></tr>
+<tr><td>0x0809</td><td>8446</td><td>signature_algorithm(_cert) 扩展</td><td>rsa_pss_pss_sha256</td></tr>
+<tr><td>0x080a</td><td>8446</td><td>signature_algorithm(_cert) 扩展</td><td>rsa_pss_pss_sha384</td></tr>
+<tr><td>0x080b</td><td>8446</td><td>signature_algorithm(_cert) 扩展</td><td>rsa_pss_pss_sha512</td></tr>
+<tr><td>0x0201</td><td>8446</td><td>signature_algorithm(_cert) 扩展</td><td>rsa_pkcs1_sha1</td></tr>
+<tr><td>0x0203</td><td>8446</td><td>signature_algorithm(_cert) 扩展</td><td>ecdsa_sha1</td></tr>
+<tr><td>0x0708</td><td>8998</td><td>signature_algorithm(_cert) 扩展</td><td>sm2sig_sm3</td></tr>
+<tr><td></td><td></td><td></td><td></td></tr>
+<tr><td>0x0017</td><td>8446</td><td>supported_groups 扩展</td><td>secp256r1</td></tr>
+<tr><td>0x0018</td><td>8446</td><td>supported_groups 扩展</td><td>secp384r1</td></tr>
+<tr><td>0x0019</td><td>8446</td><td>supported_groups 扩展</td><td>secp521r1</td></tr>
+<tr><td>0x001D</td><td>8446</td><td>supported_groups 扩展</td><td>x25519</td></tr>
+<tr><td>0x001E</td><td>8446</td><td>supported_groups 扩展</td><td>x448</td></tr>
+<tr><td>0x0100</td><td>8446</td><td>supported_groups 扩展</td><td>ffdhe2048</td></tr>
+<tr><td>0x0101</td><td>8446</td><td>supported_groups 扩展</td><td>ffdhe3072</td></tr>
+<tr><td>0x0102</td><td>8446</td><td>supported_groups 扩展</td><td>ffdhe4096</td></tr>
+<tr><td>0x0103</td><td>8446</td><td>supported_groups 扩展</td><td>ffdhe6144</td></tr>
+<tr><td>0x0104</td><td>8446</td><td>supported_groups 扩展</td><td>ffdhe8192</td></tr>
+<tr><td>0x0029</td><td>8998</td><td>supported_groups 扩展</td><td>curveSM2</td></tr>
+</tbody></table>
+<h3 id="2-握手流程"><a class="header" href="#2-握手流程">2. 握手流程</a></h3>
+<p>状态机可见附录A。</p>
+<h4 id="无-retry-p11---p13"><a class="header" href="#无-retry-p11---p13">无 Retry [p11 - p13]</a></h4>
+<p><img src="./images/tls/image-20220307100849872-16473259891991.png" alt="1" /></p>
+<ol>
+<li>
+<p>客户端发送 ClientHello</p>
+<ul>
+<li>
+<p>ClientHello 中：</p>
+<ul>
+<li>CipherSuites：提供 AEAD / HKDF 哈希算法对</li>
+<li>random：32位随机数</li>
+</ul>
+</li>
+<li>
+<p>TLS 1.3 以 supported_versions 扩展表示 1.3 版本</p>
+</li>
+<li>
+<p>使用 (EC)DHE 的选项 → supported_groups 扩展 + key_share 扩展</p>
+<ul>
+<li>supported_groups 扩展表示可用的算法</li>
+<li>key_share 扩展由多个 KeyShareEntry 组成一个 vector，每一个 KeyShareEntry 表示了其使用的算法，以及算法计算得出的交换公钥</li>
+</ul>
+</li>
+<li>
+<p>使用 PSK 的选项 → pre_shared_key 扩展 + psk_key_exchange_modes 扩展</p>
+<ul>
+<li>pre_shared_key 扩展表示 psk 的 identity，即具体选择哪个 psk。一次握手可能有多个 ticket
+<ul>
+<li>psk 由两种方式获得：Ticket，或者在 TLS 1.3 协议之外协商</li>
+<li>psk、上一次握手中的 resumption_master_secret、ticket 之间的关系为：
+<ul>
+<li>psk = HKDF_Expand_Label( resumption_master_secret, &quot;resumption&quot;, ticket_nounce, Hash.length )</li>
+</ul>
+</li>
+<li>NewSessionTicket.ticket = PskIdentity.identity</li>
+</ul>
+</li>
+<li>psk_key_exchange_modes 扩展表示，仅使用 psk，或使用 psk + (EC)DHE。使用 psk + (EC)DHE 时，必须包括 key_share 扩展</li>
+<li><strong>如果使用 psk，则不验证书</strong></li>
+</ul>
+</li>
+<li>
+<p>signature_algorithms：使用的签名算法，<strong>需要校验服务器证书时必选</strong></p>
+<ul>
+<li>如果证书签名算法不同，可以考虑发送 signature_algorithms_cert 表示证书签名算法</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>服务器发送 ServerHello</p>
+<ul>
+<li>ServerHello：
+<ul>
+<li>cipher_suite：选择的密码套</li>
+</ul>
+</li>
+<li>选择使用 (EC)DHE：发送 key_share 扩展</li>
+<li>选择使用 psk：发送 pre_shared_key 扩展，包含一个 identity 索引号</li>
+<li><u><em>使用 psk 的话，需要根据客户端的 psk mode 使用</em></u></li>
+<li><strong>必选</strong>：发送 EncryptedExtensions 扩展</li>
+</ul>
+</li>
+<li>
+<p>服务端：</p>
+<p>3.1 要求验证客户端身份：发送 CertificateRequest 扩展</p>
+<p>3.2 不选择使用 psk：发送服务端证书 + CertificateVerify</p>
+<p>3.3 发送 Finished</p>
+</li>
+</ol>
+<p>​</p>
+<ol start="4">
+<li>
+<p>客户端回应：</p>
+<p>4.1 如果被要求验证身份：发送客户端证书 + CertificateVerify</p>
+<p>4.2 发送 Finished</p>
+</li>
+</ol>
+<h4 id="21-retry-p14"><a class="header" href="#21-retry-p14">2.1 Retry [p14]</a></h4>
+<p><img src="./images/tls/image-20220307101111437-16473259891992.png" alt="image-20220307101111437" /></p>
+<ol>
+<li>
+<p>客户端发送 ClientHello，同无 Retry 流程</p>
+<ul>
+<li>KeyShareClientHello，即 ClientHello 的 key_share 扩展，客户端可以将算法值的列表长度设为0，强制要求服务端发送 Retry，来看服务端选择什么算法，再进行计算</li>
+</ul>
+</li>
+<li>
+<p>服务器发送 HelloRetryRequest，与 ServerHello 结构一致</p>
+<ul>
+<li>
+<p>场景：</p>
+<ul>
+<li>服务端挑的 (EC)DHE group 在客户端中没有匹配的 key_share 扩展</li>
+</ul>
+</li>
+<li>
+<p>HelloRetryRequest (ServerHello)：</p>
+<ul>
+<li>
+<p>cipher_suite：选择的密码套</p>
+</li>
+<li>
+<p>将 random 的值设为：</p>
+<blockquote>
+<p>CF 21 AD 74 E5 9A 61 11 BE 1D 8C 02 1E 65 B8 91 </p>
+<p>C2 A2 11 16 7A BB 8C 5E 07 9E 09 E2 C8 A8 33 9C</p>
+</blockquote>
+</li>
+<li>
+<p><strong>必须</strong>包括 supported_versions 扩展</p>
+</li>
+<li>
+<p>包括 key_share 扩展，选择一个服务器想使用的算法。这一算法可能不在客户端第一次的 ClientHello 算法套中</p>
+</li>
+<li>
+<p>可选：包含 cookie 扩展</p>
+<ul>
+<li>cookie：服务端并不会存储上一次 ClientHello 的值，在 cookie 中包含使用它计算的哈希值，便于服务端下一次校验</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>选择使用 (EC)DHE：发送 key_share 扩展</p>
+</li>
+<li>
+<p>选择使用 psk：发送 pre_shared_key 扩展，包含一个 identity 索引号</p>
+</li>
+</ul>
+</li>
+<li>
+<p>客户端再次发送 ClientHello：</p>
+<ul>
+<li>
+<p>再次发送 ClientHello，在其中复读同样的消息，但是作如下修改：</p>
+<ul>
+<li>
+<p>如果 HelloRetryRequest 包含指定 key_share 扩展，回复时只包括该指定扩展</p>
+</li>
+<li>
+<p><strong>可选</strong>移除与服务端不兼容的 PSK，也可以不移除</p>
+</li>
+<li>
+<p>如果 HelloRetryRequest 包含 cookie 扩展，回复时也包含 cookie 扩展</p>
+<ul>
+<li>cookie：复读发送过来的 cookie</li>
+</ul>
+</li>
+<li>
+<p>移除 Early Data</p>
+</li>
+<li>
+<p>如果含有 pre_shared_key 扩展，重新计算 obfuscated_ticket_age 和 binder values</p>
+</li>
+<li>
+<p><strong>可选</strong>添加、移除、修改 padding 扩展的长度，也可以不修改</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>服务端发送 ServerHello，之后同无 Retry 流程</p>
+</li>
+</ol>
+<h4 id="22-psk--resumption-p15---17"><a class="header" href="#22-psk--resumption-p15---17">2.2 PSK &amp;&amp; Resumption [p15 - 17]</a></h4>
+<p><img src="./images/tls/image-20220307101208774-16473259892003.png" alt="image-20220307101208774" /></p>
+<p>TLS 1.3 恢复握手也需要完整的协商流程。使用 psk，则服务端不需要发送证书验证身份。</p>
+<h4 id="23-0-rtt-数据-early-data"><a class="header" href="#23-0-rtt-数据-early-data">2.3 0-RTT 数据 (Early Data)</a></h4>
+<p>PSK情况下可以提早发数据，使用 PSK 计算出来的密钥加密 Early Data，但是安全属性会比其他 TLS 数据更弱一些：没有向前秘密性，不能保证不会被重放攻击（不像 1-RTT，有随机数）。</p>
+<p>例如：</p>
+<p><img src="./images/tls/image-20220307103640015-16473259892004.png" alt="image-20220307103640015" /></p>
+<p>流程同之前。0-RTT 数据使用 pre_shared_key 扩展中第一个 psk 计算得出的密钥加密。数据同时可以被包含在 pre_shared_key 中，如果包含，则放在 identities 列表的首位，identities[0] 的值即为 0-RTT 数据的值。</p>
+<p>如果服务端要求 Retry，则客户端不可以再发送 0-RTT 数据。</p>
+<h3 id="3-基础数据结构"><a class="header" href="#3-基础数据结构">3. 基础数据结构</a></h3>
+<h3 id="4-握手协议协商安全参数"><a class="header" href="#4-握手协议协商安全参数">4. 握手协议：协商安全参数</a></h3>
+<ul>
+<li>Enum HandShakeType：p25</li>
+</ul>
+<p><img src="./images/tls/image-20220307111418744-16473259892005.png" alt="image-20220307111418744" /></p>
+<ul>
+<li>Struct Handshake：p25</li>
+</ul>
+<p><img src="./images/tls/image-20220307111451572-16473259892006.png" alt="image-20220307111451572" /></p>
+<h4 id="41-key-exchange-msg"><a class="header" href="#41-key-exchange-msg">4.1 Key Exchange Msg</a></h4>
+<h5 id="411-密码套协商"><a class="header" href="#411-密码套协商">4.1.1 密码套协商</a></h5>
+<p>通过在 ClientHello 中提供以下选项来协商：</p>
+<ul>
+<li>
+<p>CipherSuites: AEAD / HKDF pairs</p>
+</li>
+<li>
+<p>supported_groups 扩展：(EC)DHE 支持；key_share 扩展：包括 (EC)DHE shares</p>
+</li>
+<li>
+<p>signature_algorithms 扩展：支持哪些签名</p>
+</li>
+<li>
+<p>pre_shared_key 扩展：支持的 Symmetric Key Identities；psk_key_exchange_mode 扩展：PSK可用的密钥交换模式</p>
+</li>
+</ul>
+<p>服务端响应：</p>
+<ul>
+<li>
+<p>当服务端不选择 PSK：</p>
+<ul>
+<li>服务端挑个密码套，(EC)DHE 组 &amp;&amp; 交换秘密，签名 / 证书算法套</li>
+</ul>
+</li>
+<li>
+<p>当服务端选择 PSK：</p>
+<ul>
+<li>服务端挑个密码套，(EC)DHE 组 &amp;&amp; 交换秘密，签名 / 证书算法套，<strong>选择密钥交换模式</strong></li>
+</ul>
+</li>
+<li>
+<p>如果服务端挑的 (EC)DHE group 在客户端中没有匹配的 key_share 扩展：</p>
+<ul>
+<li><strong>HelloRetryRequest Msg</strong></li>
+</ul>
+</li>
+<li>
+<p>如果服务端最后无法和客户端协商合适的参数，服务端必须终止握手，并返回 <strong>handshake_faliure</strong> 或者 <strong>insufficient_security alert</strong></p>
+</li>
+<li>
+<p>如果一切都顺利，在 ServerHello 中：</p>
+<ul>
+<li>如果选择 PSK
+<ul>
+<li>发送 pre_shared_key 扩展</li>
+</ul>
+</li>
+<li>如果选择 (EC)DHE
+<ul>
+<li>发送 key_share 扩展。如果此时 PSK 没有选择，那么一定会选择 (EC)DHE</li>
+</ul>
+</li>
+<li>如果通过证书验证，服务器会发送 Certificate 以及 CertificateVerify。要不选择 PSK ，要不选择证书验证，不可以同时选择，除非之后的 RFC 对此有说明。</li>
+</ul>
+</li>
+</ul>
+<h5 id="412-clienthello"><a class="header" href="#412-clienthello">4.1.2 ClientHello</a></h5>
+<p><img src="./images/tls/image-20220307144330109-16473259892007.png" alt="image-20220307144330109" /></p>
+<p>参数：</p>
+<ul>
+<li><strong>lagacy_version</strong> 字段值一定是 0x0303，这个是 TLS 1.2 的版本号
+<ul>
+<li>supported_versions 扩展：将 0x0304 作为最高版本</li>
+</ul>
+</li>
+<li>random：随机数</li>
+<li>legacy_session_id：必须设置且非空非单个0，TLS 1.3 之前版本使用之前的 session_id，TLS 1.3 版本生成新的32字节值，不必是随机值，但是要求不可预测</li>
+<li>cipher_suits：对称加密算法套，将作为记录保护算法（包括一个密钥长度），HKDF 使用的哈希算法，根据客户端的优先级排序。如果使用 PSK，那么必须包含至少一个密码套，该密码套提供该 PSK 可使用的哈希。具体值可见 B.4。</li>
+<li>legacy_compression_methods：兼容 TLS 1.2，但是对于 TLS 1.3，这里必须被设置为单字节值<code>[0]</code>，表示 Null</li>
+<li>extensions：额外扩展，见 #4.2，有 些扩展是必须的
+<ul>
+<li><strong>TLS 1.3 一定会包括拓展</strong>，可以通过 compression_methods 之后是否还有字节判断</li>
+<li>如果服务端不支持客户端的一些扩展，客户端<strong>可能</strong>会终止握手</li>
+</ul>
+</li>
+</ul>
+<p>ClientHello 是客户端链接时必须发送的第一条消息。<strong>如果 Early Data 可用，在等待下一条消息时，客户端会传输 early Application Data</strong>。</p>
+<p>如果收到 HelloRetryRequest，客户端必须再次发送 ClientHello，并在其中复读同样的消息，除非：</p>
+<ul>
+<li>HelloRetryRequest 包含指定 key_share 扩展，回复时只包括该指定扩展</li>
+<li>HelloRetryRequest 包含 cookie 扩展，回复时也包含 cookie 扩展</li>
+<li>移除 Early Data</li>
+<li>如果含有 pre_shared_key 扩展，重新计算 obfuscated_ticket_age 和 binder values。可选：移除与服务端不兼容的 PSK</li>
+<li>可选：添加、移除、修改 padding 扩展的长度</li>
+<li><em>其他等扩展或后续 RFC 规定</em></li>
+</ul>
+<p>服务端对于 ClientHello 的响应：</p>
+<ul>
+<li>TLS 1.3 禁止重协商，如果在不正确的时机收到 ClientHello，服务端终止链接并返回 <strong>unexpected_message alert</strong></li>
+<li>ClientHello 中的密码套如果服务端不用，无视就行，其他照旧</li>
+<li>如果协商版本为 TLS 1.3，且 ClientHello.legacy_compression_methods 值不为单字节<code>[0]</code>，那么服务端终止链接，返回 <strong>illegal_parameter alert</strong>；如果协商版本含有老版本 e.g. 客户端是老版本，那么这一字段可能不为单字节<code>[0]</code>，按照老版本的 RFC 走</li>
+<li>extensions：无视不兼容的扩展
+<ul>
+<li>首先检查 compression_field 之后是否含有扩展，只有 supported_veresions 扩展存在时，对方是 TLS 1.3</li>
+<li>如果是 TLS 1.3，那么 compression_method 之后包含合理的扩展，且在扩展之后无额外数据；如果不是且旧版本不包括扩展，那么 compression_field 之后应该没有额外的字节。如果不是以上两种情况，返回 <strong>decode_error alert</strong></li>
+</ul>
+</li>
+</ul>
+<h5 id="413-serverhello"><a class="header" href="#413-serverhello">4.1.3 ServerHello</a></h5>
+<p><img src="./images/tls/image-20220307152220014-16473259892008.png" alt="image-20220307152220014" /></p>
+<p>参数说明：</p>
+<ul>
+<li>lagacy_version：TLS 1.3 由扩展 supported_versions 字段标识版本，该字段值为 0x0303，是 TLS 1.2 的版本号</li>
+<li>random：随机数生成器，当协商 TLS 1.2 / 1.1 时，最后8字节会被覆写，应与客户端的 random 生成独立
+<ul>
+<li>协商 TLS 1.2，最后8字节为：<code>44 4F 57 4E 47 52 44 01</code></li>
+<li>协商 TLS 1.1 或更低版本，最后8字节为：<code>44 4F 57 4E 47 52 44 00</code></li>
+<li><strong>防止协议降级</strong></li>
+</ul>
+</li>
+<li>legacy_session_id_echo：复读</li>
+<li>cipher_suite：单一的、服务端选择使用的密码套，密码套来自于客户端提供的列表</li>
+<li>lagacy_compression_method：值为0</li>
+<li>extensions：只包括用于建立密码用上下文以及协商版本号的扩展。所有 TLS 1.3 的 ServerHello <strong>必须</strong>包括 supported_versions 扩展。可包括 pre_shared_key 与 / 或 key_share。其余扩展通过 EncryptedExtensions 信息发送。</li>
+</ul>
+<p>ServerHello 会复读 ClientHello 中的参数，表明选择的具体参数。</p>
+<p>客户端响应：</p>
+<ul>
+<li>复读的 lagacy_session_id_echo 与发送的不同时，终止握手并返回 <strong>illegal_parameter alert</strong></li>
+<li>服务端回复、决定使用的密码套不是客户端列表内的密码套，终止握手并返回 <strong>illegal_parameter alert</strong>
+<ul>
+<li>如果此前收到 HelloRetryRequest，检查两次回复中的密码套是否是同一个，如果不是，终止握手并返回 <strong>illegal_parameter alert</strong></li>
+</ul>
+</li>
+<li>验证 random，如果对方宣称版本是 TLS 1.2，验证最后8字节是否为<code>44 4F 57 4E 47 52 44 01</code>，如果宣称是更低版本（1.1以及更低），验证最后8字节是否为<code>44 4F 57 4E 47 52 44 00</code>。如果匹配，则宣称的版本不对（这个是 TLS 1.3 的操作），终止握手并返回 <strong>illegal_parameter alert</strong>
+<ul>
+<li><em>此处与 RFC 5246 不同，实际上很多 TLS 1.2 服务端和客户端不会这样检查</em></li>
+</ul>
+</li>
+</ul>
+<h5 id="414-helloretryrequest"><a class="header" href="#414-helloretryrequest">4.1.4 HelloRetryRequest</a></h5>
+<p>与 ServerHello 结构基本相同，但是将 random 的值设为：</p>
+<blockquote>
+<p>CF 21 AD 74 E5 9A 61 11 BE 1D 8C 02 1E 65 B8 91 </p>
+<p>C2 A2 11 16 7A BB 8C 5E 07 9E 09 E2 C8 A8 33 9C</p>
+</blockquote>
+<p>(这个是 &quot;HelloRetryRequest&quot; 的 Sha256 值)</p>
+<p>必须包括 supported_versions 扩展，必须包含最少的、可以让客户端生成正确 ClientHello 的扩展。<strong>除了 cookie 扩展，不能包括任何客户端之前没有提到的扩展</strong>。</p>
+<p>客户端响应：</p>
+<ul>
+<li>
+<p>检查 Random 值是否是如下值，以此标识 HelloRetryRequest ：</p>
+<blockquote>
+<p>CF 21 AD 74 E5 9A 61 11 BE 1D 8C 02 1E 65 B8 91 </p>
+<p>C2 A2 11 16 7A BB 8C 5E 07 9E 09 E2 C8 A8 33 9C</p>
+</blockquote>
+</li>
+<li>
+<p>验证 legacy_version，legacy_session_id_echo，cipher_suite，legacy_compression_method</p>
+<ul>
+<li>从验证 supported_versions 扩展开始
+<ul>
+<li>如果值改变，终止握手并返回 <strong>illegal_parameter alert</strong></li>
+</ul>
+</li>
+<li>如果 HelloRetryRequest之后，ClientHello 不做任何改变，那么 终止握手并返回 <strong>illegal_parameter alert</strong></li>
+</ul>
+</li>
+<li>
+<p>如果第二次收到 HelloRetryRequest，终止握手并返回 <strong>unexpected_message alert</strong></p>
+</li>
+<li>
+<p><strong>必须</strong>处理所有 HelloRetryRequest 中包含的扩展，然后发送第二个 ClientHello</p>
+</li>
+</ul>
+<p>旧版本的 TLS 客户端进行重协商时，如果在重协商过程中收到 TLS 1.3 的 ServerHello，应当终止握手并返回 <strong>protocol_version alert</strong></p>
+<h5 id="change_cipher_spec"><a class="header" href="#change_cipher_spec">change_cipher_spec</a></h5>
+<ul>
+<li>在第一次 ClientHello 之后，以及 Finished 之前，终端随时可能收到未加密数据 change_cipher_spec，由单一字节 0x01 组成
+<ul>
+<li>在解密信息之前需要校验是否是该值</li>
+<li>不需要处理</li>
+<li>如果收到了其他的值，或是收到了加密的该数据，则终止握手，返回 <strong>unexpected_message</strong></li>
+<li>如果在不恰当的时间收到该值，终端必须将其认作是 unexpected record type，并返回 <strong>unexpected_message alert</strong></li>
+</ul>
+</li>
+</ul>
+<h4 id="42-扩展"><a class="header" href="#42-扩展">4.2 扩展</a></h4>
+<p><img src="./images/tls/image-20220307155840051-16473259892009.png" alt="image-20220307155840051" /></p>
+<p>有些扩展是 request / response 类型，有些不需要回复：</p>
+<ul>
+<li>
+<p>客户端在 ClientHello 中发送扩展请求</p>
+<ul>
+<li>服务端在 ServerHello、EncryptedExtensions、HelloRetryRequest、Certificate 中回复这些扩展请求</li>
+</ul>
+</li>
+<li>
+<p>服务端在 CertificateRequest 中发送扩展请求</p>
+<ul>
+<li>客户端可能会在 Certificate Msg 中回复这些扩展请求</li>
+</ul>
+</li>
+<li>
+<p>服务端可能在 NewSessionTicket 中发送未请求的扩展</p>
+<ul>
+<li>客户端不会直接回复这些扩展，不过会有其他方式处理</li>
+</ul>
+</li>
+<li>
+<p><strong>除了 HelloRetryRequest 中的 cookie 扩展，不可以在未经请求的情况下，发送回复</strong>。如果收到这类消息，任意一端应当 终止握手并返回 <strong>unsupported_extension alert</strong></p>
+</li>
+<li>
+<p>扩展可能以任意顺序出现，但是 pre_shared_key 一定是 ClientHello 中<strong>最后一个</strong>扩展。在 ServerHello 中 pre_shared_key 没有确定的位置</p>
+</li>
+<li>
+<p>同一个扩展块中，同一扩展只能出现唯一的一次</p>
+</li>
+<li>
+<p><strong>与 TLS 1.2 不同</strong>，每一次握手时都需要协商扩展，即使是 resumption-PSK 模式</p>
+<ul>
+<li>0-RTT 参数在上一次握手中协商，不匹配的情况会拒绝 0-RTT</li>
+</ul>
+</li>
+</ul>
+<p>扩展出现的对应消息：</p>
+<p><img src="./images/tls/image-20220307162611044-164732598920010.png" alt="image-20220307162611044" /></p>
+<table><thead><tr><th>简写</th><th>含义</th></tr></thead><tbody>
+<tr><td>CH</td><td>ClientHello</td></tr>
+<tr><td>SH</td><td>ServerHello</td></tr>
+<tr><td>EE</td><td>EncryptedExtensions</td></tr>
+<tr><td>CT</td><td>Certificate</td></tr>
+<tr><td>CR</td><td>CertificateRequest</td></tr>
+<tr><td>NST</td><td>NewSessionTicket</td></tr>
+<tr><td>HRR</td><td>HelloRetryRequest</td></tr>
+</tbody></table>
+<p>如果扩展出现在不合适的地方，终止握手并返回 <strong>illegal_parameter alert</strong>。</p>
+<h5 id="421-supported_versions"><a class="header" href="#421-supported_versions">4.2.1 supported_versions</a></h5>
+<p><img src="./images/tls/image-20220307163736689-164732598920011.png" alt="image-20220307163736689" /></p>
+<ul>
+<li>客户端表明支持版本
+<ul>
+<li>包含支持版本列表，以优先级降序排列</li>
+<li>协商 TLS 1.3 时，客户端必须首先检查 supported_versions 扩展。如果存在，则必须忽略 ServerHello.legacy_version，使用扩展决定版本。如果扩展决定的版本客户端不支持，或非 TLS 1.3（即值不为 0x0304），则终止握手，并返回 illegal_parameter alert</li>
+</ul>
+</li>
+<li>服务端表明使用版本
+<ul>
+<li>如果没有这个扩展，兼容 TLS 1.2 以及更低版本的服务器必须协商之前的版本，不可以协商 TLS 1.3
+<ul>
+<li>当 ClientHello.lagacy_version &gt;= 0x0304时，服务端或许会终止握手</li>
+</ul>
+</li>
+<li>当有这个扩展时，服务端必须使用该扩展来决定客户端偏好的版本，而非 ClientHello.lagacy_version 字段。服务端忽略其中所有未知的版本。因此，最后协商结束时，也许使用的不是 TLS 1.3 版本，而是旧版本进行协议沟通</li>
+<li>协商非 TLS 1.3 版本时，服务端必须使用 ServerHello.version，不能发送 supported_versions 扩展。协商 TLS 1.3 版本时，服务器必须发送 supported_versions 以及 TLS 1.3 对应版本号（0x0304），且必须将 ServerHello.legacy_version 设置为 0x0303</li>
+</ul>
+</li>
+<li><strong>TLS 1.3 版本端必须支持 TLS 1.2</strong></li>
+</ul>
+<h5 id="422-cookie"><a class="header" href="#422-cookie">4.2.2 Cookie</a></h5>
+<p><img src="./images/tls/image-20220307165025069-164732598920012.png" alt="image-20220307165025069" /></p>
+<p>目的：</p>
+<ul>
+<li>
+<p>强制要求客户端证明，目前的客户端地址是可用的（提供 DoS 保护）</p>
+</li>
+<li>
+<p>服务端状态转移给客户端，由客户端存储状态，当服务端发送 HelloRetryRequest 时，服务端不需要存储状态，而只存储 ClientHello 的哈希值 → Retry 之后，服务端第二次收到 ClientHello 时，需要交验两次 ClientHello 是否相同。</p>
+</li>
+</ul>
+<p>可以选择作为 HelloRetryRequest 的扩展发送。如果 HelloRetryRequest 包括该扩展，新的 ClientHello 应当将 HelloRetryRequest 中的扩展内容复制进 cookie 扩展。客户端不可以在之后的连接中，在第一个 ClientHello 中使用该 cookie，即服务端不应当收到两次相同的 ClientHello。</p>
+<p>※ 如果服务端不存储状态，在两个ClientHello 之间，可能会受到未保护的记录 change_cipher_spec，由于服务端不存储状态，这个记录形似第一条收到的记录。无状态服务端需要忽视这些记录。</p>
+<h5 id="423-signature_algorithms"><a class="header" href="#423-signature_algorithms">4.2.3 signature_algorithms</a></h5>
+<p><img src="./images/tls/image-20220307171542740-164732598920013.png" alt="img" /></p>
+<p>涉及到的两个扩展：</p>
+<ul>
+<li>
+<p>signature_algorithms_cert 扩展应用于证书的签名：</p>
+<ul>
+<li>
+<p>证书公钥必须是同一个算法</p>
+</li>
+<li>
+<p>当这一扩展缺失时，使用 signature_algorithms 扩展中的算法</p>
+</li>
+</ul>
+</li>
+<li>
+<p>signature_algorithms 扩展应用于 CertificateVerify Msg：</p>
+<ul>
+<li>
+<p>需要服务端验证身份时，客户端必须发送此扩展</p>
+</li>
+<li>
+<p>如果客户端未发送此扩展，但是同时要求服务端发送证书，服务端终止握手，并返回 <strong>missing_extension alert</strong></p>
+</li>
+<li>
+<p>每一个 SignatureScheme 值列举单一的算法，且客户端支持这些算法，以优先级降序排序。<strong>签名算法获取 raw data of msg as input</strong>，而非它们的哈希值</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>※ 自签名的证书或作为 trust anchors 的证书的签名算法不会被验证。这些证书的签名算法可能与扩展中提到的算法不同。</p>
+<p>关于 TLS 1.2 兼容：</p>
+<ul>
+<li>TLS 1.2 ClientHello 可能会略过该扩展</li>
+<li>TLS 1.2 中，该扩展可能包含 hash / signature pairs。密码对编码为两个字节，所以 SignatureScheme 值与 TLS 1.2 的编码对齐
+<ul>
+<li>一些遗留密码对已被删除，例如不安全的算法 MD5，SHA-224，DSA。<strong>不可以</strong>使用不安全算法。</li>
+</ul>
+</li>
+<li>ECDSA 签名算法与 TLS 1.2 ECDSA 的 hash / signature pairs 对齐。旧语法可能没有限制签名曲线，如果协商使用 TLS 1.2，需要准备使用在 supported_groups 中提到的任意曲线</li>
+<li>可能使用 RSASSA-PSS，TLS 1.2 没有规定该算法</li>
+</ul>
+<h5 id="424-certificate_authorities"><a class="header" href="#424-certificate_authorities">4.2.4 certificate_authorities</a></h5>
+<p><img src="./images/tls/image-20220307172736949-164732598920014.png" alt="image-20220307172736949" /></p>
+<p>该扩展用于表明端支持的 Certificate Authorities (CAs)，从而选择对应的证书。参数 authorities 标识可辨别的权威名，表明可接受的 CAs，以 DER 编码。</p>
+<p>可以选择在以下信息发送：</p>
+<ul>
+<li>客户端：ClientHello</li>
+<li>服务端： CertificateRequest</li>
+</ul>
+<p><strong>废弃 trusted_ca_keys 扩展</strong>。</p>
+<h5 id="425-oid_filters"><a class="header" href="#425-oid_filters">4.2.5 oid_filters</a></h5>
+<p><img src="./images/tls/image-20220307173207257-164732598920015.png" alt="image-20220307173207257" /></p>
+<p>服务端提供 oid / value pairs，希望客户端的证书能匹配这些键值对。</p>
+<p><strong>只能在服务端的 CertificateRequest 中发送</strong>：</p>
+<ul>
+<li>证书扩展 OIDs + 允许的 values，以 DER 编码</li>
+<li>OID 只能出现一次</li>
+</ul>
+<p>终端处理：</p>
+<ul>
+<li>客户端回复：
+<ul>
+<li>回复中包括所有识别出来的 OID + 服务端声明的值</li>
+<li>忽略无法识别的 OID</li>
+</ul>
+</li>
+<li>服务端接收回复：
+<ul>
+<li>如果客户端忽略了一些 OID = 客户端不完全满足要求，服务端可以考虑继续链接，或终止握手，返回 <strong>unsupported_certificate alert</strong></li>
+</ul>
+</li>
+<li>TLS 具体实现依赖于 PKI 库识别和挑选证书
+<ul>
+<li>RFC 8446规定：
+<ul>
+<li>Key Usage 扩展匹配，要求所有服务端请求中声明的 Key Usage bits 都在证书中有匹配</li>
+<li>Extended Key Usage 扩展匹配，要求所有请求中声明的 Key Purpose OID 也在 Extended Key Usage Certificate 扩展中声明。在请求中，不应当使用特殊的 anyExtendedKeyUsage OID。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h5 id="426-post_handshake_auth"><a class="header" href="#426-post_handshake_auth">4.2.6 post_handshake_auth</a></h5>
+<p><img src="./images/tls/image-20220308093309047-164732598920016.png" alt="image-20220308093309047" /></p>
+<p>当客户端发送此扩展，则意味着客户端倾向于实行 post-handshake authentication。如果客户端没有提供这个扩展，服务端不可以发送 post-handshake CertificateRequest 给客户端。服务端<strong>不可以</strong>发送这个扩展。</p>
+<p>※ 对于该扩展，extension_data 字段长度为0。</p>
+<h5 id="427-supported_groups"><a class="header" href="#427-supported_groups">4.2.7 supported_groups</a></h5>
+<p><img src="./images/tls/image-20220308093913075-164732598920017.png" alt="" /></p>
+<p>客户端使用该扩展表明支持的、用于密钥交换的算法，以优先级降序排列。在之前版本，该扩展名为 elliptic_curves，且只包括椭圆曲线算法，并且同时用于协商 ECDSA 的曲线。TLS 1.3 中，扩展名修改为 supported_groups，且签名算法独立协商，不一起协商，即 supported_groups 只协商密钥交换算法。</p>
+<p>客户端的算法优先级互相冲突的情况在 RFC 7919 中有详细说明。一般情况来说，客户端要避免这种情况，如果发生，服务端优先考虑 supported_group 扩展的优先级排序，当然也可以用其他合适的方式解决冲突</p>
+<blockquote>
+<p>e.g. ClientHello cipher suites：&lt;TLS_DHE_RSA_WITH_AES_128_CBC_SHA, TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA&gt;；supported_group extension：&lt;secp256r1, ffdhe3072&gt;</p>
+<ul>
+<li>这种情况下是冲突的，因为 cipher suites 的优先级和 supported_group 扩展的优先级是相反的</li>
+<li>如果用默认方式解决，服务端会使用 TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA，即以supported_group 扩展的优先级排序 </li>
+</ul>
+</blockquote>
+<p>TLS 1.3 中，服务端可以向客户端发送 supported_groups 扩展。在握手完成之前，客户端不可以利用这个信息，更改 key_share 扩展中的优先级，但是可以使用已成功的握手经验更新新握手中 key_share 扩展中的优先级。如果服务端的偏好算法不在客户端的 key_share 扩展中，服务端必须发送 supported_groups 扩展，且该扩展应包括服务端支持的<strong>所有</strong>算法，不论客户端是否支持这些算法。</p>
+<h5 id="428-key_share"><a class="header" href="#428-key_share">4.2.8 key_share</a></h5>
+<p><img src="./images/tls/image-20220308103214081-164732598920018.png" alt="image-20220308103214081" /></p>
+<p>参数说明：</p>
+<ul>
+<li>
+<p>group：The named group for the key being exchanged</p>
+</li>
+<li>
+<p>key_exchange：额外信息，由具体的算法决定</p>
+</li>
+</ul>
+<p>客户端处理：</p>
+<ul>
+<li>
+<p>客户端可以发送空 client_shares vector，向服务端请求 group 选择</p>
+<p><img src="./images/tls/image-20220308104903474-164732598920019.png" alt="image-20220308104903474" /></p>
+</li>
+<li>
+<p>如果客户端希望通过 HelloRetryRequest 来收到服务端的回应，可以将该 vector 设空</p>
+<ul>
+<li>如果 Retry：
+<ul>
+<li>校验：
+<ul>
+<li>验证发送回来的 selected_group 属于 supported_group</li>
+<li>selected_group 不是 KeyShareEntry 中已经提供参数的算法</li>
+<li>如果使用 (EC)DHE，客户端需要校验 ServerHello 发送回来的算法与 HelloRetryRequest 中的算法是同一个</li>
+</ul>
+</li>
+<li>如果任意一条失效，返回 <strong>illegal_parameter</strong></li>
+<li>如果成功，客户端必须将原先的 key_share 值更改为仅包含 selected_group 算法的 KeyShareEntry 参数套</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>每一个 KeyShareEntry 的值必须与 supported_groups 中的扩展匹配，且必须以同一个顺序出现，但是可以忽略或略过一些算法，即 KeyShareEntry 的算法套是 supported_groups 算法套的子集</p>
+<ul>
+<li>客户端可以发送很多 KeyShareEntry 值，最多与 supported_groups 的支持算法数相同。同一个算法不能有多个参数套值</li>
+</ul>
+</li>
+</ul>
+<p>服务端处理：</p>
+<ul>
+<li>
+<p>Retry 的情况：</p>
+<p><img src="./images/tls/image-20220308105737090-164732598920020.png" alt="image-20220308105737090" /></p>
+<ul>
+<li>NamedGroup：双方都支持的算法，发送 HelloRetryRequest 请求客户端发送相应参数</li>
+<li>如果客户端的 KeyShareEntry 不在 supported_groups 中，返回 <strong>illegal_parameter alert</strong></li>
+</ul>
+</li>
+<li>
+<p>ServerHello 的情况：</p>
+<p><img src="./images/tls/image-20220308110149932-164732598920021.png" alt="image-20220308110149932" /></p>
+<ul>
+<li>server_share：对于客户端提供参数的某个算法，服务端返回对应算法的服务端计算值（交换秘密）
+<ul>
+<li>如果使用 (EC)DHE，服务端仅发送唯一的 KeyShareEntry 值</li>
+<li>不可以发送不在客户端 supported_groups 里的算法对应的参数</li>
+<li>不可以在使用 &quot;psk_ke&quot; PskKeyExchangeMode 时发送 KeyShareEntry</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h6 id="4281-diffie-hellman-参数"><a class="header" href="#4281-diffie-hellman-参数">4.2.8.1 Diffie-Hellman 参数</a></h6>
+<p>☆ 交换秘密与素数 p 比特长度一致，以大端表示</p>
+<h6 id="4282-ecdhe-参数"><a class="header" href="#4282-ecdhe-参数">4.2.8.2 ECDHE 参数</a></h6>
+<p><img src="./images/tls/image-20220308110943386-164732598920022.png" alt="image-20220308110943386" /></p>
+<p>P256 / 384 / 521 必须验证公钥合法：</p>
+<ul>
+<li>在线上</li>
+<li>非无穷远点</li>
+<li>公钥点在域内</li>
+</ul>
+<h5 id="429-psk_key_exchange_modes"><a class="header" href="#429-psk_key_exchange_modes">4.2.9 psk_key_exchange_modes</a></h5>
+<p><img src="./images/tls/image-20220308112039502-164732598920023.png" alt="" /></p>
+<p>如果客户端想要使用 PSK：</p>
+<ul>
+<li>如果客户端使用 pre_shared_key 扩展，客户端<strong>必须</strong>发送 psk_key_exchange_modes 扩展</li>
+<li>客户端只支持这些模式的 PSK 使用，<strong>禁止</strong>使用 ClientHello 中的 PSK 以及服务端在 NewSessionTicket 中提供的 PSK</li>
+</ul>
+<p>服务端响应：</p>
+<ul>
+<li>如果客户端发送了 pre_shared_key 扩展，但是没有发送 psk_key_exchange_modes 扩展，服务端需要终止握手</li>
+<li>服务端必须选择客户端提供的密钥交换模式</li>
+<li>服务端禁止发送与客户端提供的模式不兼容的 NewSessionTicket，不过此条只会导致客户端恢复握手失败</li>
+<li>服务端禁止发送 psk_key_exchange_mode</li>
+</ul>
+<h5 id="4210-early-data"><a class="header" href="#4210-early-data">4.2.10 Early Data</a></h5>
+<p><img src="./images/tls/image-20220308112246954-164732598920024.png" alt="image-20220308112246954" /></p>
+<p>客户端处理：</p>
+<ul>
+<li>如果客户端想要在第一次交互信息时发送 Early Data，客户端<strong>必须</strong>提供 pre_shared_key 和 early_data 扩展，同时， pre_shared_key 扩展要求客户端提供 psk_key_exchange_modes 扩展</li>
+<li>参数和加密 Early Data 的 PSK 相关</li>
+<li>收到服务端的 Finished Msg 时，如果服务端接收了 Early Data，客户端应当发送 EndOfEarlyData Msg，该信息由 PSK 加密</li>
+<li>如果服务端拒绝 early_data 扩展，客户端可选在握手之后重新传输 Early Data 中的应用数据
+<ul>
+<li>☆ 自动重发可能会造成对于链接状态的不正确推测 -&gt; e.g. 链接使用另一个 ALPN 协议</li>
+<li>TLS 协议不能自动重发 early data，除非协商选择了同一个ALPN 协议</li>
+</ul>
+</li>
+</ul>
+<p>服务端响应：</p>
+<ul>
+<li>
+<p>Early Data 处理前提：</p>
+<ul>
+<li>如果 PSK 通过 NewSessionTicket 提供，服务端必须校验 ticket 的生命周期（生命周期 = (PskIdentity.obfuscated_ticket_age - ticket_age_add) % 2^32）。如果 ticket 生命周期已结束，服务端应当继续握手，但是拒绝 0-RTT，不应当采取其他措施认为当前 ClientHello 是第一次发送</li>
+<li>服务端必须接受使用 PSK 密码套且使用第一个由客户端在 pre_shared_key 扩展中提供的密钥。此外，服务端必须验证该 PSK 中的 TLS 版本号、密码套、（如果存在的话）ALPN 协议</li>
+<li>如果任何一个检查失败，服务器不可以回复该扩展，必须使用以下的第一种或第二种方式，将数据降级为 1-RTT，或直接丢弃。如果客户端请求 0-RTT，但是服务端拒绝了，服务端通常不会持有 0-RTT 记录保护密钥，相应的，只能通过 1-RTT 握手密钥或在重试的情况下，查找 ClientHello 中是否有明确明文，来尝试解码并找到第一个非 0-RTT Msg</li>
+</ul>
+</li>
+<li>
+<p>收到 Early Data 的服务端只可能有以下三种响应中的一种：</p>
+<ul>
+<li>
+<p>忽视该扩展，返回通常的 1-RTT 响应。服务器会试图解保护（Deprotect）收到的记录，并且跳过无法解保护的数据（最多解到 max_early_data_size）。如果成功解保护，那么这些数据将被认为是下一次（第二次）发送过来的数据，服务器会使用 1-RTT 握手处理</p>
+</li>
+<li>
+<p>通过 HelloRetryRequest 要求客户端再次发送 ClientHello，以此种方式跳过 early_data 扩展</p>
+</li>
+<li>
+<p>在 EncryptedExtensions 中返回服务端的 early_data 扩展，表示服务端将接收并处理 early_data。服务器不可以只处理 early_data 的子集，必须全部处理。不过，当服务器发送信息表示它会接收并处理 early_data 时，early_data 的传输可能还没有完成</p>
+<ul>
+<li>处理 early_data 时，服务端的错误处理方式必须与处理其他记录的方式一致</li>
+<li>如果在发送接收 early_data 扩展之后，服务器无法解码 0-RTT 记录，服务器必须终止链接并返回 <strong>bad_record_mac alert</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h5 id="4211-pre_shared_key"><a class="header" href="#4211-pre_shared_key">4.2.11 pre_shared_key</a></h5>
+<p><img src="./images/tls/image-20220309100012773-164732598920025.png" alt="image-20220309100012773" /></p>
+<p>该扩展用于协商使用何种 PSK。每一个 PSK 都会声明一个哈希算法，对于通过 ticket 协商的 PSK ，哈希算法使用 KDF 算法中的哈希。对于外部协商的 PSK，哈希算法默认为 Sha256，必须通过设置使用其他哈希算法。</p>
+<p>☆ 恢复 Session 是 PSK 的主要用途</p>
+<p>※ 可以考虑先协商密钥对，然后去除所有不支持的算法，提升效率</p>
+<p>参数说明：</p>
+<ul>
+<li>identity：密钥的标签</li>
+<li>obfuscated_ticket_age：如果 PSK 通过 NewSessionTicket 生成，那么由 NewSessionTicket 生成时决定该值；如果 PSK 由外部生成，那么这个值必须设置为 0，服务器必须忽视这个值</li>
+<li>identities：客户端希望协商的一系列参数。如果与 early_data 一同发送，那么第一个 identity 是 0-RTT 数据</li>
+<li>binders：HMAC 值，与 identities 一一对应</li>
+<li>selected_identity：服务端选择的 identity，索引从 0 开始，列表是客户端发送的 OfferedPsks 中的 identities</li>
+</ul>
+<p>客户端处理：</p>
+<ul>
+<li>客户端必须验证服务端发送的 selected_identity 在客户端之前提供的列表里，服务端选择了该 PSK 对应的哈希，且如果客户端 ClientHello 中要求 psk_key_exchange_mode 扩展，服务端的回复应包括 key_share 扩展。如果以上验证不对，客户端终止握手并返回 <strong>illegal_parameter alert</strong></li>
+<li>如果服务器提供 early_data 扩展，客户端必须验证服务器 selected_identity 是0。如果服务器返回其他值，客户端必须终止握手并返回 <strong>illegal_parameter alert</strong></li>
+</ul>
+<p>服务端响应：</p>
+<ul>
+<li>pre_shared_key 扩展必须是 ClientHello 中发送的最后一个扩展，如果它不是，服务端终止握手，并返回 <strong>illegal_parameter alert</strong></li>
+<li>接受 PSK 之前，服务端需要验证对应的 binder 值，如果该值不存在或验证失败，服务器应当终止握手。服务端不应当同时验证多个 binder，只应当验证准备选择的 PSK 对应的 binder</li>
+<li>接受 PSK 之后，服务器发送 pre_shared_key 扩展表明选择的 identity</li>
+</ul>
+<h6 id="42111-ticket-age"><a class="header" href="#42111-ticket-age">4.2.11.1 Ticket Age</a></h6>
+<p>客户端处理：</p>
+<ul>
+<li>PSK 的生命周期从客户端收到 NewSessionTicket 开始计算
+<ul>
+<li>obfuscated_ticket_age = (age in milliseconds + ticket_age_add) % 2^32</li>
+</ul>
+</li>
+<li>客户端不可以使用比 ticket_lifetime（in seconds，最多一星期） 值生命周期还要长的 Ticket</li>
+</ul>
+<h6 id="42112-psk-binder"><a class="header" href="#42112-psk-binder">4.2.11.2 PSK Binder</a></h6>
+<p>将 PSK 与当前握手联系起来，计算 ClientHello 除了 binders 以外的所有内容 + PreSharedKeyExtension.identities 的 HMAC 值。与 Finished Msg 计算方式类似，不过使用 PSK 作为基础密钥。</p>
+<p>如果握手包括 HelloRetryRequest，那么计算时会包括第一次 ClientHello、HelloRetryRequest 以及第二次 ClientHello。</p>
+<h6 id="42113-processing-order"><a class="header" href="#42113-processing-order">4.2.11.3 Processing Order</a></h6>
+<p>在收到服务端发送的 Finished Msg 之前，客户端可以发送 0-RTT Data，并且在收到 Finished 之后，可发送 EndOfEarlyData Msg。当服务端收到 early_data，服务端必须先处理客户端的 ClientHello，并且随后直接发送 ServerHello 或 HelloRetryRequest / etc.，而非等待客户端的 EndOfEarlyData Msg，以避免死锁。</p>
+<h4 id="43-服务端参数server-parameters"><a class="header" href="#43-服务端参数server-parameters">4.3 服务端参数（Server Parameters）</a></h4>
+<p>以下两个扩展的密钥来自于 server_handshake_traffic_secret。</p>
+<h5 id="431-encrypted_extensions"><a class="header" href="#431-encrypted_extensions">4.3.1 Encrypted_Extensions</a></h5>
+<p><img src="./images/tls/image-20220309141442928-164732598920026.png" alt="image-20220309141442928" /></p>
+<p>包含可保护的信息，这些信息与建立密码相关上下文无关，与独立证书也无关。</p>
+<p>客户端必须验证确实收到 EncryptedExtensions ，同时不存在禁止的，即不在允许列表里的扩展。如果发现，则终止握手，返回 <strong>illegal_parameter alert</strong>。</p>
+<p>在所有握手中，服务端在发送 ServerHello 后，必须发送 EncryptedExtensions Msg。该信息由 server_handshake_traffic_secret 加密，且是第一个使用该密钥加密的信息。</p>
+<h5 id="432-certificiate-request"><a class="header" href="#432-certificiate-request">4.3.2 Certificiate Request</a></h5>
+<p><img src="./images/tls/image-20220309141652953-164732598920027.png" alt="image-20220309141652953" /></p>
+<p>服务器可以选择向客户端发送此扩展并请求证书。</p>
+<p>参数说明：</p>
+<ul>
+<li>certificate_request_context：应当避免重放攻击，即应当对于当前上下文来说是唯一的，且在非 post-handshake authentication exchanges 场景下，长度应当为0。当请求 post-handshake authentication 时，服务端应当使得该上下文对于客户端不可预测（e.g. 使用随机数）</li>
+<li>extensions：服务端请求的证书参数，客户端必须声明 signature_algorithm 扩展</li>
+</ul>
+<p>客户端响应：</p>
+<ul>
+<li>在回复的 Certificate Msg 中复读服务端发送的 CertificateRequest。忽略未识别的扩展。</li>
+</ul>
+<p>服务端发送：</p>
+<ul>
+<li>如果使用 PSK 验证，在 main handshake 中不可以发送该扩展，可以在 post-handshake authentication 中发送。post-handshake 通过客户端发送 post_handshake_auth 扩展来协商。</li>
+<li>如果请求证书，则 CertificateRequest 必须在 EncryptedExtension 之后立刻发送。</li>
+</ul>
+<h4 id="44-验证信息authentication-messages"><a class="header" href="#44-验证信息authentication-messages">4.4 验证信息（Authentication Messages）</a></h4>
+<p><img src="./images/tls/image-20220309151400349-164732598920028.png" alt="image-20220309151400349" /></p>
+<p>以下信息使用 [sender]_handshake_traffic_secret 加密，计算输入如下：</p>
+<ul>
+<li>证书 + 签名密钥</li>
+<li>握手上下文，由组成 transcript hash 的信息组成</li>
+<li>计算 MAC 密钥的基础密钥</li>
+</ul>
+<p>Authentication Msg 包括：</p>
+<ul>
+<li>Certificate：用于验证的证书，以及证书链里的证书。在 PSK 握手流程中不适用。</li>
+<li>CertificateVerify：Sign( transcript_hash(Handshake Context, Certificate) )</li>
+<li>Finished：MAC( transcript_hash(Handshake Context, Certificate, CertificateVerify), key = MAC_key( base_key ) )</li>
+</ul>
+<h5 id="441-transcript_hash"><a class="header" href="#441-transcript_hash">4.4.1 transcript_hash</a></h5>
+<p>※ 将涉及到的信息拼接起来，计算哈希</p>
+<p>☆ 如果涉及到 HelloRetryRequest：</p>
+<p><img src="./images/tls/image-20220309153142386-164732598920029.png" alt="image-20220309153142386" /></p>
+<h5 id="442-certificate"><a class="header" href="#442-certificate">4.4.2 Certificate</a></h5>
+<p><img src="./images/tls/image-20220310093034054-164732598920030.png" alt="image-20220310093034054" /></p>
+<p>参数说明：</p>
+<ul>
+<li>extensions：格式见4.2。应用于全局的扩展必须位于第一个 CertificateEntry 中。</li>
+<li>如果没有在 EncryptedExtensions 中协商证书类型扩展（server_certificate_type / client_certificate_type），那么默认为 X.509。</li>
+<li>之后的证书应当可以直接验证它之前一个证书。声明 trusted_anchors 的证书链可能会略过一些证书。end-entity 证书应当出现在第一个。如果采用兼容性更强的设计，验证证书时，应兼容任何版本含有额外不相关证书，以及指定顺序的证书链的场景。</li>
+<li>如果使用 RawPublicKey 证书类型而非 X.509，那么 certificate_list 只能有1个 CertificateEntry，其中包括 ASN_1_subjectPublicKeyInfo。</li>
+<li><strong>不使用</strong> OpenPGP 证书。</li>
+</ul>
+<p>客户端响应：</p>
+<ul>
+<li>如果服务端请求证书，客户端必须发送证书信息。如果没有合适的证书，客户端必须发送不包含任何证书的 Certificate Msg（e.g. 将 certificate_list 长度设置为0）</li>
+<li>客户端随后必须发送 Finished Msg</li>
+<li>客户端发送的证书相关扩展必须与服务端在 CertificateRequest 中请求的一致</li>
+</ul>
+<p>服务端响应：</p>
+<ul>
+<li>只要双方不使用 PSK，即使用证书进行校验，服务端一定要发送证书信息</li>
+<li>合法扩展包括：OCSP Status Extension，SignedCertificateTimestamp extension
+<ul>
+<li>扩展必须与客户端在 ClientHello 中请求的一致</li>
+</ul>
+</li>
+<li>certificate_list 必须不为空</li>
+</ul>
+<h6 id="4421-ocsp-status-and-sct-extensions"><a class="header" href="#4421-ocsp-status-and-sct-extensions">4.4.2.1 OCSP Status and SCT Extensions</a></h6>
+<p>TLS 1.2 及以下版本，该扩展值为空来表示协商该扩展，并将 OSCP 信息放到 CertificateStatus Msg 中。TLS 1.3 中，OCSP 信息在 CertificateEntry 中附带，且 status_request 扩展必须保持 CertificateStatus 结构。</p>
+<p>在 TLS 1.3 版本，废弃 status_request_v2 扩展。</p>
+<p>TLS 1.2 及以下版本，SCT 作为扩展和 ServerHello 一起发送；TLS 1.3中，SCT 信息作为扩展和 CertificateEntry 一起发送。</p>
+<p>如果客户端选择发送 OCSP 响应，status_request 扩展值应当与 CertificateStatus 结构一致。</p>
+<p>CertificateStatus 见 <a href="https://datatracker.ietf.org/doc/html/rfc6066">RFC 6066</a>。</p>
+<p>服务端响应：</p>
+<ul>
+<li>status_request_v2 扩展在 TLS 1.3 版本已经废弃，服务端不能对其产生响应，但是应当有能力处理包括这一拓展的 ClientHello。服务器不应当在 EncryptedExtensions / CertificateRequest / Certificate Mst 中发送该扩展</li>
+<li>服务器可在 CertificateRequest Msg 中发送空 status_request 扩展，要求客户端发送 OCSP 响应</li>
+</ul>
+<h6 id="4422-服务器证书选择"><a class="header" href="#4422-服务器证书选择">4.4.2.2 服务器证书选择</a></h6>
+<p>客户端响应:</p>
+<ul>
+<li>服务端可能会请求 server_name 扩展存在，此时，如果可用，客户端必须发送该扩展</li>
+<li>服务端发送的证书链中，如果包括 SHA1，理论上出于安全考虑不使用，但是验证证书时，如果服务端明确表示证书链中有 SHA1，q且客户端的支持算法中包括 SHA1，也可以用，但是仅用于验签</li>
+<li>如果客户端无法验证服务端证书链，并决定终止握手，需要返回证书相关错误，默认为 <strong>unsupported_certificate alert</strong></li>
+</ul>
+<p>服务器发送证书时：</p>
+<ul>
+<li>除非额外说明，不然发送证书必须是 X.509v3 格式</li>
+<li>终端证书的公钥算法应与客户端的 signature_algorithm 扩展兼容（目前：RSA，ECDSA，EdDSA）。对于自签名或 trust anchors 的证书，这些证书不验证，所以它们可以以任何算法签名。如果证书链中有证书无法以客户端支持算法签名，服务端应当继续握手，并且发送客户端该证书链</li>
+<li>证书必须允许它的公钥可以被抓出来作为签名算法的输入。证书的 Key Usage 扩展规定公钥用途。公钥会在 CertificateVerify Msg 中使用</li>
+</ul>
+<h6 id="4423-客户端证书选择"><a class="header" href="#4423-客户端证书选择">4.4.2.3 客户端证书选择</a></h6>
+<p>客户端证书规则：</p>
+<ul>
+<li>非额外说明，不然发送证书应当是 X.509v3 格式</li>
+<li>如果 CertificateRequest Msg 中包括 certificate_authorities 扩展，那么至少一个证书需要来源于其中一个CA</li>
+<li>证书必须使用服务器支持的算法签名</li>
+<li>如果 CertificateRequest Msg 中包括 oid_filters 扩展，终端证书必须匹配该扩展中客户端识别出来的 OIDs</li>
+</ul>
+<h6 id="4424-接收证书信息"><a class="header" href="#4424-接收证书信息">4.4.2.4 接收证书信息</a></h6>
+<p>如果任何一端收到证书，要求使用 MD5 哈希算法，必须终止握手，并返回 <strong>bad_certificate alert</strong>。SHA1 不要求一定要终止握手，但是推荐终止握手，并作同样报错。</p>
+<p>证书可能包含某一个算法的密钥，然而证书本身可能以另一种方式签名。</p>
+<p>对于客户端而言，如果服务端提供空证书信息，客户端终止握手，并返回 <strong>decode_error alert</strong>。</p>
+<p>对于服务端而言，如果客户端提供空证书信息 / 证书链验证失败（e.g. 没有证书被认可的 CA 签署），服务端可以选择继续握手，或终止握手并返回 <strong>certificate_required alert</strong>。</p>
+<h5 id="443-证书验证"><a class="header" href="#443-证书验证">4.4.3 证书验证</a></h5>
+<p><img src="./images/tls/image-20220310141549078-164732598920031.png" alt="image-20220310141549078" /></p>
+<p>此条信息必须在证书之后、Finished Msg 之前发送，且必须是连续的顺序。签名算法必须与发送方的 end-entity 证书密钥算法一致，例如 RSA 必须使用 RSASSA-PSS 算法，不论 RSASSA-PKCS1-v1_5 是否在 signature_algorithm 扩展中出现。不能使用 SHA1。验证时，使用end-entity 证书中的公钥验证。如果失败，验签方必须终止握手，并返回 <strong>decrypt_error alert</strong>。</p>
+<p>签名计算为：Sign( [0x20; 64] | context | 0 | transcript-hash( Handshake Context, Certificate ) )。</p>
+<p>客户端响应：</p>
+<ul>
+<li>如果服务器要求验证证书，客户端必须发送此条信息</li>
+<li>客户端签名 context：<code>TLS 1.3, client CertificateVerify</code></li>
+<li>签名算法必须是服务端发送的 CertificateRequest Msg 中 signature_algorithms 扩展中 supported_signature_algorithms 中的一种</li>
+</ul>
+<p>服务器响应：</p>
+<ul>
+<li>如果通过证书验证，则必须发送此条信息</li>
+<li>服务器签名 context：<code>TLS 1.3, server CertificateVerify</code></li>
+<li>签名算法必须是客户端发送的 CertificateRequest Msg 中 signature_algorithms 扩展中的一种，除非没有合法证书链可以通过这些算法形成</li>
+</ul>
+<h5 id="444-finished"><a class="header" href="#444-finished">4.4.4 Finished</a></h5>
+<p><img src="./images/tls/image-20220310143558119-164732598920032.png" alt="image-20220310143558119" /></p>
+<p>该信息是互相验证时的最后一个信息块。验证之后，双方会发送以及接受 Application Data，如果验证失败，则验证方必须终止链接，返回 <strong>decrypt_error alert</strong>。</p>
+<p>密钥通过 Key = HKDF_Expand_Label (sender_handshake_traffic_secret, &quot;finished&quot;, &quot;&quot;, Hash.length) 计算。在 Finished Msg 之后的所有消息必须通过 traffic key 加密，即使是 alert。这个规则包括服务器对于客户端 Certificate 以及 CertificateVerify Msg 的回应。</p>
+<p>两种在 Finished 之前发送应用数据的情况：</p>
+<ul>
+<li>客户端：0-RTT</li>
+<li>服务端：可能在第一条信息发送之后，服务端会发送应用数据，但是此时服务端无法保证对方的身份和可靠性</li>
+</ul>
+<h4 id="45-end-of-early-data"><a class="header" href="#45-end-of-early-data">4.5 End of Early Data</a></h4>
+<p><img src="./images/tls/image-20220310144138695-164732598920033.png" alt="image-20220310144138695" /></p>
+<p>该扩展表示所有的 0-RTT 数据已经发送完毕，以后的数据由 traffic keys 保护。这一信息由 client_early_traffic_secret 作为密钥加密。</p>
+<p>客户端：</p>
+<ul>
+<li>如果服务端在 EncryptedExtensions 中发送了 early_data 扩展，在收到 Finished 之后，客户端必须发送 EndOfEarlyData Msg</li>
+<li>如果服务端没有发送 early_data 扩展，那么客户端一定不能发送该信息</li>
+<li>如果收到服务端发送的这个信息，客户端必须终止链接，返回 <strong>unexpected_message alert</strong></li>
+</ul>
+<p>服务端：</p>
+<ul>
+<li>服务端绝不可以发送该信息</li>
+</ul>
+<h4 id="46-post-handshake-msgs"><a class="header" href="#46-post-handshake-msgs">4.6 Post-Handshake Msgs</a></h4>
+<p>以下信息使用 application traffic key 加密。</p>
+<h5 id="461-new-session-ticket-msg"><a class="header" href="#461-new-session-ticket-msg">4.6.1 New Session Ticket Msg</a></h5>
+<p><img src="./images/tls/image-20220310153744153-164732598920034.png" alt="image-20220310153744153" /></p>
+<p>在服务端收到客户端发送的 Finished Msg 之后，服务端可能会发送 NewSessionTicket Msg。 Ticket 可以用于恢复握手，复用 tickets 的前提是使用和上一次一样的 kdf 哈希。当当前服务器 SNI (Server Name Identification) 对于原 session 服务端证书有效，且二者匹配时，客户端才可以恢复握手。不过，客户端也可以选择对于一个新的 SNI 值恢复握手，兼容同一证书覆盖多个服务器的情况。如果发送 SNI 给调用应用，那么必须使用当前恢复 ClientHello 中的值，而非之前使用的 session 的值。</p>
+<p>参数说明：</p>
+<ul>
+<li>ticket_nonce：每一个 ticket 独特的值，与其他 ticket 不同</li>
+<li>ticket：作为 PSK identity 使用的值
+<ul>
+<li>PSK 计算方式：HKDF_Expand_Label( resumption_master_secret, &quot;resmption&quot;, ticket_nounce, Hash.length )</li>
+</ul>
+</li>
+<li>extension：
+<ul>
+<li>唯一可用的是 early_data，表明该 ticket 会用于发送 0-RTT 数据。包含 max_early_data_size，表明使用此个 ticket 最多发送的数据长度，以比特表示，不计算 padding，只计算 payload</li>
+</ul>
+</li>
+</ul>
+<p>客户端响应：</p>
+<ul>
+<li>如果之前协商过 Ticket，那么客户端可以在未来的握手中，在 ClientHello 的 pre_shared_key 扩展中发送 Ticket 的值，使用通过 Ticket 协商的 PSK </li>
+<li>只有在新的 SNI 值对于服务器原先证书是合法且匹配的时候，可以恢复使用 ticket</li>
+<li>客户端不可以缓存超过7天以上的 ticket，不论生命周期是否长达7天</li>
+</ul>
+<p>服务端响应：</p>
+<ul>
+<li>收到客户端发送的 Finished Msg，服务端可以发送 NewSessionTicket Msg。这一信息可以将 ticket 值与 PSK 联系起来</li>
+<li>服务端在一次链接中可能会发送多个 tickets，连续发送，或在某些事件之后发送</li>
+<li>如果不要求客户端验证，服务端可以在发送 Finished 之后直接发送 NewSessionTicket</li>
+<li>对于 ticket_lifetime，服务器不可以使用超过 604800 （秒，即7天）以上的数值。如果值为0，则当前 ticket 必须即刻废弃；服务器也可以认为实际的有效期短于 ticket_lifetime 所声明的时间</li>
+<li>客户端侧 ticket age = (age (in pre_shared_key extension) + ticket_age_add) % 2^32。服务器每次都必须生成新的随机数</li>
+<li>如果扩展中包含 early_data 且收到的数据长度大于 max_early_data_size，服务器终止链接，返回 <strong>unexpected_message alert</strong></li>
+</ul>
+<h5 id="462-post-handshake-authentication"><a class="header" href="#462-post-handshake-authentication">4.6.2 Post-Handshake Authentication</a></h5>
+<p>客户端响应：</p>
+<ul>
+<li>如果客户端发送了 post_handshake_auth 扩展且收到了 CertificateRequest Msg，客户端必须响应，且响应信息连续
+<ul>
+<li>选择验证，则发送 Certificate， CertificateVerify， Finished</li>
+<li>不验证，发送不包含任何证书的 Certificate，Finished</li>
+</ul>
+</li>
+<li>如果没有发送 post_handshake_auth 但是收到了 CertificateRequest Msg，则终止链接，返回 <strong>unexpected_message</strong></li>
+</ul>
+<p>服务端响应：</p>
+<ul>
+<li>如果客户端在此前发送了 post_handshake_auth 扩展，服务端可以选择在握手完成之后发送 CertificateRequest Msg</li>
+<li>虽然客户端发送的信息应当是连续的，但是可能有时延，在时延时间之中，可能会收到之前发送的信息</li>
+</ul>
+<h5 id="463-更新-key-以及-iv"><a class="header" href="#463-更新-key-以及-iv">4.6.3 更新 Key 以及 IV</a></h5>
+<p><img src="./images/tls/image-20220310155819359-164732598920035.png" alt="image-20220310155819359" /></p>
+<p>该信息表示发送方更新了密钥。这一信息可在发送 Finished 之后发送，并使用老密钥加密。如果在收到 Finished 之前收到这一信息，则接收方应当终止链接，并返回 <strong>unexpected_message</strong>。</p>
+<p>发送之后，使用新的密钥加密通讯。双方必须保证在发送新消息之前，此条消息被接收。</p>
+<p>收到之后，更新密钥。</p>
+<p>如果 request_update 设置为 update_requested，那么接收方在发送下一次应用数据前，必须发送 KeyUpdate 信息，且将 request_update 设为 update_not_requested。如果收到其他值，则终止链接，并返回 <strong>illegal_parameter alert</strong>。同样，由于时延，即使接收方没有在下一次应用数据前发送其他的无关消息，发送方也可能会收到之前发送的信息。</p>
+<p>详情见 #7.2。</p>
+<h3 id="5-记录协议"><a class="header" href="#5-记录协议">5. 记录协议</a></h3>
+<p>如果收到的消息是没有预料到的记录类型，则返回 <strong>unexpected_message alert</strong>。</p>
+<h4 id="51-记录层record-layer"><a class="header" href="#51-记录层record-layer">5.1 记录层（Record Layer）</a></h4>
+<p><img src="./images/tls/image-20220310164707982-164732598920036.png" alt="image-20220310164707982" /></p>
+<p>记录层将信息录入 TLSPlaintext records，在其中，信息被分片为 2^14 或更少字节大小的数据块。如果不做保护，TLSPlaintext 被直接写。当启用保护措施，TLSPlaintext 将会以保护的方式写入。应用层数据<strong>不可以</strong>以无保护方式写入。</p>
+<p>内容类型：</p>
+<ul>
+<li>
+<p>握手：</p>
+<ul>
+<li>握手信息可以合并入一个记录，或拆分成多个记录，只要：
+<ul>
+<li>握手信息记录不可以和其他记录交叉存放</li>
+<li>握手信息记录不可以跨越密钥更改信息，在密钥交换之前的信息必须与记录边界对齐。如果不是这样，则终止链接，返回 <strong>unexpected_message alert</strong></li>
+</ul>
+</li>
+<li>不可以发送0长度的握手类型分片，即使它包含 padding</li>
+</ul>
+</li>
+<li>
+<p>Alert</p>
+<ul>
+<li>Alert 不可以分片，不同的 Alert 也不可以合并入一个记录。Alert 必须是单独的一个记录</li>
+</ul>
+</li>
+<li>
+<p>应用数据</p>
+<ul>
+<li>可以分片，也可能发送0长度的分片应用数据</li>
+</ul>
+</li>
+<li>
+<p>lagacy_record_version：对于 TLS 1.3，必须设置为 0x0303。最开始的 ClientHello，出于兼容性目的，可能会设置为 0x0301。此处已废弃，不做具体处理</p>
+<ul>
+<li>最大化兼容性的情况下，对于初始的 ClientHello，版本应为 0x0301（1.0）；第二个 ClientHello 或 ServerHello，版本应为 0x0303（1.2）</li>
+</ul>
+</li>
+<li>
+<p>length：不能超过 2^14 字节，如果超过，终止链接并返回 <strong>record_overflow alert</strong></p>
+</li>
+</ul>
+<h4 id="52-record-payload-protection"><a class="header" href="#52-record-payload-protection">5.2 Record Payload Protection</a></h4>
+<p><img src="./images/tls/image-20220310165632648-164732598920037.png" alt="image-20220310165632648" /></p>
+<p>使用 AEAD，将 TLSPlaintext 转换为 TLSCiphertext。</p>
+<p>参数说明：</p>
+<ul>
+<li>
+<p>opaque_type：解保护（解密）之后，根据具体的内容是什么决定实际类型，类型会被设置在 TLSInnerPlaintext.type 中，这里一直都设置为23，向外兼容 middleboxes</p>
+</li>
+<li>
+<p>length：length = len(TLSCiphertext.encrypted_record) = len(content) + len(padding) + 1 (inner content type) + AEAD 算法添加的任何其他字串的长度。不可以超过 2^14 + 256 字节。如果超过，终止链接并返回 record_overflow alert</p>
+<ul>
+<li>AEAD：不可以额外扩展超过 255 字节
+<ul>
+<li>a single key：client_write_key / server_write_key</li>
+<li>nonce： 序列号 / client_write_iv / server_write_iv</li>
+<li>plaintext：整个 TLSInnerPlaintext 结构体</li>
+<li>additional data = TLSCiphertext.opaque_type || TLSCiphertext.legacy_record_version || TLSCiphertext.length</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>encrypted_record：序列化后 TLSInnerPlaintext 结构体的 AEAD 加密结果</p>
+</li>
+<li>
+<p>解密：</p>
+<ul>
+<li>如果解密失败，返回 <strong>bad_record_mac alert</strong></li>
+</ul>
+</li>
+</ul>
+<h4 id="53-per-record-nonce"><a class="header" href="#53-per-record-nonce">5.3 Per-Record Nonce</a></h4>
+<p>在链接刚开始或密钥更改时，64位序列号为0。序列号会在每次读写之后 +1。序列号不应当 wrap around。如果序列号溢出，终端要不更改密钥，要不终止链接。</p>
+<p>TLS 1.3 要求 AEAD 算法的 nonce 长度至少为8字节，否则不可以在 TLS 中使用 。长度不够的情况下，左边添加字节0，直到满足长度随后，nonce = padded_sequence_num xor client_write_iv / server_write_iv。</p>
+<h4 id="54-record-padding"><a class="header" href="#54-record-padding">5.4 Record Padding</a></h4>
+<p>接收到加密的 TLS 记录时，解密之后，接受者从头查找第一个非0字节，并认为实际内容从该字节开始，且该字节开始表示 content type。如果 AEAD 解密之后，明文中找不到任何一个非0字节，则终止链接，并返回 <strong>unexpected_message alert</strong>。</p>
+<p><em>RFC 8446 不指定具体 padding 规则与算法</em>。</p>
+<h4 id="55-密钥使用限制"><a class="header" href="#55-密钥使用限制">5.5 密钥使用限制</a></h4>
+<p>如果使用 AES-GCM，最多 2^24.5 条消息可以在一个链接中使用同一个密钥加解密，在此之后需要重新握手或更新密码；如果使用 Chacha20Poly1305，在到达限制之前，序列号会先到达限制。</p>
+<h3 id="6-alert-protocol"><a class="header" href="#6-alert-protocol">6. Alert Protocol</a></h3>
+<p><img src="./images/tls/image-20220310173012563-164732598920038.png" alt="image-20220310173012563" /></p>
+<p>Alert Msg 会根据当前通讯状态进行加密。</p>
+<p>分类：Closure alerts / Error alerts</p>
+<ul>
+<li>Closure alert：正常结束链接 -&gt; 终端声明 end-of-data</li>
+<li>Error alert：非正常结束链接，报错 -&gt; 终端不应接收其他的数据，且必须清空秘密数据和密钥</li>
+<li>☆ 未知类型错误应当被当做 Error alert 处理</li>
+</ul>
+<h4 id="61-closure-alerts"><a class="header" href="#61-closure-alerts">6.1 Closure Alerts</a></h4>
+<p>目的：正常结束通讯。</p>
+<p>类型：</p>
+<ul>
+<li>
+<p>close_notify：发送方不会再发送新的消息了，随后发送的信息应当被忽略。必须在结束写链接之前发送，除非发送了 error alert。对于读链接没有影响。</p>
+</li>
+<li>
+<p>user_canceled：由于某些原因，发送方决定取消握手。如果在握手完成之后，发送方决定终止，不需要发送 user_canceled，发送 close_notify 就可以。发送这个告警以后，应当立刻发送 close_notify。这个告警的 Alertlevel 通常为 warning</p>
+</li>
+</ul>
+<h4 id="62-error-alerts"><a class="header" href="#62-error-alerts">6.2 Error Alerts</a></h4>
+<p>☆ AlertLevel = Fatal</p>
+<p>在收到或发送错误信息之后，双方必须立刻终止链接，并且不再发送或接收额外信息。实际上的实现应当考虑使用日志记录发送或接收到的错误。</p>
+<h3 id="7-cryptographic-computations"><a class="header" href="#7-cryptographic-computations">7. Cryptographic Computations</a></h3>
+<p>协商计算共有密钥。</p>
+<h4 id="71-key-schedule"><a class="header" href="#71-key-schedule">7.1 Key Schedule</a></h4>
+<p><img src="./images/tls/image-20220310200431391-164732598920039.png" alt="image-20220310200431391" /></p>
+<p>TLS 1.3 使用 HKDF 计算密钥。transcript-hash 和 HKDF 使用的哈希来源于密码套的哈希算法。Hash.length 是哈希算法输出的字节长度，Messages 则是握手信息的拼接，包括握手信息类型以及长度，但是不包括记录层 headers。</p>
+<p>※ 在一些情况下，0长度的上下文会被传给 HKDF-Expand-Label</p>
+<p>※ 所有 Label 都是 ascii 字符串，并且在这之后不包括 NUL 字节</p>
+<p>密钥计算：</p>
+<ul>
+<li>
+<p>计算输入</p>
+<ul>
+<li>PSK</li>
+<li>(EC)DHE 交换计算得出的密钥</li>
+</ul>
+</li>
+<li>
+<p>计算流程</p>
+<p><img src="./images/tls/image-20220310201612937-164732598920040.png" alt="image-20220310201612937" /></p>
+<ul>
+<li>如果有信息不可用，那么相应字节长度的0值会被使用</li>
+<li>所有密钥都计算出来以后，最开始的 secret key 应当被<strong>清空</strong></li>
+</ul>
+</li>
+</ul>
+<h4 id="72-更新-traffic-secrets"><a class="header" href="#72-更新-traffic-secrets">7.2 更新 Traffic Secrets</a></h4>
+<p><img src="./images/tls/image-20220310203327134-164732598920041.png" alt="image-20220310203327134" /></p>
+<p>握手完成以后，任意一方可以通过发送 KeyUpdate handshake Msg，且在其中包含 traffic keys 的方式来更新 traffic keys。新的密钥计算出来以后，不需要的密钥应当被<strong>清空</strong>。</p>
+<h4 id="73-traffic-key-calculation"><a class="header" href="#73-traffic-key-calculation">7.3 Traffic Key Calculation</a></h4>
+<p><img src="./images/tls/image-20220310203552116-164732598920042.png" alt="image-20220310203552116" /></p>
+<ul>
+<li>Traffic Key 计算输入
+<ul>
+<li>secret value</li>
+<li>purpose value，类似于标签</li>
+<li>生成密钥的长度</li>
+</ul>
+</li>
+<li>计算
+<ul>
+<li>[sender]_write_key = HKDF-Expand-Label(Secret, &quot;key&quot;, &quot;&quot;, key_length)</li>
+<li>[sender]_write_iv = HKDF-Expand-Label(Secret, &quot;iv&quot;, &quot;&quot;, iv_length)</li>
+</ul>
+</li>
+</ul>
+<h4 id="74-ecdhe-密钥计算"><a class="header" href="#74-ecdhe-密钥计算">7.4 (EC)DHE 密钥计算</a></h4>
+<h5 id="741-finite-field-diffie-hellman"><a class="header" href="#741-finite-field-diffie-hellman">7.4.1 Finite Field Diffie-Hellman</a></h5>
+<ul>
+<li>计算传统的 DH</li>
+<li>大端，以0填充不足高位，以素数的比特位数为准</li>
+</ul>
+<h5 id="742-椭圆曲线dh"><a class="header" href="#742-椭圆曲线dh">7.4.2 椭圆曲线DH</a></h5>
+<ul>
+<li>P256 / 384 / 521：IEEE1363 ECKAS-DH1，identity map（不做KDF计算），交换计算结果点的 x 坐标值</li>
+<li>X25519 / 448：需要验证计算密钥是否为0</li>
+</ul>
+<h4 id="75-exporters"><a class="header" href="#75-exporters">7.5 Exporters</a></h4>
+<p><img src="./images/tls/image-20220310204152670-164732598920043.png" alt="image-20220310204152670" /></p>
+<p>根据 RFC 5705，一些协议使用 TLS 或 DTLS 来建立密钥，但是希望在 TLS 之外的范畴之外使用这些密钥。这些协议可以通过 Exporters 将密钥转移出来，并使用。</p>
+<p>参数说明：</p>
+<ul>
+<li>Secret：early_exporter_master_secret 或 exporter_master_secret，除非特殊说明，不然必须使用 exporter_master_secret
+<ul>
+<li>early_exporter_master_secret 只在 0-RTT 数据、且必须要使用的情况下使用</li>
+<li>※ 推荐给这俩使用不同的接口，避免用户混淆</li>
+</ul>
+</li>
+<li>context_value：如果没有，那么该值为空</li>
+<li><strong>详见 RFC 5705</strong></li>
+</ul>
+<h3 id="8-0-rtt-以及反重放攻击"><a class="header" href="#8-0-rtt-以及反重放攻击">8. 0-RTT 以及反重放攻击</a></h3>
+<p>对于 0-RTT 数据，TLS 1.3 没有提供反重放攻击保护。可能遭受如下攻击：</p>
+<ul>
+<li>重放攻击
+<ul>
+<li>可以通过只接收一次 Early Data 来预防，但是这需要服务器维持状态。因此，一般情况来说，要求客户端只发送认为重放是安全的数据，作为 Early Data</li>
+<li>对于同样的 0-RTT 握手，对于同样的 Early Data，服务器最多只接受一次</li>
+<li>在本地记录最近接受的 Early Data 数据并拒绝重复，也可以一定程度上限制重放攻击</li>
+</ul>
+</li>
+<li>通过 Retry，导致服务器含有同一个应用数据的重复信息
+<ul>
+<li>TLS 管不了，要由应用管</li>
+</ul>
+</li>
+</ul>
+<h4 id="81-single-use-tickets"><a class="header" href="#81-single-use-tickets">8.1 Single-Use Tickets</a></h4>
+<p>Tickets 只能使用一次。</p>
+<h4 id="82-client-hello-recording"><a class="header" href="#82-client-hello-recording">8.2 Client Hello Recording</a></h4>
+<p>反重放的手段之一，从 ClientHello 中选择唯一的值进行记录，并且拒绝该值重复的 ClientHello</p>
+<ul>
+<li>使用一个时间窗口，记录该窗口内的所有 ClientHello</li>
+<li>如果发现重复，可以中断握手并返回 illegal_parameter，也可以继续，但是拒绝 0-RTT</li>
+<li>（提供了分布式系统可以采取的一些方案）</li>
+</ul>
+<h4 id="83-freshness-checks"><a class="header" href="#83-freshness-checks">8.3 Freshness Checks</a></h4>
+<p>检查 ClientHello 发送时间：</p>
+<ul>
+<li>adjusted_creation_time = creation_time + estimated_RTT</li>
+<li>expected_arrival_time = adjusted_creation_time + clients_ticket_age
+<ul>
+<li>该时间会和当前服务器时钟对比，如果差异大于设定值，该 0-RTT 数据会被拒绝，不过可以正常进行 1-RTT 数据交换</li>
+</ul>
+</li>
+</ul>
+<h3 id="9-合规要求"><a class="header" href="#9-合规要求">9. 合规要求</a></h3>
+<h4 id="91-必须实现的密码算法套"><a class="header" href="#91-必须实现的密码算法套">9.1 必须实现的密码算法套</a></h4>
+<p>使用 TLS 的应用必须实现 TLS_AES_128_GCM_SHA256 [GCM]、TLS_AES_256_GCM_SHA384
+[GCM] 、TLS_CHACHA20_POLY1305_SHA256、rsa_pkcs1_sha256 (for certificates)、 rsa_pss_rsae_sha256 (for CertificateVerify and certificates)、 ecdsa_secp256r1_sha256、(EC)DHE by secp256r1、X25519</p>
+<h4 id="92-必须实现的扩展"><a class="header" href="#92-必须实现的扩展">9.2 必须实现的扩展</a></h4>
+<table><thead><tr><th>扩展</th><th>扩展名</th></tr></thead><tbody>
+<tr><td>Supported Versions</td><td>supported_versions</td></tr>
+<tr><td>Cookie</td><td>cookie</td></tr>
+<tr><td>Signature Algorithm</td><td>signature_algorithms</td></tr>
+<tr><td>Signature Algorithm Certificate</td><td>signature_algorithms_cert</td></tr>
+<tr><td>Negotiated Groups</td><td>supported_groups</td></tr>
+<tr><td>Key Share</td><td>key_share</td></tr>
+<tr><td>Server Name</td><td>server_name</td></tr>
+</tbody></table>
+<p>当 feature 可用时，必须发送如下扩展：</p>
+<table><thead><tr><th>扩展</th><th>发送位置</th></tr></thead><tbody>
+<tr><td>supported_versions</td><td>所有的 ClientHello，ServerHello，HelloRetryRequest</td></tr>
+<tr><td>signature_algorithms</td><td>所有的证书验证</td></tr>
+<tr><td>supported_groups</td><td>使用 (EC)DHE 的 ClientHello</td></tr>
+<tr><td>key_share</td><td>使用 (EC)DHE时</td></tr>
+<tr><td>pre_shared_key</td><td>使用 PSK 时</td></tr>
+<tr><td>pre_shared_key_exchange_mode</td><td>使用 PSK 时</td></tr>
+</tbody></table>
+<p>如果 ClientHello 包含 supported_versions，且包含 0x0304，那么该 ClientHello 必须：</p>
+<ul>
+<li>如果不包含 pre_shared_key，则必须包含 signature_algorithms 以及 supported_groups</li>
+<li>如果包含 supported_groups，必须包含 key_share，反之亦然。KeyShare.client_shares vector 可以为空</li>
+<li>不符合以上要求的，服务器必须中断握手并且返回 <strong>missing_extension alert</strong></li>
+</ul>
+<p>针对 server_name：</p>
+<ul>
+<li>当可用时，服务器可以要求客户端发送该扩展，如果要求该扩展但是客户端没有发送，那么服务端应当中断握手，并返回 <strong>missing_extension alert</strong></li>
+</ul>
+<h5 id="93-协议不变量"><a class="header" href="#93-协议不变量">9.3 协议不变量</a></h5>
+<p>※ 兼容性</p>
+<ul>
+<li>（Middlebox）</li>
+</ul>
+<h3 id="10-安全考虑"><a class="header" href="#10-安全考虑">10. 安全考虑</a></h3>
+<p>见附录 C，D，E</p>
+<h3 id="11-iana-考虑"><a class="header" href="#11-iana-考虑">11. IANA 考虑</a></h3>
+<h3 id="附录"><a class="header" href="#附录">附录</a></h3>
+<h4 id="a-状态机"><a class="header" href="#a-状态机">A. 状态机</a></h4>
+<ul>
+<li>
+<p>客户端</p>
+<p><img src="./images/tls/image-20220310103713575-164732598920145.png" alt="image-20220310103713575" /></p>
+</li>
+<li>
+<p>服务端</p>
+<p><img src="./images/tls/image-20220310104048737-164732598920044.png" alt="image-20220310104048737" /></p>
+</li>
+</ul>
+<h4 id="b-协议数据结构以及常量"><a class="header" href="#b-协议数据结构以及常量">B. 协议数据结构以及常量</a></h4>
+<h5 id="b1-协议层"><a class="header" href="#b1-协议层">B.1 协议层</a></h5>
+<ul>
+<li>ContentType</li>
+<li>TLSPlaintext</li>
+<li>TLSInnerPlaintext</li>
+<li>TLSCiphertext</li>
+</ul>
+<h5 id="b2-告警"><a class="header" href="#b2-告警">B.2 告警</a></h5>
+<ul>
+<li>AlertDescription</li>
+<li>Alert</li>
+</ul>
+<h5 id="b3-握手协议"><a class="header" href="#b3-握手协议">B.3 握手协议</a></h5>
+<ul>
+<li>HandshakeType</li>
+<li>Handshake</li>
+</ul>
+<h6 id="b31-密钥交换信息"><a class="header" href="#b31-密钥交换信息">B.3.1 密钥交换信息</a></h6>
+<ul>
+<li>ProtocolVersion</li>
+<li>CipherSuite</li>
+<li>ClientHello</li>
+<li>ServerHello</li>
+<li>Extension</li>
+<li>ExtensionType</li>
+<li>KeyShareEntry</li>
+<li>KeyShareClientHello</li>
+<li>KeyShareHelloRetryRequest</li>
+<li>KeyShareServerHello</li>
+<li>UncompressedPointRepresentation</li>
+<li>PskKeyExchangeMode</li>
+<li>PskKeyExchangeModes</li>
+<li>Empty</li>
+<li>EarlyDataIndication</li>
+<li>PskIdentity</li>
+<li>PskBinderEntry</li>
+<li>OfferedPsks</li>
+<li>PreSharedKeyExtension</li>
+</ul>
+<h5 id="b311-版本控制"><a class="header" href="#b311-版本控制">B.3.1.1 版本控制</a></h5>
+<ul>
+<li>SupportedVersions</li>
+</ul>
+<h5 id="b312-cookie-扩展"><a class="header" href="#b312-cookie-扩展">B.3.1.2 Cookie 扩展</a></h5>
+<ul>
+<li>Cookie</li>
+</ul>
+<h5 id="b313-签名算法扩展"><a class="header" href="#b313-签名算法扩展">B.3.1.3 签名算法扩展</a></h5>
+<ul>
+<li>SignatureScheme</li>
+<li>SignatureSchemeList</li>
+</ul>
+<h5 id="b314-supported-groups-扩展"><a class="header" href="#b314-supported-groups-扩展">B.3.1.4 Supported Groups 扩展</a></h5>
+<ul>
+<li>NamedGroup</li>
+<li>NamedGroupList</li>
+</ul>
+<h4 id="b32-server-parameters-msgs"><a class="header" href="#b32-server-parameters-msgs">B.3.2 Server Parameters Msgs</a></h4>
+<ul>
+<li>DistinguishedName</li>
+<li>CertificateAuthoritiesExtension</li>
+<li>OIDFilter</li>
+<li>OIDFilterExtension</li>
+<li>PostHandshakeAuth</li>
+<li>EncryptedExtensions</li>
+<li>CertificateRequest</li>
+</ul>
+<h4 id="b33-authentication-msgs"><a class="header" href="#b33-authentication-msgs">B.3.3 Authentication Msgs</a></h4>
+<ul>
+<li>CertificateType</li>
+<li>CertificateEntry</li>
+<li>Certificate</li>
+<li>CertificateVerify</li>
+<li>Finished</li>
+</ul>
+<h4 id="b34-ticket-establishment"><a class="header" href="#b34-ticket-establishment">B.3.4 Ticket Establishment</a></h4>
+<ul>
+<li>NewSessionTicket</li>
+</ul>
+<h4 id="b35-密钥更新"><a class="header" href="#b35-密钥更新">B.3.5 密钥更新</a></h4>
+<ul>
+<li>EndOfEarlyData</li>
+<li>KeyUpdateRequest</li>
+<li>KeyUpdate</li>
+</ul>
+<h3 id="b4-密码套"><a class="header" href="#b4-密码套">B.4 密码套</a></h3>
+<p><img src="./images/tls/image-20220314144321133.png" alt="image-20220314144321133" /></p>
+<h4 id="c-实现细节"><a class="header" href="#c-实现细节">C. 实现细节</a></h4>
+<ul>
+<li>在签名之后验证，防止 <a href="https://support.f5.com/csp/article/K91245485">RSA-CRT 密钥泄漏</a>。此条应当主要针对 RSA 签名以及 RSA-CRT 优化算法。</li>
+<li>TLS 1.3 允许未验证的密钥交换，如通过 raw public keys 或 使用未验证证书内的公钥，这种做法允许带外验证或者在 TLS 1.3 之外的方式验证身份，但是要注意潜在的风险。如果没有其他的验证，不应当使用这种不安全的方式协商密钥。</li>
+</ul>
+<h4 id="d-向下兼容"><a class="header" href="#d-向下兼容">D. 向下兼容</a></h4>
+<p>☆ TLS 1.2 和之前版本支持 extended master secret 扩展，同时支持 TLS 1.3 和其他版本时，需要在 API 中体现，使用 TLS 1.3 时也会使用该扩展</p>
+<p>兼容性和安全性：</p>
+<ul>
+<li>不可以协商 RC4，以及安全长度小于 112 比特的安全算法</li>
+<li>不可以协商 SSL 3.0 / 2.0，因此 ClientHello / ServerHello.lagacy_version 不可以设置为 0x0300 或更低。如果接收到这个版本，应当终止握手，并返回 <strong>protocol_version alert</strong></li>
+<li>不可以使用 truncated HMAC 扩展</li>
+</ul>
+<p>客户端与老版本服务器协商时：</p>
+<ul>
+<li>
+<p>在确认双方支持 TLS 1.3 之前，客户端不可以直接发送 Early Data</p>
+<ul>
+<li>如果服务端的回复版本不是 TLS 1.3，但是客户端试图发送 Early Data，客户端应当判定此次链接失败，可以在重试的时候去掉 0-RTT 数据</li>
+</ul>
+</li>
+<li>
+<p>如果服务端的回复选择了客户端不支持的版本，客户端应当终止握手，并返回 <strong>protocol_version alert</strong></p>
+</li>
+</ul>
+<p>服务端与老版本客户端协商时：</p>
+<ul>
+<li>
+<p>如果客户端的版本低于服务端最低支持的版本，服务端应当终止握手，并返回 <strong>protocol_version alert</strong></p>
+</li>
+<li>
+<p>☆ 服务端应当忽略 TLSPlaintext.lagacy_record_version</p>
+</li>
+</ul>
+<h4 id="e-tls-13-安全原理以及概述"><a class="header" href="#e-tls-13-安全原理以及概述">E. TLS 1.3 安全原理以及概述</a></h4>
+<h5 id="e50-0-rtt-重放攻击"><a class="header" href="#e50-0-rtt-重放攻击">E.5.0 0-RTT 重放攻击</a></h5>
+<p>为了避免意外误用，在应用端没有明确要求时，终端不得启用 0-RTT 模式发送或接收 0-RTT 数据。当服务端拒绝 0-RTT 数据时，除非应用端明确要求，客户端不得自动重发 0-RTT 数据。根据应用端需求，服务端可以实现具体的对于 0-RTT 数据处理方式（e.g. 终止链接，要求在应用层重发 0-RTT 数据，或者延迟处理，直到握手完成）。</p>
+<h3 id="错误对应"><a class="header" href="#错误对应">错误对应</a></h3>
+<table><thead><tr><th>错误</th><th>类型</th><th>位置 / 描述</th><th>发起</th></tr></thead><tbody>
+<tr><td>close_notify</td><td>Closure</td><td></td><td>TLS 1.3 客户端 / 服务端</td></tr>
+<tr><td>user_canceled</td><td>Closure</td><td></td><td>TLS 1.3 客户端 / 服务端</td></tr>
+<tr><td>insufficient_security</td><td>Error</td><td>密码套协商，Key Exchange Msg，ServerHello</td><td>TLS 1.3 服务端</td></tr>
+<tr><td>handshake_failure</td><td>Error</td><td>密码套协商，Key Exchange Msg，ServerHello</td><td>TLS 1.3 服务端</td></tr>
+<tr><td>decode_error</td><td>Error</td><td>ServerHello，接收证书信息</td><td>TLS 1.3 客户端 / 服务端</td></tr>
+<tr><td>illegal_parameter</td><td>Error</td><td>ClientHello，ServerHello，扩展，supported_versions，key_share，pre_shared_key，Encrypted_Extension，更新 Key 以及 IV</td><td>TLS 1.3 客户端 / 服务端</td></tr>
+<tr><td>unexpected_message</td><td>Error</td><td>ClientHello，ServerHello，End of Early Data，New Session Ticket Msg，Post-Handshake Authentication，更新 Key 以及 IV，change_cipher_spec，记录层，Record Padding</td><td>TLS 1.3 客户端 / 服务端</td></tr>
+<tr><td>protocol_version</td><td>Error</td><td>ClientHello，D. 向下兼容</td><td>TLS 客户端 / 服务端</td></tr>
+<tr><td>unsupported_extension</td><td>Error</td><td>扩展</td><td>TLS 1.3 客户端 / 服务端</td></tr>
+<tr><td>missing_extension</td><td>Error</td><td>signature_algorithms，必须实现的扩展</td><td>TLS 1.3 服务端</td></tr>
+<tr><td>unsupported_certificate</td><td>Error</td><td>oid_filters，服务器证书选择</td><td>TLS 1.3 客户端 / 服务端</td></tr>
+<tr><td>bad_record_mac</td><td>Error</td><td>Early Data，Record Payload Protection</td><td>TLS 1.3 客户端 / 服务端</td></tr>
+<tr><td>certificate_required</td><td>Error</td><td>接收证书信息</td><td>TLS 1.3 服务端</td></tr>
+<tr><td>bad_certificate</td><td>Error</td><td>接收证书信息</td><td>TLS 1.3 客户端 / 服务端</td></tr>
+<tr><td>decrypt_error</td><td>Error</td><td>证书验证，Finished</td><td>TLS 1.3 客户端 / 服务端</td></tr>
+<tr><td>record_overflow</td><td>Error</td><td>记录层，Record Payload Protection</td><td>TLS 1.3 客户端 / 服务端</td></tr>
+<tr><td>certificate_revoked</td><td>Error</td><td>※ 签署方已撤回该证书</td><td>TLS 1.3 客户端 / 服务端</td></tr>
+<tr><td>certificate_expired</td><td>Error</td><td>※ 证书已过期</td><td>TLS 1.3 客户端 / 服务端</td></tr>
+<tr><td>certificate_unknown</td><td>Error</td><td>※ 证书未知</td><td>TLS 1.3 客户端 / 服务端</td></tr>
+<tr><td>unknown_ca</td><td>Error</td><td>※ 未知 CA</td><td>TLS 1.3 客户端 / 服务端</td></tr>
+<tr><td>access_denied</td><td>Error</td><td>※ 证书或 PSK 合法，但是当需要访问控制时，发送方决定终止协商</td><td>TLS 1.3 客户端 / 服务端</td></tr>
+<tr><td>protocol_version</td><td>Error</td><td>ClientHello，ServerHello</td><td>TLS 1.3 客户端 / 服务端</td></tr>
+<tr><td>internal_error</td><td>Error</td><td>※ 其它与协议无关的错误</td><td>TLS 1.3 客户端 / 服务端</td></tr>
+<tr><td>inappropriate_fallback</td><td>Error</td><td>※ 由服务器发送，回复客户端的非法重试链接</td><td>TLS 1.3 服务端</td></tr>
+<tr><td>unrecognized_name</td><td>Error</td><td>※ 由服务器发送，客户端发送的 server_name 扩展无匹配服务器</td><td>TLS 1.3 服务端</td></tr>
+<tr><td>unknown_psk_identity</td><td>Error</td><td>※ 由服务器发送，PSK identity 无匹配。发送此警告是<strong>可选</strong>的，也可以发送 decrypt_error</td><td>TLS 1.3 服务端</td></tr>
+</tbody></table>
+<p>※：错误描述</p>
+<h3 id="额外内容"><a class="header" href="#额外内容">额外内容</a></h3>
+<table><thead><tr><th>目录 / 页数</th><th>内容</th></tr></thead><tbody>
+<tr><td>RFC 7919</td><td>FFDHE</td></tr>
+<tr><td>RFC 5705</td><td>Exporters</td></tr>
+<tr><td>RFC 6066</td><td>CertificateStatus</td></tr>
+<tr><td>RFC 5869</td><td>HKDF</td></tr>
+<tr><td><a href="https://www.blackhat.com/docs/us-16/materials/us-16-Ortisi-Recover-A-RSA-Private-Key-From-A-TLS-Session-With-Perfect-Forward-Secrecy.pdf">Recover a RSA private key from a TLS session with Perfect Forward Secrecy</a></td><td>RSA CRT key leaks &amp;&amp; OpenPGP Attack</td></tr>
+</tbody></table>
+
+                    </main>
+
+                    <script src="https://utteranc.es/client.js"
+                    repo="RustMagazine/rust_magazine_2022"
+                    issue-term="title"
+                    theme="github-light"
+                    crossorigin="anonymous"
+                    async></script>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../Q1/contribute/rust-mobile.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../../Q1/contribute/async-cancel.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../Q1/contribute/rust-mobile.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../../Q1/contribute/async-cancel.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../../ace.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../editor.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../mode-rust.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../theme-dawn.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../theme-tomorrow_night.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        <script type="text/javascript" src="../../mermaid.min.js"></script>
+        <script type="text/javascript" src="../../mermaid-init.js"></script>
+        <script type="text/javascript" src="../../smart-anchor.js"></script>
+    </body>
+</html>

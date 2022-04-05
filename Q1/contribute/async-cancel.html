@@ -1,0 +1,489 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js rust">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Rust 异步与取消 - Rust Magazine 2022</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="The roots aren&#x27;t deep but the seeds are planted!">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../../highlight.css">
+        <link rel="stylesheet" href="../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "rust";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../../Q1/toc.html"><strong aria-hidden="true">1.</strong> 2022-Q1</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/lang.html"><strong aria-hidden="true">1.1.</strong> 官方动态</a></li><li class="chapter-item "><a href="../../Q1/hots.html"><strong aria-hidden="true">1.2.</strong> 社区热点</a></li><li class="chapter-item "><a href="../../Q1/learns.html"><strong aria-hidden="true">1.3.</strong> 学习资源</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/learns/projects.html"><strong aria-hidden="true">1.3.1.</strong> 开源项目</a></li><li class="chapter-item "><a href="../../Q1/learns/blogs.html"><strong aria-hidden="true">1.3.2.</strong> 博文教程</a></li><li class="chapter-item "><a href="../../Q1/learns/open-courses.html"><strong aria-hidden="true">1.3.3.</strong> 高校公开课</a></li><li class="chapter-item "><a href="../../Q1/learns/videos.html"><strong aria-hidden="true">1.3.4.</strong> 线上视频</a></li></ol></li><li class="chapter-item "><a href="../../Q1/academic.html"><strong aria-hidden="true">1.4.</strong> 学术动态</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/academic/rust.html"><strong aria-hidden="true">1.4.1.</strong> Rust</a></li><li class="chapter-item "><a href="../../Q1/academic/wasm.html"><strong aria-hidden="true">1.4.2.</strong> WebAssembly</a></li></ol></li><li class="chapter-item "><a href="../../Q1/opensource.html"><strong aria-hidden="true">1.5.</strong> 领域开源</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/opensource/data.html"><strong aria-hidden="true">1.5.1.</strong> 数据处理</a></li><li class="chapter-item "><a href="../../Q1/opensource/cloud.html"><strong aria-hidden="true">1.5.2.</strong> 云原生</a></li><li class="chapter-item "><a href="../../Q1/opensource/game.html"><strong aria-hidden="true">1.5.3.</strong> 游戏与图像处理</a></li><li class="chapter-item "><a href="../../Q1/opensource/os.html"><strong aria-hidden="true">1.5.4.</strong> 操作系统</a></li><li class="chapter-item "><a href="../../Q1/opensource/cliapp.html"><strong aria-hidden="true">1.5.5.</strong> 命令行工具</a></li><li class="chapter-item "><a href="../../Q1/opensource/performance.html"><strong aria-hidden="true">1.5.6.</strong> 性能工具</a></li><li class="chapter-item "><a href="../../Q1/opensource/network.html"><strong aria-hidden="true">1.5.7.</strong> 网络基建</a></li><li class="chapter-item "><a href="../../Q1/opensource/web.html"><strong aria-hidden="true">1.5.8.</strong> Web开发</a></li><li class="chapter-item "><a href="../../Q1/opensource/mobile.html"><strong aria-hidden="true">1.5.9.</strong> 移动开发</a></li><li class="chapter-item "><a href="../../Q1/opensource/frontend.html"><strong aria-hidden="true">1.5.10.</strong> 前端基建</a></li><li class="chapter-item "><a href="../../Q1/opensource/av.html"><strong aria-hidden="true">1.5.11.</strong> 音视频处理</a></li><li class="chapter-item "><a href="../../Q1/opensource/lang-with-rust.html"><strong aria-hidden="true">1.5.12.</strong> 基于Rust的新编程语言</a></li><li class="chapter-item "><a href="../../Q1/opensource/embedded.html"><strong aria-hidden="true">1.5.13.</strong> 嵌入式Rust</a></li><li class="chapter-item "><a href="../../Q1/opensource/scientific-research.html"><strong aria-hidden="true">1.5.14.</strong> 科学艺术</a></li><li class="chapter-item "><a href="../../Q1/opensource/tools.html"><strong aria-hidden="true">1.5.15.</strong> 其他工具</a></li></ol></li><li class="chapter-item "><a href="../../Q1/security.html"><strong aria-hidden="true">1.6.</strong> 安全动态</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/security/unsound.html"><strong aria-hidden="true">1.6.1.</strong> 不健全（Unsound）</a></li><li class="chapter-item "><a href="../../Q1/security/memory.html"><strong aria-hidden="true">1.6.2.</strong> 内存安全问题（Memory）</a></li><li class="chapter-item "><a href="../../Q1/security/memory.html"><strong aria-hidden="true">1.6.3.</strong> 拒绝服务（Dos）</a></li><li class="chapter-item "><a href="../../Q1/security/others.html"><strong aria-hidden="true">1.6.4.</strong> 其他</a></li></ol></li><li class="chapter-item "><a href="../../Q1/business.html"><strong aria-hidden="true">1.7.</strong> 商业动态</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/business/practices.html"><strong aria-hidden="true">1.7.1.</strong> 生产实践</a></li><li class="chapter-item "><a href="../../Q1/business/products.html"><strong aria-hidden="true">1.7.2.</strong> 优秀产品</a></li><li class="chapter-item "><a href="../../Q1/business/blockchain.html"><strong aria-hidden="true">1.7.3.</strong> 区块链</a></li></ol></li><li class="chapter-item "><a href="../../Q1/libs.html"><strong aria-hidden="true">1.8.</strong> Rust 基础库</a></li><li class="chapter-item expanded "><a href="../../Q1/contribute.html"><strong aria-hidden="true">1.9.</strong> 投稿精选</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../Q1/contribute/atom.html"><strong aria-hidden="true">1.9.1.</strong> DatenLord | Rust原子类型和内存排序</a></li><li class="chapter-item "><a href="../../Q1/contribute/async-rdma.html"><strong aria-hidden="true">1.9.2.</strong> DatenLord | async-rdma:使高性能网络应用开发更简单</a></li><li class="chapter-item "><a href="../../Q1/contribute/rust-for-linux-clk.html"><strong aria-hidden="true">1.9.3.</strong> Rust for Linux 源码导读 | Rust 驱动开发与通用时钟管理框架抽象</a></li><li class="chapter-item "><a href="../../Q1/contribute/rust-mobile.html"><strong aria-hidden="true">1.9.4.</strong> Rust 移动开发与跨平台模式探究</a></li><li class="chapter-item "><a href="../../Q1/contribute/hw-tls-rfc.html"><strong aria-hidden="true">1.9.5.</strong> 华为 | RFC 8446 &amp; 8998 TLS 1.3总结</a></li><li class="chapter-item expanded "><a href="../../Q1/contribute/async-cancel.html" class="active"><strong aria-hidden="true">1.9.6.</strong> Rust 异步与取消</a></li><li class="chapter-item "><a href="../../Q1/contribute/rfc-2603.html"><strong aria-hidden="true">1.9.7.</strong> RFC 2603: Rust Symbol Name Mangling v0</a></li><li class="chapter-item "><a href="../../Q1/contribute/rust-dyn-link.html"><strong aria-hidden="true">1.9.8.</strong> Rust与动态链接</a></li><li class="chapter-item "><a href="../../Q1//contribute/naive-bayes.html"><strong aria-hidden="true">1.9.9.</strong> 使用Rust实现朴素贝叶斯（Naive Bayes）算法</a></li></ol></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust Magazine 2022</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/RustMagazine/rust_magazine_2022" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="rust-异步与取消"><a class="header" href="#rust-异步与取消">Rust 异步与取消</a></h1>
+<p>作者： 王江桐、周紫鹏</p>
+<hr />
+<p>在 Rust 中，异步原语可分为两类：</p>
+<ol>
+<li>Future，是 Rust 语言以及标准库的一部分，实现了 <code>Future</code> trait 的实例可以调用 <code>await</code>，试图获取异步任务执行的状态，在运行时的调度下，Future 的实际代码逻辑会转化为 Task（任务）；</li>
+<li>Task（任务）则和 Future 相反，并不是 Rust 语言以及标准库的一部分，同时在一般的异步中，也不是用户直接接触到的部分。异步执行逻辑组成 Task 单元，由异步运行时管理，可以在多线程上运行。执行器在多线程中执行、移动以及调度 Task，Task 返回 Future，当任务执行完成时，用户通过 Future 获取任务执行的返回值。</li>
+</ol>
+<p>在很多其它语言中，例如 JavaScript，这些语言处理异步时，使用的是类如 Task 的任务单元，并且不提供类如 Future 的结构。语言自带的运行时则会优化任务的调度以及运行。Rust 则相反，并没有自带运行时，用户接触到的是 Future 而非 Task。运行时以及任务调度则由三方库提供，例如 tokio 以及 asnyc-std。</p>
+<p>在一些场景下，我们可能需要取消已生成的实现 <code>Future</code> trait 的实例。一个不完全贴切的例子是，如果出于某些原因，我们误生成了下载动作，以及相关的后续逻辑，那么我们应当有方法取消这一误操作产生的结果。</p>
+<h2 id="取消-futures"><a class="header" href="#取消-futures">取消 Futures</a></h2>
+<p>不考虑<code>async drop</code>的情况下，不论是取消单一的 Future 还是一整个 Future 树，或是取消 <code>await</code> 之前或之后的 Future，取消都非常简单，只需要调用 <code>drop</code> 函数即可，Rust 标准库会处理后续的流程。</p>
+<p>Rust 语言组还没有实现 <code>async drop</code>。关于这一点，可见《<a href="http://openx.huawei.com/Ylong_Rust/dynamicDetail/3379">This Week in Rust #412：Rust Async trait更新与多线程</a>》。</p>
+<p>举例来说，对于取消调用 <code>await</code> 之前的 Future：</p>
+<pre><pre class="playground"><code class="language-rust">use std::time::Duration;
+
+struct Guard;
+impl Drop for Guard {
+    fn drop(&amp;mut self) {
+        println!(&quot;2&quot;);
+    }
+}
+
+async fn foo(guard: Guard) {
+    println!(&quot;3&quot;);
+    task::sleep(Duration::from_secs(1)).await;
+    println!(&quot;4&quot;);
+}
+
+fn main() {
+    println!(&quot;1&quot;);
+    let guard = Guard {};
+    let fut = foo(guard);
+    // 取消
+    drop(fut);
+    println!(&quot;done&quot;);
+}
+</code></pre></pre>
+<p>打印结果是：</p>
+<pre><code class="language-shell">&gt; 1
+&gt; 2
+&gt; done
+</code></pre>
+<p>取消调用了一次 <code>await</code> 的 Future：</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::{ptr, task};
+use async_std::task;
+use std::time::Duration;
+
+async fn foo() {
+    println!(&quot;2&quot;);
+    task::sleep(Duration::from_secs(1)).await;
+    println!(&quot;3&quot;);
+}
+
+let mut fut = Box::pin(foo());
+let mut cx = empty_cx();
+
+println!(&quot;1&quot;);
+assert!(fut.as_mut().poll(&amp;mut cx).is_pending());
+drop(fut);
+println!(&quot;done&quot;);
+
+/// Create an empty &quot;Waker&quot; callback, wrapped in a &quot;Context&quot; structure.
+/// How this works is not particularly important for the rest of this post.
+fn empty_cx() -&gt; task::Context { ... }
+<span class="boring">}
+</span></code></pre></pre>
+<p>打印结果是：</p>
+<pre><code class="language-shell">&gt; 1
+&gt; 2
+&gt; done
+</code></pre>
+<p>在 Future 逻辑的两个 <code>await</code> 之间，或是在最后一个 <code>await</code> 调用之后，无法取消 Future。在这种情况下，没有 <code>await</code>，即没有异步逻辑，Future 的内部逻辑执行没有暂停点，会持续执行直到通过 <code>await</code> 暂停或返回。</p>
+<p>取消 Future 树：</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use async_std::prelude::*;
+use async_std::task;
+use std::time::Duration;
+
+async fn foo() {
+    println!(&quot;2&quot;);
+    bar().timeout(Duration::from_secs(3)).await;
+    println!(&quot;5&quot;);
+}
+
+async fn bar() {
+    println!(&quot;3&quot;);
+    task::sleep(Duration::from_secs(2)).await;
+    println!(&quot;4&quot;);
+}
+
+println!(&quot;1&quot;);
+foo().timeout(Duration::from_secs(1)).await;
+println!(&quot;done&quot;);
+<span class="boring">}
+</span></code></pre></pre>
+<p>对于 Future 树：</p>
+<pre><code>main
+  -&gt; foo (times out after 1 sec)
+    -&gt; bar (times out after 3 secs)
+      -&gt; task::sleep (wait for 2 secs)
+</code></pre>
+<p>取消后的打印结果为：</p>
+<pre><code class="language-shell">&gt; 1
+&gt; 2
+&gt; 3
+&gt; done    # `4` and `5` are never printed
+</code></pre>
+<p>虽然在大部分情况下，当实例理论上退出生命周期时，Rust 都会调用它们的析构函数，但是在一些场景下，析构函数并不能保证被调用，例如引用循环以及多线程中使用 <code>Rc</code> 。在其它语言，例如 Swift 和 Go 中，语言层级上的解决方案是使用 <code>defer</code> 关键字。这一关键字可以保证匿名析构函数一定会被调用。这部分的解析可见《<a href="https://www.hackingwithswift.com/new-syntax-swift-2-defer">The defer keyword in Swift: try/finally done right</a>》。在 Rust 中，目前则暂时没有运行时直接回应这个问题，Rust 的三方库  <a href="https://docs.rs/scopeguard/1.1.0/scopeguard/#macros">scopeguard</a> 提供了一个类似于 <code>defer</code> 的宏，以及相应的套件。 使用 <code>defer</code> 会生成析构函数运行保证器，不过它会直接获取数据的所有权。如果我们只希望当 Future 中途取消时，在退出的时候才将所有权移交，即在此之前所有权应当由用户管理，而不是保证器的话，那么可以使用 <a href="https://docs.rs/scopeguard/1.1.0/scopeguard/struct.ScopeGuard.html"><code>scopeguard::SopeGuard</code></a>，然后通过 <code>Deref / DerefMut</code> trait 来获取其中数据。</p>
+<h2 id="取消-task"><a class="header" href="#取消-task">取消 Task</a></h2>
+<p>Task 并不是 Rust 标准化的实例，因此无法通过 <code>drop</code> 或其他非常直观的手段暂停：</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 以 async-std 运行时为例
+use async_std::task;
+
+let handle = task::spawn(async {
+    task::sleep(Duration::from_secs(1)).await;
+    println!(&quot;2&quot;);
+});
+
+println!(&quot;1&quot;);
+drop(handle);     // Drop the task handle.
+task::sleep(Duration::from_secs(2)).await;
+println!(&quot;done&quot;);
+<span class="boring">}
+</span></code></pre></pre>
+<p>打印结果为：</p>
+<pre><code class="language-shell">&gt; 1
+&gt; 2
+&gt; done
+</code></pre>
+<p>可以看到，drop handle 并不会取消异步 Task 的运行。对于 Task，async-std 运行时的逻辑与 tokio 相同。生成的异步任务与返回的 handle 无关，handle 生命周期结束并不会连带结束它所指向的 Task，而是使得这一 Task 与 handle 分离。这一语义被称为 &quot;detach on drop&quot;，即析构时分离。</p>
+<p>一般来说，针对这种情况，不同的运行时会提供不同的处理方式。例如，async-std 使用 <code>JoinHandle::cancel</code>，tokio 使用 <code>JoinHandle::abort</code> 来终止单一 Task 的运行：</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use async_std::task;
+
+let handle = task::spawn(async {
+    task::sleep(Duration::from_secs(1)).await;
+    println!(&quot;2&quot;);
+});
+
+println!(&quot;1&quot;);
+handle.cancel().await;    // Cancel the task handle
+task::sleep(Duration::from_secs(2)).await;
+println!(&quot;done&quot;);
+<span class="boring">}
+</span></code></pre></pre>
+<p>打印结果为：</p>
+<pre><code class="language-shell">&gt; 1
+&gt; done
+</code></pre>
+<p>然而，由于 Task 的取消并不能通过析构 handle 来实现，取消 Task 树并不像取消 Future 树，会自动向下传递取消行为。逻辑上，使用取消单一 Task 的方式可能可以成功取消根 Task，但是这可能导致树中的其他 Task 悬垂，并继续运行，而非取消执行并结束生命周期。</p>
+<p>在三方库运行时中，smol 运行时会自动传递 Task 树的取消：</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>smol::block_on(async {
+    println!(&quot;1&quot;);
+    let task = smol::spawn(async {
+        println!(&quot;2&quot;);
+    });
+    drop(task);
+    println!(&quot;done&quot;)
+});
+<span class="boring">}
+</span></code></pre></pre>
+<p>打印结果为：</p>
+<pre><code class="language-shell">&gt; 1
+&gt; done
+</code></pre>
+<p>然而，并不是所有运行时都像 smol 一样会自动传递 Task 树的取消。对于其他的一些运行时，如果要传递这一行为，用户可能要考虑手动写一个包装器（Wrapper），确保调用 drop 时，所有指向树中对应 Task 的 handle 都会调用 <code>abort</code>：</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use tokio::task;
+use core::future::Future;
+use core::pin::Pin;
+use core::task::{Context, Poll};
+
+/// Spawn a new tokio Task and cancel it on drop.
+pub fn spawn&lt;T&gt;(future: T) -&gt; Wrapper&lt;T::Output&gt;
+where
+    T: Future + Send + 'static,
+    T::Output: Send + 'static,
+{
+    Wrapper(task::spawn(future))
+}
+
+/// Cancels the wrapped tokio Task on Drop.
+pub struct Wrapper&lt;T&gt;(task::JoinHandle&lt;T&gt;);
+
+impl&lt;T&gt; Future for Wrapper&lt;T&gt;{
+    type Output = Result&lt;T, task::JoinError&gt;;
+    fn poll(mut self: Pin&lt;&amp;mut Self&gt;, cx: &amp;mut Context&lt;'_&gt;) -&gt; Poll&lt;Self::Output&gt; {
+        unsafe { Pin::new_unchecked(&amp;mut self.0) }.poll(cx)
+    }
+}
+
+impl&lt;T&gt; Drop for Wrapper&lt;T&gt; {
+    fn drop(&amp;mut self) {
+        // do `let _ = self.0.cancel()` for `async_std::task::Task`
+        self.0.abort();
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="结构化并发-structured-concurrency"><a class="header" href="#结构化并发-structured-concurrency">结构化并发 (Structured Concurrency)</a></h3>
+<p>参考维基百科，结构化并发的定义为：</p>
+<blockquote>
+<p><strong>结构化并发</strong>是一种编程范式，旨在通过使用结构化的并发编程方法来提高计算机程序的清晰度、质量和开发时间。</p>
+<p>结构化并发的核心概念是，通过具有明确出入口，并可以确保所有生成线程在主线程退出之前结束的控制流结构，并行线程的封装。这里的线程包括内核和用户的线程，以及进程。这种封装允许并发线程中的错误传播到控制结构的父域，即调用域或上一层上下文环境，并由每种特定计算机语言的本地错误处理机制进行管理。如果想要保持结构化并发范式，那么当前程序的所有层级都必须应用这一模型，否则并发线程可能会在中途泄漏、成为孤立线程或无法正确传播运行时错误。</p>
+<p>结构化并发类似于结构化编程，后者引入了封装顺序语句和子例程的控制流构造。</p>
+<p>（有翻译，参考了对于维基百科页面《<a href="https://en.wikipedia.org/wiki/Structured_concurrency">Structued Concurrency</a>》的谷歌机翻，同时人工修改了一些不通顺的语句）</p>
+</blockquote>
+<p>同时补充一个题外话，结构化编程的定义是：</p>
+<blockquote>
+<p><strong>结构化编程</strong>（Structured programming）是一种编程典范。它采用子程序、块结构、for循环以及while循环等结构，即控制流结构，来取代传统的 goto。希望借此来改善计算机程序的明晰性、质量以及开发时间，并且避免写出混乱且晦涩的代码。</p>
+<p>结构化的程序是以一些简单、有层次的程序流程架构所组成，可分为循序（Sequence）、选择（Selection）及重复（Repetition）。</p>
+<ul>
+<li>循序是指程序正常的执行方式，执行完一个指令后，执行后面的指令。</li>
+<li>选择是依程序的状态，选择数段程序中的一个来执行，一般会使用<code>if..then..else..endif</code>或<code>switch</code>、<code>case</code>等关系字来识别。</li>
+<li>重复是指一直执行某一段程序，直到满足特定条件，或是一集合体中的所有元素均已处理过，一般会使用<code>while</code>、<code>repeat</code>、<code>for</code>、<code>do..until</code>或<code>do...while</code>等关键字识别。一般会建议每个循环只能有一个进入点（戴克斯特拉的结构化编程要求每个循环只能有一个进入点及一个结束点，有些编程语言仍有此规定）。</li>
+</ul>
+<p>若一个编程语言的语法允许用成对的关键字包围一段程序，形成一个结构，这种编程语言称为有“块结构”，这类的结构包括用ALGOL 68的<code>if..fi</code>包围的程序，或是在PL/I中用<code>BEGIN..END</code>包围的一段程序，或是在C语言中用大括号<code>{...}</code>包围的一段程序。</p>
+</blockquote>
+<p>也就是说，对于 Rust 异步而言，如果要保持结构化并发结构，那么 Futures 和 Tasks 需要满足如下条件：</p>
+<ol>
+<li>子 Future / Task 的生命周期不能长于父 Future / Task；</li>
+<li>如果父 Future / Task 被取消，那么子 Future / Task 也应当被取消；</li>
+<li>如果子 Future / Task 产生了错误，那么父 Future / Task 应当可以获取这个错误，并对其进行处理，不管是继续报错还是安全处理。</li>
+</ol>
+<p>如前文所说，Future 可以保持这一结构，而在很多运行时中， Task 不行，在树中传递取消需要用户手动增加包装器，而非像 Future 一样自动传递。同时，很多运行时以及异步代码仅仅是生成 Task，随后 Task 将与主线程分离，并在产生错误时记录日志，而非向上层传递。例如：</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// The async-std &quot;echo tcp server&quot; example.
+use async_std::io;
+use async_std::net::{TcpListener, TcpStream};
+use async_std::prelude::*;
+use async_std::task;
+
+// Listen for new TCP connections on port 8080.
+let listener = TcpListener::bind(&quot;127.0.0.1:8080&quot;).await?;
+
+// Iterate over the incoming connections, and move each task to a multi-threaded
+// runtime.
+let mut incoming = listener.incoming();
+while let Some(stream) = incoming.next().await {
+    task::spawn(async {
+        // If an error occurs, log it to stderr.
+        if let Err(err) = run(stream).await {
+            eprintln!(&quot;error: {}&quot;, err);
+        }
+    });
+}
+
+// The main logic of our listen loop. This is a simple echo server.
+async fn run(stream: io::Result&lt;TcpStream&gt;) -&gt; io::Result&lt;()&gt; {
+    let stream = stream?;
+    let (reader, writer) = &amp;mut (&amp;stream, &amp;stream);
+    io::copy(reader, writer).await?;
+    Ok(())
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>对此，一个新的封装概念是 TaskGroup（任务组），将 Task 树打包认作是一整个 TaskGroup，内部的逻辑由 TaskGroup 封装处理，即析构一整个 TaskGroup 会按序取消一整个 Task 树，而树中任何的错误都会向上传递至 TaskGroup 实例，并且导致树中所有 Task 取消。虽然目前没有运行时支持这一概念，不过 crate.io 上也有库提供了这一功能，例如 <a href="https://crates.io/crates/task-group">task-group</a>。</p>
+<h3 id="不能被取消的-async-trait"><a class="header" href="#不能被取消的-async-trait">不能被取消的 Async trait</a></h3>
+<p><a href="https://rust-lang.github.io/compiler-team/working-groups/async-await/">Async Foundation 工作小组</a>此前曾讨论过，是否要增加无法被取消的 Future trait，即实现该 trait 的 Future 实例一定保证会运行完成，无论是报错还是顺利结束。主要原因有两个：</p>
+<ol>
+<li>与 C++ 的异步环境兼容，在 C++ 中，Future 运行中断这一行为是未定义行为（Undefined Behavior）；
+<ul>
+<li>举例来说，在 Linux 环境下，如果用户使用 <code>io_uring</code> 调用异步 <code>read()</code>，但是随后取消了，那么用户必须使用某些方式保证内核不会使用 Rust 释放的 buffer。方法包括通过 <code>IORING_REGISTER_BUFFERS</code> 使得内核获取 buffer 的所有权，但是这样写可能会带来其他的不便利。《<a href="https://without.boats/blog/io-uring/">Notes on io-uring</a>》对这一现象有比较详细的解释，不过认为内核获取 buffer 所有权并不是大问题，可以直接在其上设计其他的高性能 API。</li>
+</ul>
+</li>
+<li>对于异步初学者而言，这样可以减少问题复杂度。
+<ul>
+<li>不过，关于这一点，随着异步的功能完善以及便利封装，工作小组暂时不会再考虑这一理由。</li>
+</ul>
+</li>
+</ol>
+<h2 id="参考"><a class="header" href="#参考">参考</a></h2>
+<p>Async Cancellation I，https://blog.yoshuawuyts.com/async-cancellation-1/#notes</p>
+<p>Structured Concurrency，https://en.wikipedia.org/wiki/Structured_concurrency</p>
+<p>结构化编程，https://zh.wikipedia.org/wiki/%E7%BB%93%E6%9E%84%E5%8C%96%E7%BC%96%E7%A8%8B</p>
+
+                    </main>
+
+                    <script src="https://utteranc.es/client.js"
+                    repo="RustMagazine/rust_magazine_2022"
+                    issue-term="title"
+                    theme="github-light"
+                    crossorigin="anonymous"
+                    async></script>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../Q1/contribute/hw-tls-rfc.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../../Q1/contribute/rfc-2603.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../Q1/contribute/hw-tls-rfc.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../../Q1/contribute/rfc-2603.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../../ace.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../editor.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../mode-rust.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../theme-dawn.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../theme-tomorrow_night.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        <script type="text/javascript" src="../../mermaid.min.js"></script>
+        <script type="text/javascript" src="../../mermaid-init.js"></script>
+        <script type="text/javascript" src="../../smart-anchor.js"></script>
+    </body>
+</html>
