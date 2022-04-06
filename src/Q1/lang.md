@@ -2,12 +2,9 @@
 
 ---
 
+## Rust 语言团队 2024 Roadmap 发布
 
-## Rust 2024 Roadmap 发布
-
-Rust 2024 将聚焦于以多种不同的方式扩展授权，让越来越多的人受益，也就是说，让 Rust 广泛应用。
-
-Rust 2024 将专注于三个主要主题来完成这个目标：拉平学习曲线、扩展生态系统、扩展项目。
+Rust 语言团队将聚焦于以多种不同的方式扩展授权，让越来越多的人受益，也就是说，让 Rust 广泛应用。将专注于三个主要主题来完成这个目标：拉平学习曲线、扩展生态系统、扩展项目。
 
 [https://blog.rust-lang.org/inside-rust/2022/04/04/lang-roadmap-2024.html](https://blog.rust-lang.org/inside-rust/2022/04/04/lang-roadmap-2024.html)
 
