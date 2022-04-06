@@ -46,7 +46,7 @@
         - [Rust 异步与取消](./Q1/contribute/async-cancel.md)
         - [RFC 2603: Rust Symbol Name Mangling v0](./Q1/contribute/rfc-2603.md)
         - [Rust与动态链接](./Q1/contribute/rust-dyn-link.md)
-        - [使用Rust实现朴素贝叶斯（Naive Bayes）算法](./Q1//contribute/naive-bayes.md)
+        - [使用Rust实现朴素贝叶斯（Naive Bayes）算法](./Q1/contribute/naive-bayes.md)
         
 
 
